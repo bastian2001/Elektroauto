@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Elektroauto Formel E</string>
+
+    <string-array name="ctrlModeOptions">
+        <item>1: Gaskonstrolle</item>
+        <item>2: Umdrehungskontrolle</item>
+        <item>3: Schlupfkontrolle</item>
+    </string-array>
+</resources>

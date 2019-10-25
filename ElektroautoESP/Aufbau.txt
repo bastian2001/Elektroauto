@@ -1,0 +1,35 @@
+Pins verfügbar:
+0,	1,	2,	3,	4,	12,	13,	14,	15,	16
+	TX	DMP	RX	(LED)	SDA	SCL	HS1	HS2	ESC
+
+request:
+ARM/DISARM
+---
+d: device (web/app/ajax)
+s: set+get/get
+if(s){
+m: mode (throttle, rps, slip)
+v: value(<=1000, <=1000, <=20);
+}
+
+response:
+a: armed
+m: mode
+t: throttle
+r: rps
+s: slip
+v: velocity (mpu)
+w: velocity (wheels)
+c: acceleration (mpu)
+
+core1 - loop:	---
+MPU
+core1 - ir:	---
+core0 - loop:	---
+WiFi
+Serial
+core0 - ir:	---
+ESCir --> calc
+HSir
+
+Definition Schlupf: (vR-vA)/vR
