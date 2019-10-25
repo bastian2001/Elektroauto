@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public Button buttonArm, buttonDisarm, buttonSet;
     public TextView textViewTelemetry;
     public Spinner spinnerMode;
+    public ImageButton ibReconnect;
 
     public boolean res_armed = false;
     public int res_ctrlMode = 0, res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         private static final int NORMAL_CLOSURE_STATUS = 1000;
         @Override
         public void onOpen(WebSocket webSocket, okhttp3.Response response) {
-            ws.send("d1");
+            ws.send("s\nd1");
         }
         @Override
         public void onMessage(WebSocket webSocket, String text) {
@@ -62,18 +64,26 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onMessage(WebSocket webSocket, ByteString bytes) {
-            output("Receiving bytes : " + bytes.hex());
+            output(bytes.hex());
         }
         @Override
         public void onClosing(WebSocket webSocket, int code, String reason) {
             webSocket.close(NORMAL_CLOSURE_STATUS, null);
-            output("Closing : " + code + " / " + reason);
+            log("Closing: " + code + " / " + reason);
         }
         @Override
         public void onFailure(WebSocket webSocket, Throwable t, okhttp3.Response response) {
-            output("Error : " + t.getMessage());
-            start();
+            log("Error: " + t.getMessage());
         }
+    }
+    private void log(final String txt) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("WSCommunication", txt);
+                textViewTelemetry.setText(txt);
+            }
+        });
     }
     private void output(final String txt) {
         runOnUiThread(new Runnable() {
@@ -84,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 for (String s : response_separated) {
                     int val = 0;
                     try {
-                        val = Integer.parseInt(s.substring(1, s.length() - 1));
+                        val = Integer.parseInt(s.substring(1));
                     } catch (Exception e) {
                         Toast.makeText(MainActivity.this, "Da ist etwas mit der Antwort falsch! NFE", Toast.LENGTH_SHORT).show();
                     }
@@ -120,14 +130,15 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nModus: " + getResources().getStringArray(R.array.ctrlModeOptions)[res_ctrlMode] +
-                        "\nThrottle: " + res_throttle + "\nRPS:" + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float)res_velocity1 / 1000.0) +
+                        "\nThrottle: " + res_throttle + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float)res_velocity1 / 1000.0) +
                         "m/s\nGeschwindigkeit (Räder): " + ((float)res_velocity2 / 1000.0) + "m/s\nBeschleunigung:" + res_acceleration);
             }
         });
     }
     private void start() {
-        okhttp3.Request request = new okhttp3.Request.Builder().url("ws://192.168.0.213").build();
+        okhttp3.Request request = new okhttp3.Request.Builder().url("ws://192.168.178.127").build();
         EchoWebSocketListener listener = new EchoWebSocketListener();
+        client = new OkHttpClient();
         ws = client.newWebSocket(request, listener);
     }
     private void send(String s){
@@ -137,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        client.dispatcher().executorService().shutdown();
+        ws.close(1000, "Goodbye !");
         super.onDestroy();
     }
 
@@ -153,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSet = findViewById(R.id.buttonSet);
         textViewTelemetry = findViewById(R.id.textViewTelemetry);
         spinnerMode = findViewById(R.id.spinnerMode);
+        ibReconnect = findViewById(R.id.ibReconnect);
 
         buttonArm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +197,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });//Setzt die momentan eingetragene Dauer
+        ibReconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textViewTelemetry.setText("Verbindung wird aufgebaut...");
+                ws.close(1000, "Goodbye !");
+                start();
+            }
+        }); //reconnect
 
         seekBarValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -293,16 +313,15 @@ public class MainActivity extends AppCompatActivity {
     public void sendArmed(boolean a){
         setValue(0);
         spinnerMode.setSelection(0);
-        String text = (a ? "ARM" : "DISARM");
+        String text = (a ? "c\na1" : "c\na0");
         send(text);
     }
 
     public void sendRequest(){
-        String text = "s=" + (newValue ? 1 : 0);
         if (newValue){
-            text = text + "&m=" + spinnerMode.getSelectedItemPosition() + "&v=" + value;
+            String text = "c\nm" + spinnerMode.getSelectedItemPosition() + "\nv" + value;
+            send(text);
         }
         newValue = false;
-        send(text);
     }
 }

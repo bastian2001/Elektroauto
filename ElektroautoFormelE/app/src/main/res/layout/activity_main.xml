@@ -19,12 +19,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageButton
+            android:id="@+id/ibReconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_horizontal|center_vertical"
+            android:layout_weight="0"
+            android:background="?android:attr/selectableItemBackground"
+            android:baselineAlignBottom="false"
+            app:srcCompat="@drawable/reconnect" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
         <Button
             android:id="@+id/buttonArm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/holo_green_light"
+            android:backgroundTint="@android:color/holo_green_light"
             android:text="Arm" />
 
         <Space
@@ -37,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/holo_red_dark"
+            android:backgroundTint="@android:color/holo_red_dark"
             android:text="Disarm" />
 
     </LinearLayout>
@@ -98,7 +113,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:text="Telemetrie-Platzhalter"
+        android:text="Verbindung wird aufgebaut..."
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
