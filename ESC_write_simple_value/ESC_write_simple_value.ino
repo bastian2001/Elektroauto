@@ -6,7 +6,7 @@ void setup() {
 
   pinMode(5, OUTPUT);
 
-  ledcAttachPin(5, 0);
+  ledcAttachPin(16, 0);
   ledcSetup(0, 50, 15);
   ledcWrite(0, convertDuration(1000));
   Serial.println("Writing 1000 or 1638 to the ESC..");

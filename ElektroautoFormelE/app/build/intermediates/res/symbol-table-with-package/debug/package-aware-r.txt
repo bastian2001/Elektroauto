@@ -704,6 +704,7 @@ id dimensions
 id direct
 id disableHome
 id editTextDuration
+id editTextIP
 id edit_query
 id end
 id expand_activities_button
@@ -728,6 +729,7 @@ id italic
 id left
 id line1
 id line3
+id linearLayout0
 id linearLayout1
 id linearLayout2
 id listMode

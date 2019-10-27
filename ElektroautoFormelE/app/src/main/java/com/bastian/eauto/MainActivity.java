@@ -3,17 +3,21 @@ package com.bastian.eauto;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +39,7 @@ import okio.ByteString;
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
 
-    public EditText editTextValue;
+    public EditText editTextValue, editTextIP;
     public SeekBar seekBarValue;
     public Button buttonArm, buttonDisarm, buttonSet;
     public TextView textViewTelemetry;
@@ -49,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     
     public boolean newValue = false;
     public int value = 0;
+
+    SharedPreferences mPreferences;
+    SharedPreferences.Editor mEditor;
 
     private OkHttpClient client;
     WebSocket ws;
@@ -135,8 +142,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        sendTelemetry(true);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        sendTelemetry(false);
+        super.onPause();
+    }
+
     private void start() {
-        okhttp3.Request request = new okhttp3.Request.Builder().url("ws://192.168.178.127").build();
+        okhttp3.Request request = new okhttp3.Request.Builder().url("ws://" + editTextIP.getText().toString()).build();
         EchoWebSocketListener listener = new EchoWebSocketListener();
         client = new OkHttpClient();
         ws = client.newWebSocket(request, listener);
@@ -144,6 +164,9 @@ public class MainActivity extends AppCompatActivity {
     private void send(String s){
         ws.send(s);
         Log.d("WSCommunication", "sent: " + s);
+    }
+    private void sendTelemetry(boolean b){
+        send("s\nt" + (b ? 1 : 0));
     }
 
     @Override
@@ -165,6 +188,12 @@ public class MainActivity extends AppCompatActivity {
         textViewTelemetry = findViewById(R.id.textViewTelemetry);
         spinnerMode = findViewById(R.id.spinnerMode);
         ibReconnect = findViewById(R.id.ibReconnect);
+        editTextIP = findViewById(R.id.editTextIP);
+
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mEditor = mPreferences.edit();
+
+        editTextIP.setText(mPreferences.getString("IP", "192.168.0.75"));
 
         buttonArm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,26 +232,23 @@ public class MainActivity extends AppCompatActivity {
                 textViewTelemetry.setText("Verbindung wird aufgebaut...");
                 ws.close(1000, "Goodbye !");
                 start();
+                mEditor.putString("IP", editTextIP.getText().toString());
+                mEditor.commit();
             }
         }); //reconnect
 
         seekBarValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b)
                     setValue(i);
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {
                 if (!res_armed)
                     Toast.makeText(MainActivity.this, "Zuerst Arming durchführen!", Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
+            @Override public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
         spinnerMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

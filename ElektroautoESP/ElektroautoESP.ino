@@ -6,7 +6,6 @@
  */
 
 #include "WiFi.h"
-//#include "Wire.h"
 #include "I2Cdev.h"
 #include "MPU6050.h"
 #include <WebSocketsServer.h>
@@ -14,14 +13,19 @@
 #define HS1 14
 #define HS2 15
 #define escPin  16
-#define freq   200
+#define freq   150
 #define trend_amount 9 //nur ungerade!!
 #define ta_div_2     4 //mit anpassen!!
+#define minThrottleOffset 20
+#define maxThrottle 100
 
 #define ssid "KNS_WLAN"
 #define password "YZKswQHaE4xyKqdP"
+//#define ssid "Coworkingspace"
+//#define password "suppenkasper"
 
 #define maxWS 5
+#define telemetryUpdateMS 100
 
 TaskHandle_t Task1;
 String toBePrinted = "";
@@ -43,7 +47,7 @@ double currentDur = 1000;
 double proportional = 40.0;
 
 WebSocketsServer webSocket = WebSocketsServer(80);
-uint8_t clients[maxWS][2]; //[num][device]
+uint8_t clients[maxWS][2]; //[device (web, app, ajax, disconnected)][telemetry (off, on)]
 unsigned long lastTelemetry = 0;
 MPU6050 mpu;
 
@@ -53,21 +57,14 @@ void setup() {
   //WiFi Setup
   WiFi.enableSTA(true);
   WiFi.setTxPower(WIFI_POWER_MINUS_1dBm);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-  Serial.print("Connecting");
-  int counterWiFi = 0;
-  while (WiFi.status() != WL_CONNECTED){  //"Connecting..."
-    delay(300);
-    Serial.print(".");
-    if(counterWiFi == 30){
-      Serial.println();
+  Serial.print("Connecting to "); Serial.println(ssid);
+  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
       Serial.println("WiFi-Connection could not be established!");
       Serial.println("Restart...");
       ESP.restart();
-    }
-    counterWiFi++;
   }
-  Serial.println();
   Serial.print("IP: ");
   Serial.println(WiFi.localIP());
 
@@ -85,8 +82,18 @@ void setup() {
   //2nd core
   xTaskCreatePinnedToCore( Task1code, "Task1", 10000, NULL, 0, &Task1, 0);
 
+  //WS init
+  webSocket.begin();
+  webSocket.onEvent(onWebSocketEvent);
+
+  //clients init
+  for (int i = 0; i<maxWS; i++){
+    clients[i][0] = 3;
+    clients[i][1] = 1;
+  }
+
   //MPU6050 init
-  Wire.begin(2,12); //sda, scl
+  /*Wire.begin(13,12); //sda, scl
   int offsetCounter = 0;
   long offset_sum = 0;
   while(offsetCounter < 20){
@@ -95,18 +102,39 @@ void setup() {
     delay(1);
   }
   int MPUoffset = (int)((float)offset_sum / 20.0 + .5);
-  mpu.setXAccelOffset(MPUoffset);
-
-  //WS init
-  webSocket.begin();
-  webSocket.onEvent(onWebSocketEvent);
+  mpu.setXAccelOffset(MPUoffset);*/
   
   Serial.println("ready");
   c1ready = true;
   lastMPUUpdate = millis();
 }
 
+void Task1code( void * parameter) {
+  pinMode(HS1, INPUT_PULLUP);
+  pinMode(HS2, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(escPin), escir, RISING);
+  
+  while(!c1ready){delay(1);}
+  
+  while(true){
+    loop0();
+    delay(1);
+  }
+}
+
+void loop0(){
+  if(WiFi.status()!=WL_CONNECTED){
+    reconnect();
+  }
+  handleWiFi();
+  receiveSerial();
+  printSerial();
+}
+
 void loop() {
+  /*
   if (lastMPUUpdate + 1 <= millis()){
     raw_accel = mpu.getAccelerationX();
     counterMPU++;
@@ -117,41 +145,57 @@ void loop() {
     acceleration = (float)raw_accel/32767*19.62;
     speedMPU += acceleration / 1000;
   }
+  */
 }
 
-void loop2(){
-  if(WiFi.status()!=WL_CONNECTED){
-    reconnect();
+void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length){
+  switch(type) {
+    case WStype_DISCONNECTED:
+      removeClient(num);
+      break;
+    case WStype_CONNECTED:
+      addClient(num);
+      break;
+    case WStype_TEXT:
+      dealWithMessage((char*)payload, num);
+      break;
+    default:
+      break;
   }
-  receiveWiFi();
-  receiveSerial();
-  printSerial();
 }
 
-void printSerial(){
-  Serial.println(toBePrinted);
-  toBePrinted = "";
+void removeClient (int spot){
+  Serial.printf("[%u] Disconnected!\n", spot);
+  clients[spot][0] = 3;
+  clients[spot][1] = 1;
 }
 
-void sPrint(String s){
-  toBePrinted += s;
+void addClient (int spot){
+  if(spot < maxWS){
+    IPAddress ip = webSocket.remoteIP(spot);
+    Serial.printf("[%u] Connection from ", spot);
+    Serial.println(ip.toString());
+  } else {
+    Serial.println(F("Connection refused. All spots filled!"));
+  }
 }
 
-void sPrintln(String s){
-  toBePrinted += s;
-  toBePrinted += "\n";
-}
-
-void Task1code( void * parameter) {
-  pinMode(HS1, INPUT_PULLUP);
-  pinMode(HS2, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(escPin), escir, RISING);
-  while(!c1ready){delay(1);}
-  while(true){
-    loop2();
-    delay(1);
+void dealWithMessage(String message, uint8_t from){
+  Serial.print(F("Received: \""));
+  Serial.print(message);
+  Serial.println(F("\""));
+  switch (message.charAt(0)){
+    case 's': //setup message
+      Serial.println(F("Parsing setup message"));
+      parseSetupMessage(message.substring(1), from);
+      break;
+    case 'c': //control message
+      Serial.println(F("Parsing control message"));
+      parseControlMessage(message.substring(1));
+      break;
+    default:
+      Serial.println(F("Unknown message format!"));
+      break;
   }
 }
 
@@ -214,27 +258,17 @@ void receiveSerial(){
   }
 }
 
-void hs1ir(){
-  hs1c++;
-  hsc++;
-}
-
-void hs2ir(){
-  hs2c++;
-  hsc++;
-}
-
 void escir(){
-  if (armed) {
-    int counts = hsc;
-    hs2c = 0;
-    hs1c = 0;
-    hsc = 0;
+  int counts = hsc;
+  hs2c = 0;
+  hs1c = 0;
+  hsc = 0;
 
-    for (int i = 0; i<trend_amount-1; i++){
-      rps_was[i] = rps_was[i+1];
-    }
-    rps_was[trend_amount-1] = counts * freq / 12; //6 für einen Sensor, 12 für 2
+  for (int i = 0; i<trend_amount-1; i++){
+    rps_was[i] = rps_was[i+1];
+  }
+  rps_was[trend_amount-1] = counts * freq / 12; //6 für einen Sensor, 12 für 2
+  if (armed) {
 
     if (wifiFlag){
       wifiFlag = false;
@@ -270,12 +304,16 @@ void escir(){
 }
 
 void newDur(int dur){
-  dur = max(dur, 1000);
-  dur = min(dur, 1050);
+  dur = max(dur, 1000 + minThrottleOffset);
+  dur = min(dur, 1000 + maxThrottle + minThrottleOffset);
+  if(currentDur > 1000 + maxThrottle + minThrottleOffset)
+    currentDur = 1000 + maxThrottle + minThrottleOffset;
+  if (currentDur < 1000 + minThrottleOffset)
+    currentDur = 1000 + minThrottleOffset;
   if(dur==1000)
     dur--;
   dur = map(dur, 0, 1000000/freq, 0, 32767);
-  ledcWrite(1, dur);
+  ledcWrite(1, dur + minThrottleOffset);
 }
 
 double calcDauer(int target, int was[]){
@@ -294,87 +332,14 @@ double calcDauer(int target, int was[]){
   double prediction = m * ((double)trend_amount - (double)ta_div_2) + (double)was_avg;
   double delta_dur = ((double)target - prediction) / proportional;
 
-  double newDur = currentDur + delta_dur;
-  newDur = min(newDur, 1050.0);
-  newDur = max(newDur, 1000.0);
-  currentDur = newDur;
+  currentDur += delta_dur;
   
-  return newDur;
+  return currentDur;
 }
 
-void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length){
-  switch(type) {
-    case WStype_DISCONNECTED:
-      Serial.printf("[%u] Disconnected!\n", num);
-      for (uint8_t i = 0; i < maxWS; i++){
-        if (clients[i][0]==num){
-          clients[i][0]=NULL;
-          clients[i][1]=NULL;
-          clients[i][2]=NULL;
-        }
-      }
-      break;
- 
-    case WStype_CONNECTED:
-      {
-        IPAddress ip = webSocket.remoteIP(num);
-        Serial.printf("[%u] Connection from ", num);
-        Serial.println(ip.toString());
-        uint8_t spotFree = -1;
-        for (int i = maxWS - 1; i >=0; i++){
-          if(clients[i][0] == NULL){
-            spotFree = i;
-          }
-        }
-        if (spotFree > -1){
-          Serial.print("Assigning spot "); Serial.println (spotFree);
-          clients[spotFree][0] = num;
-          clients[spotFree][2] = 1;
-        } else {
-          Serial.println("Connection refused. All spots filled!");
-        }
-      }
-      break;
- 
-    case WStype_TEXT:
-      {
-        String message = (char*)payload;
-        switch (message.charAt(0)){
-          case 's': //setup message
-            {
-              uint8_t from = -1;
-              for (int i = maxWS - 1; i >=0; i++){
-                if(clients[i][0] == NULL){
-                  from = i;
-                }
-              }
-              parseSetupMessage(message.substring(1), from);
-            }
-            break;
-          case 'c': //control message
-            parseControlMessage(message.substring(1));
-            break;
-          default:
-            Serial.println("Unknown message format");
-            break;
-        }
-      }
- 
-    // For everything else: do nothing
-    case WStype_BIN:
-    case WStype_ERROR:
-    case WStype_FRAGMENT_TEXT_START:
-    case WStype_FRAGMENT_BIN_START:
-    case WStype_FRAGMENT:
-    case WStype_FRAGMENT_FIN:
-    default:
-      break;
-  }
-}
-
-void receiveWiFi(){
+void handleWiFi(){
   webSocket.loop();
-  if (lastTelemetry + 100 < millis()){
+  if (lastTelemetry + telemetryUpdateMS < millis()){
     lastTelemetry = millis();
     sendTelemetry();
   }
@@ -387,13 +352,14 @@ void parseSetupMessage(String clippedMessage, uint8_t id){
     //parse single command
     switch (clippedMessage.charAt(0)){
       case 'd':
-        clients[id][1] = clippedMessage.substring(1).toInt();
+        clients[id][0] = clippedMessage.substring(1).toInt();
         break;
       case 't':
-        clients[id][2] = clippedMessage.substring(1).toInt();
+        clients[id][1] = clippedMessage.substring(1).toInt();
         break;
       default:
-        Serial.println("unknown value given");
+        Serial.println("unknown value given (setup)");
+        break;
     }
     
     clippedMessage = clippedMessage.substring(clippedMessage.indexOf("\n"));
@@ -417,36 +383,66 @@ void parseControlMessage(String clippedMessage){
         req_value = clippedMessage.substring(1).toInt();
         break;
       default:
-        Serial.println("unknown value given");
+        Serial.println("unknown value given (control)");
     }
     
     clippedMessage = clippedMessage.substring(clippedMessage.indexOf("\n"));
   }
+  wifiFlag = true;
 }
 
 void sendTelemetry(){
   int velMPU = (int)(speedMPU * 1000 + .5);
   int velWheel = (int)((float)30 * PI * (float)rps_was[trend_amount-1]);
-  int slipPercent = (velWheel - velMPU) / velWheel;
-  String telemetryData = "a";
-  telemetryData += armed ? "1" : "0";
-  telemetryData += "\nm";
-  telemetryData += ctrlMode;
-  telemetryData += "\nt";
-  telemetryData += ((int)currentDur - 1000);
-  telemetryData += "\nr";
-  telemetryData += rps_was[trend_amount - 1];
-  telemetryData += "\ns";
-  telemetryData += slipPercent;
-  telemetryData += "\nv";
-  telemetryData += velMPU;
-  telemetryData += "\nw";
-  telemetryData += velWheel;
-  telemetryData += "\nc";
-  telemetryData += ((int)(acceleration * 1000 + .5));
+  int slipPercent = 0;
+  if(velWheel != 0){
+    slipPercent = (float)(velWheel - velMPU) / velWheel * 100;
+  }
+  String telemetryData0 = "";
+  String telemetryData1 = "a";
+  String telemetryData2 = "";
+  telemetryData1 += armed ? "1" : "0";
+  telemetryData1 += "\nm";
+  telemetryData1 += ctrlMode;
+  telemetryData1 += "\nt";
+  telemetryData1 += ((int)currentDur - 1000 - minThrottleOffset);
+  telemetryData1 += "\nr";
+  telemetryData1 += rps_was[trend_amount - 1];
+  telemetryData1 += "\ns";
+  telemetryData1 += slipPercent;
+  telemetryData1 += "\nv";
+  telemetryData1 += velMPU;
+  telemetryData1 += "\nw";
+  telemetryData1 += velWheel;
+  telemetryData1 += "\nc";
+  telemetryData1 += ((int)(acceleration * 1000 + .5));
   for (int i = 0; i < maxWS; i++){
-    if (clients[i][0] != NULL && clients[i][2] == 1){
-      webSocket.sendTXT(i, telemetryData);
+    if (clients[i][0] == 1 && clients[i][1] == 1){
+      webSocket.sendTXT(i, telemetryData1);
     }
   }
+}
+
+void hs1ir(){
+  hs1c++;
+  hsc++;
+}
+
+void hs2ir(){
+  hs2c++;
+  hsc++;
+}
+
+void printSerial(){
+  Serial.print(toBePrinted);
+  toBePrinted = "";
+}
+
+void sPrint(String s){
+  toBePrinted += s;
+}
+
+void sPrintln(String s){
+  toBePrinted += s;
+  toBePrinted += "\n";
 }
