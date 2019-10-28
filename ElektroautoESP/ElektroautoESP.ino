@@ -6,6 +6,7 @@
  */
 
 #include "WiFi.h"
+#include "Wire.h"
 #include "I2Cdev.h"
 #include "MPU6050.h"
 #include <WebSocketsServer.h>
@@ -13,10 +14,10 @@
 #define HS1 14
 #define HS2 15
 #define escPin  16
-#define freq   150
+#define freq   200
 #define trend_amount 9 //nur ungerade!!
 #define ta_div_2     4 //mit anpassen!!
-#define minThrottleOffset 20
+#define minThrottleOffset 27
 #define maxThrottle 100
 
 #define ssid "KNS_WLAN"
@@ -35,12 +36,12 @@ int rps_was[trend_amount];
 
 int hs1c = 0, hs2c = 0, hsc = 0;
 
-int MPUoffset = 0, raw_accel = 0;
+int16_t MPUoffset = 0, raw_accel = 0;
 unsigned long lastMPUUpdate = 0;
 int counterMPU = 0;
 float acceleration = 0, speedMPU = 0;
 
-bool armed = false, wifiFlag = false, c1ready = false;
+bool armed = false, wifiFlag = false, c1ready = false, irInUse = false;
 int ctrlMode = 0, req_value = 0;
 double currentDur = 1000;
 
@@ -93,7 +94,9 @@ void setup() {
   }
 
   //MPU6050 init
-  /*Wire.begin(13,12); //sda, scl
+  Wire.begin(/*13,12*/); //sda, scl
+  mpu.initialize();
+  Serial.println(mpu.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
   int offsetCounter = 0;
   long offset_sum = 0;
   while(offsetCounter < 20){
@@ -102,7 +105,7 @@ void setup() {
     delay(1);
   }
   int MPUoffset = (int)((float)offset_sum / 20.0 + .5);
-  mpu.setXAccelOffset(MPUoffset);*/
+  mpu.setXAccelOffset(MPUoffset);
   
   Serial.println("ready");
   c1ready = true;
@@ -134,18 +137,19 @@ void loop0(){
 }
 
 void loop() {
-  /*
-  if (lastMPUUpdate + 1 <= millis()){
-    raw_accel = mpu.getAccelerationX();
-    counterMPU++;
-    if(counterMPU % 10)
+  if (lastMPUUpdate + 2 <= millis()){
+    while(irInUse){yield();}
+    irInUse = true;
+    raw_accel = mpu.getAccelerationY();
+    irInUse = false;
+    if(counterMPU++ % 10 == 0)
       sPrintln(String(raw_accel));
 
     //MPU calculations
     acceleration = (float)raw_accel/32767*19.62;
     speedMPU += acceleration / 1000;
+    lastMPUUpdate = millis();
   }
-  */
 }
 
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length){
@@ -338,7 +342,10 @@ double calcDauer(int target, int was[]){
 }
 
 void handleWiFi(){
+  while(irInUse){yield();}
+  irInUse = true;
   webSocket.loop();
+  irInUse = false;
   if (lastTelemetry + telemetryUpdateMS < millis()){
     lastTelemetry = millis();
     sendTelemetry();
@@ -374,13 +381,15 @@ void parseControlMessage(String clippedMessage){
     switch (clippedMessage.charAt(0)){
       case 'a':
         armed = clippedMessage.substring(1).toInt() > 0;
-        currentDur = 1000;
+        currentDur = 1000 + minThrottleOffset;
         break;
       case 'm':
         ctrlMode = clippedMessage.substring(1).toInt();
         break;
       case 'v':
         req_value = clippedMessage.substring(1).toInt();
+        if (ctrlMode == 0)
+          req_value += minThrottleOffset;
         break;
       default:
         Serial.println("unknown value given (control)");
@@ -418,7 +427,10 @@ void sendTelemetry(){
   telemetryData1 += ((int)(acceleration * 1000 + .5));
   for (int i = 0; i < maxWS; i++){
     if (clients[i][0] == 1 && clients[i][1] == 1){
+      while(irInUse){yield();}
+      irInUse = true;
       webSocket.sendTXT(i, telemetryData1);
+      irInUse = false;
     }
   }
 }
