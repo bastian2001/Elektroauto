@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ElektroautoFormelE.iml" filepath="$PROJECT_DIR$/ElektroautoFormelE.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wearos/wearos.iml" filepath="$PROJECT_DIR$/wearos/wearos.iml" />
     </modules>
   </component>
 </project>

@@ -37,6 +37,7 @@ int rps_was[trend_amount];
 int hs1c = 0, hs2c = 0, hsc = 0;
 
 int16_t MPUoffset = 0, raw_accel = 0;
+int16_t loopCounter = 0;
 unsigned long lastMPUUpdate = 0;
 int counterMPU = 0;
 float acceleration = 0, speedMPU = 0;
@@ -118,12 +119,16 @@ void Task1code( void * parameter) {
   attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
   attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
   attachInterrupt(digitalPinToInterrupt(escPin), escir, RISING);
+  disableCore0WDT();
   
   while(!c1ready){delay(1);}
   
   while(true){
     loop0();
-    delay(1);
+    loopCounter++;
+    if(loopCounter % 1000 == 0){
+      Serial.println("loop");
+    }
   }
 }
 
@@ -137,7 +142,7 @@ void loop0(){
 }
 
 void loop() {
-  if (lastMPUUpdate + 2 <= millis()){
+  /*if (lastMPUUpdate + 2 <= millis()){
     while(irInUse){yield();}
     irInUse = true;
     raw_accel = mpu.getAccelerationY();
@@ -149,7 +154,7 @@ void loop() {
     acceleration = (float)raw_accel/32767*19.62;
     speedMPU += acceleration / 1000;
     lastMPUUpdate = millis();
-  }
+  }*/
 }
 
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length){
