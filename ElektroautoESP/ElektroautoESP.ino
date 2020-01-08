@@ -14,46 +14,56 @@
 #define HS1 14
 #define HS2 15
 #define escPin  16
-#define freq   200
+#define ESC_FREQ  1000
+#define PID_DIV      5
 #define trend_amount 9 //nur ungerade!!
 #define ta_div_2     4 //mit anpassen!!
-#define minThrottleOffset 27
-#define maxThrottle 100
 
 #define ssid "KNS_WLAN"
 #define password "YZKswQHaE4xyKqdP"
 //#define ssid "Coworkingspace"
 //#define password "suppenkasper"
 
-#define maxWS 5
-#define telemetryUpdateMS 100
+#define ESC_TELEMETRY_REQUEST false
 
+#define maxWS 5
+#define telemetryUpdateMS 50
+
+//Core 0 variables
 TaskHandle_t Task1;
 String toBePrinted = "";
 
+//rps control variables
 int rps_target = 0;
 int rps_was[trend_amount];
+double proportional = 40.0;
 
+//hall sensor variables
 int hs1c = 0, hs2c = 0, hsc = 0;
 
+//MPU variables
+MPU6050 mpu;
 int16_t MPUoffset = 0, raw_accel = 0;
 int16_t loopCounter = 0;
 unsigned long lastMPUUpdate = 0;
 int counterMPU = 0;
 float acceleration = 0, speedMPU = 0;
 
-bool armed = false, wifiFlag = false, c1ready = false, irInUse = false;
+//system variables
+double throttle = 0;
+bool armed = false, c1ready = false, irInUse = false;
 int ctrlMode = 0, req_value = 0;
-double currentDur = 1000;
+uint16_t escValue = 0;
 
-double proportional = 40.0;
-
+//WiFi/WebSockets variables
 WebSocketsServer webSocket = WebSocketsServer(80);
 uint8_t clients[maxWS][2]; //[device (web, app, ajax, disconnected)][telemetry (off, on)]
 unsigned long lastTelemetry = 0;
-MPU6050 mpu;
+bool wifiFlag = false;
 
 void setup() {
+
+  //Serial setup
   Serial.begin(115200);
 
   //WiFi Setup
@@ -72,23 +82,19 @@ void setup() {
 
   //escPin Setup
   pinMode(escPin, OUTPUT);
-  ledcAttachPin(escPin, 1);
-  ledcSetup(1, freq, 15);
-  ledcWrite(1, map(1000, 0, 1000000/freq, 0, 32767));
+  esc_init(0, 22);
 
-  //Setup rps_was
+  //rps_was Setup
   for (int i = 0; i < trend_amount; i++){
     rps_was[i] = 0;
   }
   
-  //2nd core
+  //2nd core setup
   xTaskCreatePinnedToCore( Task1code, "Task1", 10000, NULL, 0, &Task1, 0);
 
-  //WS init
+  //WebSockets init
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
-
-  //clients init
   for (int i = 0; i<maxWS; i++){
     clients[i][0] = 3;
     clients[i][1] = 1;
@@ -107,7 +113,8 @@ void setup() {
   }
   int MPUoffset = (int)((float)offset_sum / 20.0 + .5);
   mpu.setXAccelOffset(MPUoffset);
-  
+
+  //setup termination
   Serial.println("ready");
   c1ready = true;
   lastMPUUpdate = millis();
@@ -121,7 +128,7 @@ void Task1code( void * parameter) {
   attachInterrupt(digitalPinToInterrupt(escPin), escir, RISING);
   disableCore0WDT();
   
-  while(!c1ready){delay(1);}
+  while(!c1ready){yield();}
   
   while(true){
     loop0();
@@ -244,11 +251,11 @@ void receiveSerial(){
       case 'a':
         armed = val > 0;
         ctrlMode = 0;
-        currentDur = 1000;
+        setThrottle(0);
         break;
       case 'd':
         ctrlMode = 0;
-        currentDur = val;
+        setThrottle(val);
         break;
       case 'r':
         ctrlMode = 1;
@@ -276,14 +283,14 @@ void escir(){
   for (int i = 0; i<trend_amount-1; i++){
     rps_was[i] = rps_was[i+1];
   }
-  rps_was[trend_amount-1] = counts * freq / 12; //6 für einen Sensor, 12 für 2
+  rps_was[trend_amount-1] = counts * ESC_FREQ / 12; //6 für einen Sensor, 12 für 2
   if (armed) {
 
     if (wifiFlag){
       wifiFlag = false;
       switch (ctrlMode){
         case 0:
-          currentDur = req_value + 1000;
+          setThrottle(req_value);
           break;
         case 1:
           rps_target = req_value;
@@ -296,10 +303,9 @@ void escir(){
     }
     switch (ctrlMode){
       case 0:
-        newDur((int)currentDur + .5);
         break;
       case 1:
-        newDur((int)(calcDauer(rps_target, rps_was) + .5));
+        setThrottle(calcThrottle(rps_target, rps_was) + .5);
         break;
       case 2:
         break;
@@ -307,12 +313,12 @@ void escir(){
         break;
     }
   } else {
-    currentDur = 1000.0;
-    newDur(1000);
+    setThrottle(0);
   }
+  esc_send_value(throttle, false);
 }
 
-void newDur(int dur){
+/*void newDur(int dur){
   dur = max(dur, 1000 + minThrottleOffset);
   dur = min(dur, 1000 + maxThrottle + minThrottleOffset);
   if(currentDur > 1000 + maxThrottle + minThrottleOffset)
@@ -323,9 +329,17 @@ void newDur(int dur){
     dur--;
   dur = map(dur, 0, 1000000/freq, 0, 32767);
   ledcWrite(1, dur + minThrottleOffset);
+}*/
+
+void setThrottle(int newThrottle){ //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
+  throttle = newThrottle;
+  newThrottle += 47;
+  if (newThrottle == 47)
+    newThrottle = 0;
+  escValue = appendChecksum(newThrottle);
 }
 
-double calcDauer(int target, int was[]){
+double calcThrottle(int target, int was[]){
   double was_avg = 0;
   int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
   for(int i = 0; i < trend_amount; i++){
@@ -339,11 +353,11 @@ double calcDauer(int target, int was[]){
   double m = (double)t_multi_was_sum / (double)t_sq_sum;
   
   double prediction = m * ((double)trend_amount - (double)ta_div_2) + (double)was_avg;
-  double delta_dur = ((double)target - prediction) / proportional;
+  double delta_throttle = ((double)target - prediction) / proportional;
 
-  currentDur += delta_dur;
+  throttle += delta_throttle;
   
-  return currentDur;
+  return throttle;
 }
 
 void handleWiFi(){
@@ -386,7 +400,7 @@ void parseControlMessage(String clippedMessage){
     switch (clippedMessage.charAt(0)){
       case 'a':
         armed = clippedMessage.substring(1).toInt() > 0;
-        currentDur = 1000 + minThrottleOffset;
+        setThrottle(0);
         break;
       case 'm':
         ctrlMode = clippedMessage.substring(1).toInt();
@@ -419,7 +433,7 @@ void sendTelemetry(){
   telemetryData1 += "\nm";
   telemetryData1 += ctrlMode;
   telemetryData1 += "\nt";
-  telemetryData1 += ((int)currentDur - 1000 - minThrottleOffset);
+  telemetryData1 += ((int) throttle + .5);
   telemetryData1 += "\nr";
   telemetryData1 += rps_was[trend_amount - 1];
   telemetryData1 += "\ns";
@@ -462,4 +476,46 @@ void sPrint(String s){
 void sPrintln(String s){
   toBePrinted += s;
   toBePrinted += "\n";
+}
+
+uint16_t appendChecksum(uint16_t value){
+  value &= 0x7FF;
+  value = (value << 1) | ESC_TELEMETRY_REQUEST;
+  int csum = 0, csum_data = value;
+  for (int i = 0; i < 3; i++) {
+    csum ^=  csum_data;   // xor data by nibbles
+    csum_data >>= 4;
+  }
+  csum &= 0xf;
+  value = (value << 4) | csum;
+}
+
+void esc_init(uint8_t channel, uint8_t pin){
+  rmt_config_t config;
+  config.rmt_mode = RMT_MODE_TX;
+  config.channel = ((rmt_channel_t) channel);
+  config.gpio_num = ((gpio_num_t) pin);
+  config.mem_block_num = 3;
+  config.tx_config.loop_en = false;
+  config.tx_config.carrier_en = false;
+  config.tx_config.idle_output_en = true;
+  config.tx_config.idle_level = ((rmt_idle_level_t) 0);
+  config.clk_div = 6; // target: DShot 300 (300kbps)
+
+  ESP_ERROR_CHECK(rmt_config(&config));
+  ESP_ERROR_CHECK(rmt_driver_install(config.channel, 0, 0));
+}
+
+void esc_send_value(uint16_t value, bool wait) {
+  setup_rmt_data_buffer(value);
+  ESP_ERROR_CHECK(rmt_write_items((rmt_channel_t) 0, esc_data_buffer, ESC_BUFFER_ITEMS, wait));
+}
+
+void setup_rmt_data_buffer(uint16_t value) {
+    uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
+    for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
+      uint16_t bit_is_set = value & mask;
+      esc_data_buffer[bit] = bit_is_set ? (rmt_item32_t){{{T1H, 1, T1L, 0}}} : (rmt_item32_t){{{T0H, 1, T0L, 0}}};
+      mask >>= 1;
+    }
 }
