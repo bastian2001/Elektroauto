@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (i < 2){
-                    seekBarValue.setMax(1000);
+                    seekBarValue.setMax(2000);
                 } else {
                     seekBarValue.setMax(20);
                 }
@@ -320,12 +320,12 @@ public class MainActivity extends AppCompatActivity {
     public void setValue(int value){
         if (!res_armed){
             spinnerMode.setSelection(0);
-            seekBarValue.setMax(1000);
+            seekBarValue.setMax(2000);
             value = 0;
         } else {
             value = Math.max(0, value);
             if (spinnerMode.getSelectedItemPosition() < 2){
-                value = Math.min (1000, value);
+                value = Math.min (2000, value);
             } else {
                 value = Math.min (20, value);
             }

@@ -5,29 +5,52 @@
  * Schlupf in Code implementieren
  */
 
+
+/*======================================================includes======================================================*/
+
 #include "WiFi.h"
 #include "Wire.h"
 #include "I2Cdev.h"
 #include "MPU6050.h"
 #include <WebSocketsServer.h>
+#include "driver/rmt.h"
 
+
+
+/*======================================================definitions======================================================*/
+
+//Pin numbers
 #define HS1 14
 #define HS2 15
 #define escPin  16
-#define ESC_FREQ  1000
+
+//PID loop settings
 #define PID_DIV      5
 #define trend_amount 9 //nur ungerade!!
 #define ta_div_2     4 //mit anpassen!!
 
+//DShot values
+#define ESC_FREQ  1000
+#define ESC_BUFFER_ITEMS 16
+#define CLK_DIV 6; //DShot 150: 12, DShot 300: 6, DShot 600: 3
+#define TT 44 // total bit time
+#define T0H 17 // 0 bit high time
+#define T1H 33 // 1 bit high time
+#define T0L (TT - T0H) // 0 bit low time
+#define T1L (TT - T1H) // 1 bit low time
+#define T_RESET 21 // reset length in multiples of bit time
+#define ESC_TELEMETRY_REQUEST false
+
+//WiFi and WebSockets settings
 #define ssid "KNS_WLAN"
 #define password "YZKswQHaE4xyKqdP"
 //#define ssid "Coworkingspace"
 //#define password "suppenkasper"
-
-#define ESC_TELEMETRY_REQUEST false
-
 #define maxWS 5
 #define telemetryUpdateMS 50
+
+
+/*======================================================global variables======================================================*/
 
 //Core 0 variables
 TaskHandle_t Task1;
@@ -60,6 +83,11 @@ WebSocketsServer webSocket = WebSocketsServer(80);
 uint8_t clients[maxWS][2]; //[device (web, app, ajax, disconnected)][telemetry (off, on)]
 unsigned long lastTelemetry = 0;
 bool wifiFlag = false;
+
+rmt_item32_t esc_data_buffer[ESC_BUFFER_ITEMS];
+
+
+/*======================================================system methods======================================================*/
 
 void setup() {
 
@@ -163,6 +191,9 @@ void loop() {
     lastMPUUpdate = millis();
   }*/
 }
+
+
+/*======================================================functional methods======================================================*/
 
 void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length){
   switch(type) {
@@ -407,8 +438,6 @@ void parseControlMessage(String clippedMessage){
         break;
       case 'v':
         req_value = clippedMessage.substring(1).toInt();
-        if (ctrlMode == 0)
-          req_value += minThrottleOffset;
         break;
       default:
         Serial.println("unknown value given (control)");
