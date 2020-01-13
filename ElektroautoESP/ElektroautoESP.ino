@@ -22,7 +22,9 @@
 //Pin numbers
 #define HS1 14
 #define HS2 15
-#define escPin  16
+#define escOutputPin  16
+#define escTriggerPin 33
+#define TRANSMISSION  23
 
 //PID loop settings
 #define PID_DIV      5
@@ -67,7 +69,6 @@ int hs1c = 0, hs2c = 0, hsc = 0;
 //MPU variables
 MPU6050 mpu;
 int16_t MPUoffset = 0, raw_accel = 0;
-int16_t loopCounter = 0;
 unsigned long lastMPUUpdate = 0;
 int counterMPU = 0;
 float acceleration = 0, speedMPU = 0;
@@ -84,7 +85,11 @@ uint8_t clients[maxWS][2]; //[device (web, app, ajax, disconnected)][telemetry (
 unsigned long lastTelemetry = 0;
 bool wifiFlag = false;
 
+//ESC variables
 rmt_item32_t esc_data_buffer[ESC_BUFFER_ITEMS];
+
+//arbitrary variables
+int16_t escOutputCounter = 0;
 
 
 /*======================================================system methods======================================================*/
@@ -108,9 +113,15 @@ void setup() {
   Serial.print("IP: ");
   Serial.println(WiFi.localIP());
 
-  //escPin Setup
-  pinMode(escPin, OUTPUT);
-  esc_init(0, 22);
+  //ESC pins Setup
+  pinMode(escOutputPin, OUTPUT);
+  pinMode(escTriggerPin, OUTPUT);
+  pinMode(TRANSMISSION, OUTPUT);
+  digitalWrite(TRANSMISSION, HIGH);
+  esc_init(0, escOutputPin);
+  ledcSetup(1, ESC_FREQ, 8);
+  ledcAttachPin(escTriggerPin, 1);
+  ledcWrite(1, 127);
 
   //rps_was Setup
   for (int i = 0; i < trend_amount; i++){
@@ -129,7 +140,7 @@ void setup() {
   }
 
   //MPU6050 init
-  Wire.begin(/*13,12*/); //sda, scl
+  /*Wire.begin(/*13,12*//*); //sda, scl
   mpu.initialize();
   Serial.println(mpu.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
   int offsetCounter = 0;
@@ -140,7 +151,7 @@ void setup() {
     delay(1);
   }
   int MPUoffset = (int)((float)offset_sum / 20.0 + .5);
-  mpu.setXAccelOffset(MPUoffset);
+  mpu.setXAccelOffset(MPUoffset);*/
 
   //setup termination
   Serial.println("ready");
@@ -153,17 +164,13 @@ void Task1code( void * parameter) {
   pinMode(HS2, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
   attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(escPin), escir, RISING);
+  attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
   disableCore0WDT();
   
   while(!c1ready){yield();}
   
   while(true){
     loop0();
-    loopCounter++;
-    if(loopCounter % 1000 == 0){
-      Serial.println("loop");
-    }
   }
 }
 
@@ -234,7 +241,7 @@ void dealWithMessage(String message, uint8_t from){
   switch (message.charAt(0)){
     case 's': //setup message
       Serial.println(F("Parsing setup message"));
-      parseSetupMessage(message.substring(1), from);
+      parseSystemMessage(message.substring(1), from);
       break;
     case 'c': //control message
       Serial.println(F("Parsing control message"));
@@ -247,7 +254,7 @@ void dealWithMessage(String message, uint8_t from){
 }
 
 void reconnect(){
-  detachInterrupt(digitalPinToInterrupt(escPin));
+  detachInterrupt(digitalPinToInterrupt(escTriggerPin));
   detachInterrupt(digitalPinToInterrupt(HS1));
   detachInterrupt(digitalPinToInterrupt(HS2));
   WiFi.disconnect();
@@ -269,7 +276,7 @@ void reconnect(){
   hs2c = 0;
   hs1c = 0;
   hsc = 0;
-  attachInterrupt(digitalPinToInterrupt(escPin), escir, RISING);
+  attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
   attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
   attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
 }
@@ -346,21 +353,10 @@ void escir(){
   } else {
     setThrottle(0);
   }
-  esc_send_value(throttle, false);
+  digitalWrite(TRANSMISSION, LOW);
+  esc_send_value(escValue, false);
+  digitalWrite(TRANSMISSION, HIGH);
 }
-
-/*void newDur(int dur){
-  dur = max(dur, 1000 + minThrottleOffset);
-  dur = min(dur, 1000 + maxThrottle + minThrottleOffset);
-  if(currentDur > 1000 + maxThrottle + minThrottleOffset)
-    currentDur = 1000 + maxThrottle + minThrottleOffset;
-  if (currentDur < 1000 + minThrottleOffset)
-    currentDur = 1000 + minThrottleOffset;
-  if(dur==1000)
-    dur--;
-  dur = map(dur, 0, 1000000/freq, 0, 32767);
-  ledcWrite(1, dur + minThrottleOffset);
-}*/
 
 void setThrottle(int newThrottle){ //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
   throttle = newThrottle;
@@ -402,9 +398,9 @@ void handleWiFi(){
   }
 }
 
-void parseSetupMessage(String clippedMessage, uint8_t id){
-  while (clippedMessage.indexOf("\n") == 0){
-    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("\n")+1);
+void parseSystemMessage(String clippedMessage, uint8_t id){
+  while (clippedMessage.indexOf("!") == 0){
+    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("!")+1);
 
     //parse single command
     switch (clippedMessage.charAt(0)){
@@ -419,13 +415,13 @@ void parseSetupMessage(String clippedMessage, uint8_t id){
         break;
     }
     
-    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("\n"));
+    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("!"));
   }
 }
 
 void parseControlMessage(String clippedMessage){
-  while (clippedMessage.indexOf("\n") == 0){
-    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("\n")+1);
+  while (clippedMessage.indexOf("!") == 0){
+    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("!")+1);
 
     //parse single command
     switch (clippedMessage.charAt(0)){
@@ -443,7 +439,7 @@ void parseControlMessage(String clippedMessage){
         Serial.println("unknown value given (control)");
     }
     
-    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("\n"));
+    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("!"));
   }
   wifiFlag = true;
 }
@@ -459,19 +455,19 @@ void sendTelemetry(){
   String telemetryData1 = "a";
   String telemetryData2 = "";
   telemetryData1 += armed ? "1" : "0";
-  telemetryData1 += "\nm";
+  telemetryData1 += "!m";
   telemetryData1 += ctrlMode;
-  telemetryData1 += "\nt";
-  telemetryData1 += ((int) throttle + .5);
-  telemetryData1 += "\nr";
+  telemetryData1 += "!t";
+  telemetryData1 += ((int) throttle);
+  telemetryData1 += "!r";
   telemetryData1 += rps_was[trend_amount - 1];
-  telemetryData1 += "\ns";
+  telemetryData1 += "!s";
   telemetryData1 += slipPercent;
-  telemetryData1 += "\nv";
+  telemetryData1 += "!v";
   telemetryData1 += velMPU;
-  telemetryData1 += "\nw";
+  telemetryData1 += "!w";
   telemetryData1 += velWheel;
-  telemetryData1 += "\nc";
+  telemetryData1 += "!c";
   telemetryData1 += ((int)(acceleration * 1000 + .5));
   for (int i = 0; i < maxWS; i++){
     if (clients[i][0] == 1 && clients[i][1] == 1){
@@ -517,6 +513,7 @@ uint16_t appendChecksum(uint16_t value){
   }
   csum &= 0xf;
   value = (value << 4) | csum;
+  return value;
 }
 
 void esc_init(uint8_t channel, uint8_t pin){

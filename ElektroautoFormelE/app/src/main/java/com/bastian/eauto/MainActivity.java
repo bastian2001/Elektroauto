@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         private static final int NORMAL_CLOSURE_STATUS = 1000;
         @Override
         public void onOpen(WebSocket webSocket, okhttp3.Response response) {
-            ws.send("s\nd1");
+            ws.send("s!d1");
         }
         @Override
         public void onMessage(WebSocket webSocket, String text) {
@@ -96,13 +96,13 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d("WSCommunication", "received: " + txt.replaceAll("\n", ""));
-                String[] response_separated = txt.split("\n");
+                Log.d("WSCommunication", "received: " + txt);
+                String[] response_separated = txt.split("!");
                 for (String s : response_separated) {
                     int val = 0;
                     try {
                         val = Integer.parseInt(s.substring(1));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         Toast.makeText(MainActivity.this, "Da ist etwas mit der Antwort falsch! NFE", Toast.LENGTH_SHORT).show();
                     }
                     switch (s.charAt(0)) {
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("WSCommunication", "sent: " + s);
     }
     private void sendTelemetry(boolean b){
-        send("s\nt" + (b ? 1 : 0));
+        send("s!t" + (b ? 1 : 0));
     }
 
     @Override
@@ -254,8 +254,10 @@ public class MainActivity extends AppCompatActivity {
         spinnerMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i < 2){
+                if (i == 0) {
                     seekBarValue.setMax(2000);
+                } else if (i == 1){
+                    seekBarValue.setMax(1000);
                 } else {
                     seekBarValue.setMax(20);
                 }
@@ -324,8 +326,10 @@ public class MainActivity extends AppCompatActivity {
             value = 0;
         } else {
             value = Math.max(0, value);
-            if (spinnerMode.getSelectedItemPosition() < 2){
+            if (spinnerMode.getSelectedItemPosition() == 0){
                 value = Math.min (2000, value);
+            } else if (spinnerMode.getSelectedItemPosition() == 1) {
+                value = Math.min(1000, value);
             } else {
                 value = Math.min (20, value);
             }
@@ -339,13 +343,13 @@ public class MainActivity extends AppCompatActivity {
     public void sendArmed(boolean a){
         setValue(0);
         spinnerMode.setSelection(0);
-        String text = (a ? "c\na1" : "c\na0");
+        String text = (a ? "c!a1" : "c!a0");
         send(text);
     }
 
     public void sendRequest(){
         if (newValue){
-            String text = "c\nm" + spinnerMode.getSelectedItemPosition() + "\nv" + value;
+            String text = "c!m" + spinnerMode.getSelectedItemPosition() + "!v" + value;
             send(text);
         }
         newValue = false;

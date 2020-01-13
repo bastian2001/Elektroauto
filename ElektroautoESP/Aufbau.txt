@@ -9,7 +9,7 @@ d: device (web/app/ajax)
 s: set+get/get
 if(s){
 m: mode (throttle, rps, slip)
-v: value(<=1000, <=1000, <=20);
+v: value(<=2000, <=1000, <=20);
 }
 
 response:
@@ -32,4 +32,4 @@ core0 - ir:	---
 ESCir --> calc
 HSir
 
-Definition Schlupf: (vR-vA)/vR
+Definition Schlupf: (vRad-vAuto)/vRad
