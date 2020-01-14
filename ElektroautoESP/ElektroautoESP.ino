@@ -61,7 +61,9 @@ String toBePrinted = "";
 //rps control variables
 int rps_target = 0;
 int rps_was[trend_amount];
-double proportional = 40.0;
+double rpm_a = .00000015;
+double rpm_b = .000006;
+double rpm_c = .006;
 
 //hall sensor variables
 int hs1c = 0, hs2c = 0, hsc = 0;
@@ -380,7 +382,8 @@ double calcThrottle(int target, int was[]){
   double m = (double)t_multi_was_sum / (double)t_sq_sum;
   
   double prediction = m * ((double)trend_amount - (double)ta_div_2) + (double)was_avg;
-  double delta_throttle = ((double)target - prediction) / proportional;
+  double delta_rpm = target - prediction;
+  double delta_throttle = rpm_a * pow(delta_throttle, 3) + rpm_b * pow(delta_throttle, 2) + rpm_c * delta_throttle;
 
   throttle += delta_throttle;
   

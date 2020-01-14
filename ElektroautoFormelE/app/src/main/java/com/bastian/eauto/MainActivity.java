@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                             res_acceleration = val;
                             break;
                         default:
-                            Toast.makeText(MainActivity.this, "Da stimmt was mit der Antwort nicht!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Da stimmt was mit der Antwort nicht! Unbekanntes Attribut", Toast.LENGTH_SHORT).show();
                             break;
                     }
                 }
