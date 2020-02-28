@@ -73,7 +73,7 @@ MPU6050 mpu;
 int16_t MPUoffset = 0, raw_accel = 0;
 unsigned long lastMPUUpdate = 0;
 int counterMPU = 0;
-float acceleration = 0, speedMPU = 0;
+float acceleration = 0, speedMPU = 0, distMPU = 0;
 
 //system variables
 double throttle = 0;
@@ -186,19 +186,19 @@ void loop0(){
 }
 
 void loop() {
-  /*if (lastMPUUpdate + 2 <= millis()){
-    while(irInUse){yield();}
+  if (lastMPUUpdate + 1 <= millis()){
     irInUse = true;
     raw_accel = mpu.getAccelerationY();
     irInUse = false;
-    if(counterMPU++ % 10 == 0)
+    if(counterMPU++ % 20 == 0)
       sPrintln(String(raw_accel));
-
+    counterMPU++;
     //MPU calculations
     acceleration = (float)raw_accel/32767*19.62;
     speedMPU += acceleration / 1000;
+    distMPU += speedMPU / 1000;
     lastMPUUpdate = millis();
-  }*/
+  }
 }
 
 
