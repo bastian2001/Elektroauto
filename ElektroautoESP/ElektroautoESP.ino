@@ -10,8 +10,8 @@
 
 #include "WiFi.h"
 #include "Wire.h"
-#include "I2Cdev.h"
-#include "MPU6050.h"
+//#include "I2Cdev.h"
+//#include "MPU6050.h"
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
 
@@ -69,7 +69,7 @@ double rpm_c = .006;
 int hs1c = 0, hs2c = 0, hsc = 0;
 
 //MPU variables
-MPU6050 mpu;
+//MPU6050 mpu;
 int16_t MPUoffset = 0, raw_accel = 0;
 unsigned long lastMPUUpdate = 0;
 int counterMPU = 0;
@@ -77,7 +77,7 @@ float acceleration = 0, speedMPU = 0, distMPU = 0;
 
 //system variables
 double throttle = 0;
-bool armed = false, c1ready = false, irInUse = false;
+bool armed = false, c1ready = false;
 int ctrlMode = 0, req_value = 0;
 uint16_t escValue = 0;
 
@@ -186,10 +186,8 @@ void loop0(){
 }
 
 void loop() {
-  if (lastMPUUpdate + 1 <= millis()){
-    irInUse = true;
+  /*if (lastMPUUpdate + 1 <= millis()){
     raw_accel = mpu.getAccelerationY();
-    irInUse = false;
     if(counterMPU++ % 20 == 0)
       sPrintln(String(raw_accel));
     counterMPU++;
@@ -198,7 +196,7 @@ void loop() {
     speedMPU += acceleration / 1000;
     distMPU += speedMPU / 1000;
     lastMPUUpdate = millis();
-  }
+  }*/
 }
 
 
@@ -302,7 +300,7 @@ void receiveSerial(){
         rps_target = val;
         break;
       case 'p':
-        proportional = val;
+        //proportional = val;
         break;
       case 'c':
         reconnect();
@@ -391,10 +389,7 @@ double calcThrottle(int target, int was[]){
 }
 
 void handleWiFi(){
-  while(irInUse){yield();}
-  irInUse = true;
   webSocket.loop();
-  irInUse = false;
   if (lastTelemetry + telemetryUpdateMS < millis()){
     lastTelemetry = millis();
     sendTelemetry();
@@ -414,7 +409,7 @@ void parseSystemMessage(String clippedMessage, uint8_t id){
         clients[id][1] = clippedMessage.substring(1).toInt();
         break;
       default:
-        Serial.println("unknown value given (setup)");
+        Serial.println("unknown value given (system)");
         break;
     }
     
@@ -474,10 +469,7 @@ void sendTelemetry(){
   telemetryData1 += ((int)(acceleration * 1000 + .5));
   for (int i = 0; i < maxWS; i++){
     if (clients[i][0] == 1 && clients[i][1] == 1){
-      while(irInUse){yield();}
-      irInUse = true;
       webSocket.sendTXT(i, telemetryData1);
-      irInUse = false;
     }
   }
 }

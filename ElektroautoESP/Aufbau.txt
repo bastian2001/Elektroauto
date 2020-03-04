@@ -1,16 +1,22 @@
 Pins verfügbar:
 0,	1,	2,	3,	4,	12,	13,	14,	15,	16
-	TX	DMP	RX	(LED)	SDA	SCL	HS1	HS2	ESC
+TX	DMP	RX			SDA	SCL	HS1	HS2	ESC
 
 request:
-ARM/DISARM
----
-d: device (web/app/ajax)
-s: set+get/get
-if(s){
-m: mode (throttle, rps, slip)
-v: value(<=2000, <=1000, <=20);
-}
+c (control)
+!: separator
+a: armed (0/1)
+or m/v combo:
+m: mode (0(throttle)/1(rpm)/2(slip))
+v: value (0...2000, 0...2000, 0...20)
+example: s!a1, s!m0!v2000
+- or system message -
+s(system)
+!: separator
+d: device type (0(web)/1(app))
+t: telemetry (0/1)
+example: c!d1!t1
+
 
 response:
 a: armed
@@ -21,6 +27,7 @@ s: slip
 v: velocity (mpu)
 w: velocity (wheels)
 c: acceleration (mpu)
+example: a0!m0!t0!r0!s0!v0!w0!c0
 
 core1 - loop:	---
 MPU
@@ -30,6 +37,17 @@ WiFi
 Serial
 core0 - ir:	---
 ESCir --> calc
-HSir
+(HSir)
 
 Definition Schlupf: (vRad-vAuto)/vRad
+
+rpm control formula:
+d_rpm=thr_soll-thr_pred
+d_thr=d_rpm³*.00000015+d_rpm²*.000006+d_rpm*.006 (each ms)
+
+blackbox logging on RAM:
+every esc cycle:
+uint16_t[] throttle
+uint16_t[] acceleration(MPU)
+uint16_t[] wheel rps
+uint16_t[] voltage (raw ADC readout)
