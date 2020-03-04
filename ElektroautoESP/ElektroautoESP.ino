@@ -353,9 +353,12 @@ void escir(){
   } else {
     setThrottle(0);
   }
-  digitalWrite(TRANSMISSION, LOW);
-  esc_send_value(escValue, false);
-  digitalWrite(TRANSMISSION, HIGH);
+  escOutputCounter = (escOutputCounter == 2000) ? 0 : escOutputCounter+1;
+  if (escOutputCounter == 0)
+    digitalWrite(TRANSMISSION, LOW);
+  esc_send_value(escValue, true);
+  if (escOutputCounter == 0)
+    digitalWrite(TRANSMISSION, HIGH);
 }
 
 void setThrottle(int newThrottle){ //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
