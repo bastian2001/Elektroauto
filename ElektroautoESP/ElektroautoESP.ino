@@ -403,7 +403,7 @@ void handleWiFi(){
 
 void parseSystemMessage(String clippedMessage, uint8_t id){
   while (clippedMessage.indexOf("!") == 0){
-    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("!")+1);
+    clippedMessage = clippedMessage.substring(1);
 
     //parse single command
     switch (clippedMessage.charAt(0)){
@@ -424,7 +424,7 @@ void parseSystemMessage(String clippedMessage, uint8_t id){
 
 void parseControlMessage(String clippedMessage){
   while (clippedMessage.indexOf("!") == 0){
-    clippedMessage = clippedMessage.substring(clippedMessage.indexOf("!")+1);
+    clippedMessage = clippedMessage.substring(1);
 
     //parse single command
     switch (clippedMessage.charAt(0)){
