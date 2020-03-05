@@ -45,9 +45,12 @@ rpm control formula:
 d_rpm=thr_soll-thr_pred
 d_thr=d_rpm³*.00000015+d_rpm²*.000006+d_rpm*.006 (each ms)
 
-blackbox logging on RAM:
+logging on RAM:
 every esc cycle:
 uint16_t[] throttle
 uint16_t[] acceleration(MPU)
 uint16_t[] wheel rps
 uint16_t[] voltage (raw ADC readout)
+
+Transmission protocol:
+packets of 20 frames

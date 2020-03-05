@@ -384,7 +384,7 @@ double calcThrottle(int target, int was[]){
   
   double prediction = m * ((double)trend_amount - (double)ta_div_2) + (double)was_avg;
   double delta_rpm = target - prediction;
-  double delta_throttle = rpm_a * pow(delta_throttle, 3) + rpm_b * pow(delta_throttle, 2) + rpm_c * delta_throttle;
+  double delta_throttle = rpm_a * pow(delta_rpm, 3) + rpm_b * pow(delta_rpm, 2) + rpm_c * delta_rpm;
 
   throttle += delta_throttle;
   
