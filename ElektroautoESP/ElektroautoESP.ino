@@ -32,7 +32,7 @@
 #define ta_div_2     6 //mit anpassen!!
 
 //DShot values
-#define ESC_FREQ  700
+#define ESC_FREQ  1000
 #define ESC_BUFFER_ITEMS 16
 #define CLK_DIV 6; //DShot 150: 12, DShot 300: 6, DShot 600: 3
 #define TT 44 // total bit time
@@ -41,7 +41,7 @@
 #define T0L (TT - T0H) // 0 bit low time
 #define T1L (TT - T1H) // 1 bit low time
 #define T_RESET 21 // reset length in multiples of bit time
-#define ESC_TELEMETRY_REQUEST false
+#define ESC_TELEMETRY_REQUEST true
 
 //logging settings
 #define LOG_FRAMES 5000
@@ -105,6 +105,7 @@ void setup() {
 
   //Serial setup
   Serial.begin(115200);
+  disableCore0WDT();
 
   //WiFi Setup
   WiFi.enableSTA(true);
@@ -167,13 +168,16 @@ void setup() {
 }
 
 void Task1code( void * parameter) {
-  attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
   disableCore0WDT();
+  Serial.println("Terst");
+  attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
 
   while(!c1ready){yield();}
 
   while(true){
-    loop0();
+    //Serial.println(digitalRead(10));
+    //loop0();
+    String x = "ghj";
   }
 }
 
@@ -319,7 +323,7 @@ void escir(){
   // hs1c = 0;
   // hsc = 0;
 
-  for (int i = 0; i<trend_amount-1; i++){
+  /*for (int i = 0; i<trend_amount-1; i++){
     rps_was[i] = rps_was[i+1];
   }
   // rps_was[trend_amount-1] = counts * ESC_FREQ / 12; //6 für einen Sensor, 12 für 2
@@ -354,11 +358,11 @@ void escir(){
     }
   } else {
     setThrottle(0);
-  }
+  }*/
   escOutputCounter = (escOutputCounter == 2000) ? 0 : escOutputCounter+1;
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, LOW);
-  esc_send_value(escValue, true);
+  esc_send_value(0, false);
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, HIGH);
 }
