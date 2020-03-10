@@ -20,19 +20,19 @@
 /*======================================================definitions======================================================*/
 
 //Pin numbers
-#define HS1 14
-#define HS2 15
+// #define HS1 14
+// #define HS2 15
 #define escOutputPin  16
 #define escTriggerPin 33
 #define TRANSMISSION  23
 
 //PID loop settings
 #define PID_DIV      5
-#define trend_amount 9 //nur ungerade!!
-#define ta_div_2     4 //mit anpassen!!
+#define trend_amount 13 //nur ungerade!!
+#define ta_div_2     6 //mit anpassen!!
 
 //DShot values
-#define ESC_FREQ  1000
+#define ESC_FREQ  700
 #define ESC_BUFFER_ITEMS 16
 #define CLK_DIV 6; //DShot 150: 12, DShot 300: 6, DShot 600: 3
 #define TT 44 // total bit time
@@ -43,11 +43,14 @@
 #define T_RESET 21 // reset length in multiples of bit time
 #define ESC_TELEMETRY_REQUEST false
 
+//logging settings
+#define LOG_FRAMES 5000
+
 //WiFi and WebSockets settings
 #define ssid "KNS_WLAN"
 #define password "YZKswQHaE4xyKqdP"
-//#define ssid "Coworkingspace"
-//#define password "suppenkasper"
+//#define ssid "Coworking"
+//#define password "86577103963855526306"
 #define maxWS 5
 #define telemetryUpdateMS 50
 
@@ -65,9 +68,6 @@ double rpm_a = .00000015;
 double rpm_b = .000006;
 double rpm_c = .006;
 
-//hall sensor variables
-int hs1c = 0, hs2c = 0, hsc = 0;
-
 //MPU variables
 //MPU6050 mpu;
 int16_t MPUoffset = 0, raw_accel = 0;
@@ -83,7 +83,7 @@ uint16_t escValue = 0;
 
 //WiFi/WebSockets variables
 WebSocketsServer webSocket = WebSocketsServer(80);
-uint8_t clients[maxWS][2]; //[device (web, app, ajax, disconnected)][telemetry (off, on)]
+uint8_t clients[maxWS][2]; //[device (disconnected, app, web, ajax)][telemetry (off, on)]
 unsigned long lastTelemetry = 0;
 bool wifiFlag = false;
 
@@ -92,6 +92,11 @@ rmt_item32_t esc_data_buffer[ESC_BUFFER_ITEMS];
 
 //arbitrary variables
 int16_t escOutputCounter = 0;
+
+//logging variables
+uint16_t throttle_log[LOG_FRAMES], rps_log[LOG_FRAMES], voltage_log[LOG_FRAMES], current_log[LOG_FRAMES];
+int16_t acceleration_log[LOG_FRAMES];
+uint8_t temp_log[LOG_FRAMES];
 
 
 /*======================================================system methods======================================================*/
@@ -108,9 +113,9 @@ void setup() {
   WiFi.begin(ssid, password);
   Serial.print("Connecting to "); Serial.println(ssid);
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-      Serial.println("WiFi-Connection could not be established!");
-      Serial.println("Restart...");
-      ESP.restart();
+    Serial.println("WiFi-Connection could not be established!");
+    Serial.println("Restart...");
+    ESP.restart();
   }
   Serial.print("IP: ");
   Serial.println(WiFi.localIP());
@@ -129,7 +134,7 @@ void setup() {
   for (int i = 0; i < trend_amount; i++){
     rps_was[i] = 0;
   }
-  
+
   //2nd core setup
   xTaskCreatePinnedToCore( Task1code, "Task1", 10000, NULL, 0, &Task1, 0);
 
@@ -137,12 +142,12 @@ void setup() {
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
   for (int i = 0; i<maxWS; i++){
-    clients[i][0] = 3;
+    clients[i][0] = 0;
     clients[i][1] = 1;
   }
 
   //MPU6050 init
-  /*Wire.begin(/*13,12*//*); //sda, scl
+  /*Wire.begin(); //sda, scl
   mpu.initialize();
   Serial.println(mpu.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
   int offsetCounter = 0;
@@ -162,15 +167,11 @@ void setup() {
 }
 
 void Task1code( void * parameter) {
-  pinMode(HS1, INPUT_PULLUP);
-  pinMode(HS2, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
   attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
   disableCore0WDT();
-  
+
   while(!c1ready){yield();}
-  
+
   while(true){
     loop0();
   }
@@ -220,7 +221,7 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t leng
 
 void removeClient (int spot){
   Serial.printf("[%u] Disconnected!\n", spot);
-  clients[spot][0] = 3;
+  clients[spot][0] = 0;
   clients[spot][1] = 1;
 }
 
@@ -255,8 +256,8 @@ void dealWithMessage(String message, uint8_t from){
 
 void reconnect(){
   detachInterrupt(digitalPinToInterrupt(escTriggerPin));
-  detachInterrupt(digitalPinToInterrupt(HS1));
-  detachInterrupt(digitalPinToInterrupt(HS2));
+  // detachInterrupt(digitalPinToInterrupt(HS1));
+  // detachInterrupt(digitalPinToInterrupt(HS2));
   WiFi.disconnect();
   int counterWiFi = 0;
   while(WiFi.status()==WL_CONNECTED){yield();}
@@ -273,12 +274,12 @@ void reconnect(){
     counterWiFi++;
   }
   Serial.println();
-  hs2c = 0;
-  hs1c = 0;
-  hsc = 0;
+  // hs2c = 0;
+  // hs1c = 0;
+  // hsc = 0;
   attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
-  attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
 }
 
 void receiveSerial(){
@@ -313,15 +314,16 @@ void receiveSerial(){
 }
 
 void escir(){
-  int counts = hsc;
-  hs2c = 0;
-  hs1c = 0;
-  hsc = 0;
+  // int counts = hsc;
+  // hs2c = 0;
+  // hs1c = 0;
+  // hsc = 0;
 
   for (int i = 0; i<trend_amount-1; i++){
     rps_was[i] = rps_was[i+1];
   }
-  rps_was[trend_amount-1] = counts * ESC_FREQ / 12; //6 für einen Sensor, 12 für 2
+  // rps_was[trend_amount-1] = counts * ESC_FREQ / 12; //6 für einen Sensor, 12 für 2
+  rps_was[trend_amount-1] = 0;
   if (armed) {
 
     if (wifiFlag){
@@ -381,13 +383,13 @@ double calcThrottle(int target, int was[]){
   was_avg = (double)was_sum / trend_amount;
 
   double m = (double)t_multi_was_sum / (double)t_sq_sum;
-  
+
   double prediction = m * ((double)trend_amount - (double)ta_div_2) + (double)was_avg;
   double delta_rpm = target - prediction;
   double delta_throttle = rpm_a * pow(delta_rpm, 3) + rpm_b * pow(delta_rpm, 2) + rpm_c * delta_rpm;
 
   throttle += delta_throttle;
-  
+
   return throttle;
 }
 
@@ -415,7 +417,7 @@ void parseSystemMessage(String clippedMessage, uint8_t id){
         Serial.println("unknown value given (system)");
         break;
     }
-    
+
     clippedMessage = clippedMessage.substring(clippedMessage.indexOf("!"));
   }
 }
@@ -439,7 +441,7 @@ void parseControlMessage(String clippedMessage){
       default:
         Serial.println("unknown value given (control)");
     }
-    
+
     clippedMessage = clippedMessage.substring(clippedMessage.indexOf("!"));
   }
   wifiFlag = true;
@@ -477,7 +479,7 @@ void sendTelemetry(){
   }
 }
 
-void hs1ir(){
+/*void hs1ir(){
   hs1c++;
   hsc++;
 }
@@ -485,7 +487,7 @@ void hs1ir(){
 void hs2ir(){
   hs2c++;
   hsc++;
-}
+}*/
 
 void printSerial(){
   Serial.print(toBePrinted);
@@ -536,10 +538,10 @@ void esc_send_value(uint16_t value, bool wait) {
 }
 
 void setup_rmt_data_buffer(uint16_t value) {
-    uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
-    for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
-      uint16_t bit_is_set = value & mask;
-      esc_data_buffer[bit] = bit_is_set ? (rmt_item32_t){{{T1H, 1, T1L, 0}}} : (rmt_item32_t){{{T0H, 1, T0L, 0}}};
-      mask >>= 1;
-    }
+  uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
+  for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
+    uint16_t bit_is_set = value & mask;
+    esc_data_buffer[bit] = bit_is_set ? (rmt_item32_t){{{T1H, 1, T1L, 0}}} : (rmt_item32_t){{{T0H, 1, T0L, 0}}};
+    mask >>= 1;
+  }
 }
