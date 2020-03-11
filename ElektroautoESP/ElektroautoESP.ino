@@ -147,20 +147,6 @@ void setup() {
     clients[i][1] = 1;
   }
 
-  //MPU6050 init
-  /*Wire.begin(); //sda, scl
-  mpu.initialize();
-  Serial.println(mpu.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
-  int offsetCounter = 0;
-  long offset_sum = 0;
-  while(offsetCounter < 20){
-    offsetCounter++;
-    offset_sum += mpu.getAccelerationX();
-    delay(1);
-  }
-  int MPUoffset = (int)((float)offset_sum / 20.0 + .5);
-  mpu.setXAccelOffset(MPUoffset);*/
-
   //setup termination
   Serial.println("ready");
   c1ready = true;
@@ -191,32 +177,21 @@ void loop0(){
 }
 
 void loop() {
-  /*if (lastMPUUpdate + 1 <= millis()){
-    raw_accel = mpu.getAccelerationY();
-    if(counterMPU++ % 20 == 0)
-      sPrintln(String(raw_accel));
-    counterMPU++;
-    //MPU calculations
-    acceleration = (float)raw_accel/32767*19.62;
-    speedMPU += acceleration / 1000;
-    distMPU += speedMPU / 1000;
-    lastMPUUpdate = millis();
-  }*/
 }
 
 
 /*======================================================functional methods======================================================*/
 
-void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length){
+void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t * payload, size_t length){
   switch(type) {
     case WStype_DISCONNECTED:
-      removeClient(num);
+      removeClient(clientNo);
       break;
     case WStype_CONNECTED:
-      addClient(num);
+      addClient(clientNo);
       break;
     case WStype_TEXT:
-      dealWithMessage((char*)payload, num);
+      dealWithMessage((char*)payload, clientNo);
       break;
     default:
       break;
@@ -252,6 +227,9 @@ void dealWithMessage(String message, uint8_t from){
       Serial.println(F("Parsing control message"));
       parseControlMessage(message.substring(1));
       break;
+    case 'l': //log request
+      Serial.println(F("Parsing log request"))
+      break;
     default:
       Serial.println(F("Unknown message format!"));
       break;
@@ -260,8 +238,6 @@ void dealWithMessage(String message, uint8_t from){
 
 void reconnect(){
   detachInterrupt(digitalPinToInterrupt(escTriggerPin));
-  // detachInterrupt(digitalPinToInterrupt(HS1));
-  // detachInterrupt(digitalPinToInterrupt(HS2));
   WiFi.disconnect();
   int counterWiFi = 0;
   while(WiFi.status()==WL_CONNECTED){yield();}
@@ -278,12 +254,7 @@ void reconnect(){
     counterWiFi++;
   }
   Serial.println();
-  // hs2c = 0;
-  // hs1c = 0;
-  // hsc = 0;
   attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
-  // attachInterrupt(digitalPinToInterrupt(HS1), hs1ir, CHANGE);
-  // attachInterrupt(digitalPinToInterrupt(HS2), hs2ir, CHANGE);
 }
 
 void receiveSerial(){
@@ -318,12 +289,7 @@ void receiveSerial(){
 }
 
 void escir(){
-  // int counts = hsc;
-  // hs2c = 0;
-  // hs1c = 0;
-  // hsc = 0;
-
-  /*for (int i = 0; i<trend_amount-1; i++){
+  for (int i = 0; i<trend_amount-1; i++){
     rps_was[i] = rps_was[i+1];
   }
   // rps_was[trend_amount-1] = counts * ESC_FREQ / 12; //6 für einen Sensor, 12 für 2
@@ -331,6 +297,7 @@ void escir(){
   if (armed) {
 
     if (wifiFlag){
+      //once when new throttle value is given
       wifiFlag = false;
       switch (ctrlMode){
         case 0:
@@ -345,6 +312,7 @@ void escir(){
           break;
       }
     }
+    //every esc cycle: calculation of throttle if necessary
     switch (ctrlMode){
       case 0:
         break;
@@ -358,7 +326,7 @@ void escir(){
     }
   } else {
     setThrottle(0);
-  }*/
+  }
   escOutputCounter = (escOutputCounter == 2000) ? 0 : escOutputCounter+1;
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, LOW);
@@ -369,9 +337,7 @@ void escir(){
 
 void setThrottle(int newThrottle){ //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
   throttle = newThrottle;
-  newThrottle += 47;
-  if (newThrottle == 47)
-    newThrottle = 0;
+  newThrottle += (newThrottle == 0) ? 0 : 47;
   escValue = appendChecksum(newThrottle);
 }
 
@@ -458,11 +424,8 @@ void sendTelemetry(){
   if(velWheel != 0){
     slipPercent = (float)(velWheel - velMPU) / velWheel * 100;
   }
-  String telemetryData0 = "";
-  String telemetryData1 = "a";
-  String telemetryData2 = "";
-  telemetryData1 += armed ? "1" : "0";
-  telemetryData1 += "!m";
+  //String telemetryData2 = "";
+  String telemetryData1 = armed ? "a1!m" : "a0!m";
   telemetryData1 += ctrlMode;
   telemetryData1 += "!t";
   telemetryData1 += ((int) throttle);
@@ -482,16 +445,6 @@ void sendTelemetry(){
     }
   }
 }
-
-/*void hs1ir(){
-  hs1c++;
-  hsc++;
-}
-
-void hs2ir(){
-  hs2c++;
-  hsc++;
-}*/
 
 void printSerial(){
   Serial.print(toBePrinted);
