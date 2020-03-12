@@ -14,6 +14,7 @@
 //#include "MPU6050.h"
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
+#include <Math.h>
 
 
 
@@ -47,10 +48,10 @@
 #define LOG_FRAMES 5000
 
 //WiFi and WebSockets settings
-//#define ssid "KNS_WLAN"
-//#define password "YZKswQHaE4xyKqdP"
-#define ssid "Coworking"
-#define password "86577103963855526306"
+#define ssid "KNS_WLAN"
+#define password "YZKswQHaE4xyKqdP"
+//#define ssid "Coworking"
+//#define password "86577103963855526306"
 //#define ssid "Bastian"
 //#define password "hallo123"
 #define maxWS 5
@@ -270,6 +271,8 @@ void receiveSerial(){
       case 'd':
         ctrlMode = 0;
         setThrottle((double)val);
+        Serial.print("Throttle: ");
+        Serial.println((int)throttle);
         break;
       case 'r':
         ctrlMode = 1;
@@ -292,7 +295,6 @@ void escir(){
   for (int i = 0; i<trend_amount-1; i++){
     rps_was[i] = rps_was[i+1];
   }
-  // rps_was[trend_amount-1] = counts * ESC_FREQ / 12; //6 für einen Sensor, 12 für 2
   rps_was[trend_amount-1] = 0;
   if (armed) {
 
@@ -330,7 +332,7 @@ void escir(){
   escOutputCounter = (escOutputCounter == 2000) ? 0 : escOutputCounter+1;
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, LOW);
-  esc_send_value(0, false);
+  esc_send_value(escValue, false);
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, HIGH);
 }
