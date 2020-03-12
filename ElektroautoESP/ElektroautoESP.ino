@@ -47,10 +47,12 @@
 #define LOG_FRAMES 5000
 
 //WiFi and WebSockets settings
-#define ssid "KNS_WLAN"
-#define password "YZKswQHaE4xyKqdP"
-//#define ssid "Coworking"
-//#define password "86577103963855526306"
+//#define ssid "KNS_WLAN"
+//#define password "YZKswQHaE4xyKqdP"
+#define ssid "Coworking"
+#define password "86577103963855526306"
+//#define ssid "Bastian"
+//#define password "hallo123"
 #define maxWS 5
 #define telemetryUpdateMS 50
 
@@ -155,15 +157,12 @@ void setup() {
 
 void Task1code( void * parameter) {
   disableCore0WDT();
-  Serial.println("Terst");
   attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
 
   while(!c1ready){yield();}
 
   while(true){
-    //Serial.println(digitalRead(10));
-    //loop0();
-    String x = "ghj";
+    loop0();
   }
 }
 
@@ -211,6 +210,7 @@ void addClient (int spot){
     Serial.println(ip.toString());
   } else {
     Serial.println(F("Connection refused. All spots filled!"));
+    webSocket.disconnect(spot);
   }
 }
 
@@ -228,7 +228,7 @@ void dealWithMessage(String message, uint8_t from){
       parseControlMessage(message.substring(1));
       break;
     case 'l': //log request
-      Serial.println(F("Parsing log request"))
+      Serial.println(F("Parsing log request"));
       break;
     default:
       Serial.println(F("Unknown message format!"));
@@ -269,7 +269,7 @@ void receiveSerial(){
         break;
       case 'd':
         ctrlMode = 0;
-        setThrottle(val);
+        setThrottle((double)val);
         break;
       case 'r':
         ctrlMode = 1;
@@ -317,7 +317,7 @@ void escir(){
       case 0:
         break;
       case 1:
-        setThrottle(calcThrottle(rps_target, rps_was) + .5);
+        setThrottle(calcThrottle(rps_target, rps_was));
         break;
       case 2:
         break;
@@ -335,7 +335,9 @@ void escir(){
     digitalWrite(TRANSMISSION, HIGH);
 }
 
-void setThrottle(int newThrottle){ //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
+void setThrottle(double newThrottle){ //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
+  newThrottle = (newThrottle > 2000) ? 2000 : newThrottle;
+  newThrottle = (newThrottle < 0) ? 0 : newThrottle;
   throttle = newThrottle;
   newThrottle += (newThrottle == 0) ? 0 : 47;
   escValue = appendChecksum(newThrottle);

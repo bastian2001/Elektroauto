@@ -18,11 +18,11 @@
 12-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:6:22-64
 13
 14    <application
-14-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:8:5-22:19
+14-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:8:5-23:19
 15        android:allowBackup="true"
 15-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:9:9-35
 16        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-16-->[androidx.core:core:1.0.1] C:\Users\Coworking\.gradle\caches\transforms-2\files-2.1\36e3e9561b56dfae3649040dc909bb65\core-1.0.1\AndroidManifest.xml:22:18-86
+16-->[androidx.core:core:1.1.0] C:\Users\Coworking\.gradle\caches\transforms-2\files-2.1\65288fada49b0b6c64631011b3fa4627\core-1.1.0\AndroidManifest.xml:24:18-86
 17        android:debuggable="true"
 18        android:extractNativeLibs="false"
 19        android:icon="@mipmap/launcher_icon"
@@ -36,20 +36,23 @@
 23        android:testOnly="true"
 24        android:theme="@style/AppTheme" >
 24-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:14:9-40
-25        <activity android:name="com.bastian.eauto.MainActivity" >
-25-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:15:9-21:20
-25-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:15:19-47
-26            <intent-filter>
-26-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:16:13-20:29
-27                <action android:name="android.intent.action.MAIN" />
-27-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:17:17-69
-27-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:17:25-66
-28
-29                <category android:name="android.intent.category.LAUNCHER" />
-29-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:19:17-77
-29-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:19:27-74
-30            </intent-filter>
-31        </activity>
-32    </application>
-33
-34</manifest>
+25        <activity android:name="com.bastian.eauto.ManualActivity" />
+25-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:15:9-52
+25-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:15:19-49
+26        <activity android:name="com.bastian.eauto.MainActivity" >
+26-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:16:9-22:20
+26-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:16:19-47
+27            <intent-filter>
+27-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:17:13-21:29
+28                <action android:name="android.intent.action.MAIN" />
+28-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:18:17-69
+28-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:18:25-66
+29
+30                <category android:name="android.intent.category.LAUNCHER" />
+30-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:20:17-77
+30-->C:\Users\Coworking\Documents\GitHub\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:20:27-74
+31            </intent-filter>
+32        </activity>
+33    </application>
+34
+35</manifest>

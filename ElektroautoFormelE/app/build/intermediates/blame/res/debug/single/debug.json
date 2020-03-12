@@ -68,6 +68,14 @@
         "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher_round.png"
     },
     {
+        "merged": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\res\\merged\\debug\\layout_control_screen.xml.flat",
+        "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\layout\\control_screen.xml"
+    },
+    {
+        "merged": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_manual.xml.flat",
+        "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\layout\\activity_manual.xml"
+    },
+    {
         "merged": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\res\\merged\\debug\\drawable_reconnect.xml.flat",
         "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\drawable\\reconnect.xml"
     },
@@ -98,6 +106,10 @@
     {
         "merged": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_launcher_icon_fg.png.flat",
         "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\mipmap-xxhdpi\\launcher_icon_fg.png"
+    },
+    {
+        "merged": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\res\\merged\\debug\\xml_root_preferences.xml.flat",
+        "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\xml\\root_preferences.xml"
     },
     {
         "merged": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi_ic_launcher_round.png.flat",
