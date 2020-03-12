@@ -272,12 +272,6 @@ public class MainActivity extends AppCompatActivity {
 
         start();
 
-        autoSend = setInterval(new Runnable() {
-            @Override
-            public void run() {
-                sendRequest();
-            }
-        }, requestUpdateMS);
     }
 
     public int getEditableValue(Editable e){
@@ -288,35 +282,6 @@ public class MainActivity extends AppCompatActivity {
             i = 0;
         }
         return i;
-    }
-
-    private interface TaskHandle {
-        //void invalidate();
-    }
-    private static TaskHandle setTimeout(final Runnable r, long delay) {
-        final Handler h = new Handler();
-        h.postDelayed(r, delay);
-        return new TaskHandle() {
-            public void invalidate() {
-                h.removeCallbacks(r);
-            }
-        };
-    }
-    public static TaskHandle setInterval(final Runnable r, long interval) {
-        final Timer t = new Timer();
-        final Handler h = new Handler();
-        t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                h.post(r);
-            }
-        }, interval, interval);
-        return new TaskHandle() {
-            public void invalidate() {
-                t.cancel();
-                t.purge();
-            }
-        };
     }
 
     public void setValue(int value){

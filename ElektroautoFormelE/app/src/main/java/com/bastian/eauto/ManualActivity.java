@@ -48,7 +48,7 @@ public class ManualActivity extends AppCompatActivity {
     public boolean res_armed = false;
     public int res_ctrlMode = 0, res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0;
 
-    private Activity.TaskHandle autoSend;
+    private MainActivity.TaskHandle autoSend;
 
     public boolean newValue = false;
     public int value = 0;
@@ -60,5 +60,44 @@ public class ManualActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual);
 
+
+
+        autoSend = setInterval(new Runnable() {
+            @Override
+            public void run() {
+                sendRequest();
+            }
+        }, requestUpdateMS);
+    }
+
+
+
+    interface TaskHandle {
+        //void invalidate();
+    }
+    private static TaskHandle setTimeout(final Runnable r, long delay) {
+        final Handler h = new Handler();
+        h.postDelayed(r, delay);
+        return new TaskHandle() {
+            public void invalidate() {
+                h.removeCallbacks(r);
+            }
+        };
+    }
+    public static TaskHandle setInterval(final Runnable r, long interval) {
+        final Timer t = new Timer();
+        final Handler h = new Handler();
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                h.post(r);
+            }
+        }, interval, interval);
+        return new TaskHandle() {
+            public void invalidate() {
+                t.cancel();
+                t.purge();
+            }
+        };
     }
 }
