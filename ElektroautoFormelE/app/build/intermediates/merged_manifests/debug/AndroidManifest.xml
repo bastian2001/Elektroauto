@@ -15,6 +15,7 @@
         android:allowBackup="true"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
+        android:extractNativeLibs="false"
         android:icon="@mipmap/launcher_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/launcher_icon_round"
