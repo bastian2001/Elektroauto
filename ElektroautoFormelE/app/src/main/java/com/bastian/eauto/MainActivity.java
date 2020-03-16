@@ -11,14 +11,14 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,16 +33,25 @@ import okio.ByteString;
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
 
-    private EditText editTextIP;
-    private Button buttonArm, buttonDisarm;
+    private EditText editTextIP, editTextValue;
+    private Button buttonArm, buttonDisarm, buttonSet, buttonStartRace;
     private TextView textViewTelemetry;
     private ImageButton ibReconnect;
+    private Spinner spinnerMode;
+    private SeekBar seekBarValue;
+    private Switch switchRaceMode;
 
     private boolean res_armed = false;
-    private int res_ctrlMode = 0, res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0;
+    private int res_ctrlMode = 0, res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0, res_voltage = 0;
 
     SharedPreferences mPreferences;
     SharedPreferences.Editor mEditor;
+
+    private MainActivity.TaskHandle autoSend;
+    private boolean newValue = false;
+    private boolean rmUserChanged = true;
+    private int value = 0;
+    private static int requestUpdateMS = 40;
 
     private OkHttpClient client;
     WebSocket ws;
@@ -99,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
                         case 'm':
                             res_ctrlMode = val;
                             break;
+                        case 'u':
+                            res_voltage = val;
+                            break;
                         case 't':
                             res_throttle = val;
                             break;
@@ -124,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nModus: " + getResources().getStringArray(R.array.ctrlModeOptions)[res_ctrlMode] +
-                        "\nThrottle: " + res_throttle + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float)res_velocity1 / 1000.0) +
+                        "\nSpannung: " + ((float)res_voltage / 100)  + "Throttle: " + res_throttle + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float)res_velocity1 / 1000.0) +
                         "m/s\nGeschwindigkeit (Räder): " + ((float)res_velocity2 / 1000.0) + "m/s\nBeschleunigung: " + res_acceleration);
             }
         });
@@ -167,28 +179,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //editTextValue = findViewById(R.id.editTextDuration);
-        //seekBarValue = findViewById(R.id.seekBarDuration);
+        editTextValue = findViewById(R.id.editTextDuration);
+        seekBarValue = findViewById(R.id.seekBarDuration);
         buttonArm = findViewById(R.id.buttonArm);
         buttonDisarm = findViewById(R.id.buttonDisarm);
-        //buttonSet = findViewById(R.id.buttonSet);
+        buttonSet = findViewById(R.id.buttonSet);
         textViewTelemetry = findViewById(R.id.textViewTelemetry);
-        //spinnerMode = findViewById(R.id.spinnerMode);
+        spinnerMode = findViewById(R.id.spinnerMode);
         ibReconnect = findViewById(R.id.ibReconnect);
         editTextIP = findViewById(R.id.editTextIP);
-        ScrollView scroll = (ScrollView)findViewById(R.id.sv1);
-        scroll.setOnTouchListener(new OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (editTextIP.hasFocus()) {
-                    editTextIP.clearFocus();
-                }
-                ScrollView sv = findViewById(R.id.sv1);
-                sv.requestFocus();
-                return false;
-            }
-        });
+        buttonStartRace = findViewById(R.id.buttonStartRace);
+        switchRaceMode = findViewById(R.id.switchRaceMode);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mPreferences.edit();
@@ -215,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });//Disarm
-        /*buttonSet.setOnClickListener(new View.OnClickListener() {
+        buttonSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (res_armed) {
@@ -225,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Zuerst Arming durchführen!", Toast.LENGTH_SHORT).show();
                 }
             }
-        });//Setzt die momentan eingetragene Dauer*/
+        });//Setzt die momentan eingetragene Dauer
         ibReconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }); //reconnect
 
-        /*seekBarValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBarValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b)
                     setValue(i);
@@ -268,7 +269,23 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });*/
+        });
+
+        //switchRaceMode.setClickable(false);
+
+        switchRaceMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rmUserChanged){
+                    // transmit rm change to arduino
+                    buttonView.setOnCheckedChangeListener(null);
+                    buttonView.setChecked(!isChecked);
+                    buttonView.setOnCheckedChangeListener(this);
+                } else {
+                    buttonStartRace.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
+                }
+            }
+        });
 
         start();
 
@@ -288,6 +305,10 @@ public class MainActivity extends AppCompatActivity {
             i = 0;
         }
         return i;
+    }
+
+    private void changeRaceModeToggle (boolean state){
+        rmUserChanged = false;
     }
 
     private interface TaskHandle {
@@ -320,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setValue(int value){
-        /*if (!res_armed){
+        if (!res_armed){
             spinnerMode.setSelection(0);
             seekBarValue.setMax(2000);
             value = 0;
@@ -337,21 +358,25 @@ public class MainActivity extends AppCompatActivity {
         }
         this.value = value;
         editTextValue.setText("" + value);
-        seekBarValue.setProgress(value);*/
+        seekBarValue.setProgress(value);
     }
 
     public void sendArmed(boolean a){
         setValue(0);
-        //spinnerMode.setSelection(0);
         String text = (a ? "c!a1" : "c!a0");
         send(text);
     }
 
+    public void sendRaceMode (boolean r){
+        String text = (r ? "c!r1" : "c!r0");
+        send(text);
+    }
+
     public void sendRequest(){
-        /*if (newValue){
+        if (newValue){
             String text = "c!m" + spinnerMode.getSelectedItemPosition() + "!v" + value;
             send(text);
-        }*/
+        }
         newValue = false;
     }
 }

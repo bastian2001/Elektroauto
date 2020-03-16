@@ -54,62 +54,34 @@
                 app:srcCompat="@drawable/reconnect" />
 
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/linearLayout1"
+
+        <Switch
+            android:id="@+id/switchRaceMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout0">
+            android:layout_weight="1"
+            android:text="Race Mode" />
 
-            <Button
-                android:id="@+id/buttonArm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:backgroundTint="@android:color/holo_green_light"
-                android:paddingTop="24sp"
-                android:paddingBottom="24sp"
-                android:text="Arm"
-                android:textSize="16sp" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/buttonDisarm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:paddingTop="24sp"
-                android:paddingBottom="24sp"
-                android:text="Disarm"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/textViewTelemetry"
+        <Button
+            android:id="@+id/buttonStartRace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:text="Verbindung wird aufgebaut..."
-            android:textAlignment="textStart"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
+            android:layout_weight="1"
+            android:text="Button"
+            android:visibility="gone" />
+
+        <include
+            layout="@layout/control_screen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+
     </LinearLayout>
 </ScrollView>

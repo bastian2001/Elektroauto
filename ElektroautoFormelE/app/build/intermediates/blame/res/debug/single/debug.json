@@ -72,10 +72,6 @@
         "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\layout\\control_screen.xml"
     },
     {
-        "merged": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_manual.xml.flat",
-        "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\layout\\activity_manual.xml"
-    },
-    {
         "merged": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\res\\merged\\debug\\drawable_reconnect.xml.flat",
         "source": "C:\\Users\\Coworking\\Documents\\GitHub\\Elektroauto\\ElektroautoFormelE\\app\\src\\main\\res\\drawable\\reconnect.xml"
     },
