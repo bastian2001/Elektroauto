@@ -281,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
                     buttonView.setOnCheckedChangeListener(null);
                     buttonView.setChecked(!isChecked);
                     buttonView.setOnCheckedChangeListener(this);
+                    sendRaceMode(isChecked);
                 } else {
                     buttonStartRace.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
                 }
@@ -309,6 +310,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void changeRaceModeToggle (boolean state){
         rmUserChanged = false;
+        switchRaceMode.setChecked(state);
+        rmUserChanged = true;
     }
 
     private interface TaskHandle {
