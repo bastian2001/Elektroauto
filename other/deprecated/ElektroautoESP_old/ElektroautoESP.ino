@@ -1,9 +1,11 @@
 /*TODO:
- * (Durchschnitt der bisherigen Gaswerte)
- * anpassen, wobei das erst später geht
- * (Online-Interface)
- * Schlupf in Code implementieren
- */
+   Serial data retrieval
+   (Durchschnitt der bisherigen Gaswerte)
+   anpassen, wobei das erst später geht
+   (Online-Interface)
+   Schlupf in Code implementieren
+   Logging
+*/
 
 
 /*======================================================includes======================================================*/
@@ -14,26 +16,25 @@
 //#include "MPU6050.h"
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
-#include <Math.h>
+#include "math.h"
 
 
 
 /*======================================================definitions======================================================*/
 
 //Pin numbers
-// #define HS1 14
-// #define HS2 15
-#define escOutputPin  16
-#define escTriggerPin 33
+#define ESC_OUTPUT_PIN  17
+#define ESC_TRIGGER_PIN 33
 #define TRANSMISSION  23
+#define LED_BUILTIN 22
 
 //PID loop settings
 #define PID_DIV      5
 #define trend_amount 13 //nur ungerade!!
 #define ta_div_2     6 //mit anpassen!!
 
-//DShot values
-#define ESC_FREQ  1000
+//ESC values
+#define ESC_FREQ  700
 #define ESC_BUFFER_ITEMS 16
 #define CLK_DIV 6; //DShot 150: 12, DShot 300: 6, DShot 600: 3
 #define TT 44 // total bit time
@@ -42,20 +43,21 @@
 #define T0L (TT - T0H) // 0 bit low time
 #define T1L (TT - T1H) // 1 bit low time
 #define T_RESET 21 // reset length in multiples of bit time
-#define ESC_TELEMETRY_REQUEST true
+#define ESC_TELEMETRY_REQUEST 2
+#define TRANSMISSION_IND 1000
 
 //logging settings
 #define LOG_FRAMES 5000
 
 //WiFi and WebSockets settings
-#define ssid "KNS_WLAN"
+#define ssid "KNS_WLAN_24G"
 #define password "YZKswQHaE4xyKqdP"
 //#define ssid "Coworking"
 //#define password "86577103963855526306"
 //#define ssid "Bastian"
 //#define password "hallo123"
-#define maxWS 5
-#define telemetryUpdateMS 50
+#define MAX_WS_CONNECTIONS 5
+#define TELEMETRY_UPDATE_MS 50
 
 
 /*======================================================global variables======================================================*/
@@ -67,9 +69,9 @@ String toBePrinted = "";
 //rps control variables
 int rps_target = 0;
 int rps_was[trend_amount];
-double rpm_a = .00000015;
-double rpm_b = .000006;
-double rpm_c = .006;
+double rps_a = .00000015;
+double rps_b = .000006;
+double rps_c = .006;
 
 //MPU variables
 //MPU6050 mpu;
@@ -86,7 +88,7 @@ uint16_t escValue = 0;
 
 //WiFi/WebSockets variables
 WebSocketsServer webSocket = WebSocketsServer(80);
-uint8_t clients[maxWS][2]; //[device (disconnected, app, web, ajax)][telemetry (off, on)]
+uint8_t clients[MAX_WS_CONNECTIONS][2]; //[device (disconnected, app, web, ajax)][telemetry (off, on)]
 unsigned long lastTelemetry = 0;
 bool wifiFlag = false;
 
@@ -94,7 +96,7 @@ bool wifiFlag = false;
 rmt_item32_t esc_data_buffer[ESC_BUFFER_ITEMS];
 
 //arbitrary variables
-int16_t escOutputCounter = 0;
+int16_t escOutputCounter = 0, escOutputCounter2 = 0;
 
 //logging variables
 uint16_t throttle_log[LOG_FRAMES], rps_log[LOG_FRAMES], voltage_log[LOG_FRAMES], current_log[LOG_FRAMES];
@@ -108,6 +110,7 @@ void setup() {
 
   //Serial setup
   Serial.begin(115200);
+  //Serial2.begin(115200);
   disableCore0WDT();
 
   //WiFi Setup
@@ -125,17 +128,18 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   //ESC pins Setup
-  pinMode(escOutputPin, OUTPUT);
-  pinMode(escTriggerPin, OUTPUT);
+  pinMode(ESC_OUTPUT_PIN, OUTPUT);
+  pinMode(ESC_TRIGGER_PIN, OUTPUT);
   pinMode(TRANSMISSION, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(TRANSMISSION, HIGH);
-  esc_init(0, escOutputPin);
+  esc_init(0, ESC_OUTPUT_PIN);
   ledcSetup(1, ESC_FREQ, 8);
-  ledcAttachPin(escTriggerPin, 1);
+  ledcAttachPin(ESC_TRIGGER_PIN, 1);
   ledcWrite(1, 127);
 
   //rps_was Setup
-  for (int i = 0; i < trend_amount; i++){
+  for (int i = 0; i < trend_amount; i++) {
     rps_was[i] = 0;
   }
 
@@ -145,7 +149,7 @@ void setup() {
   //WebSockets init
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
-  for (int i = 0; i<maxWS; i++){
+  for (int i = 0; i < MAX_WS_CONNECTIONS; i++) {
     clients[i][0] = 0;
     clients[i][1] = 1;
   }
@@ -158,17 +162,19 @@ void setup() {
 
 void Task1code( void * parameter) {
   disableCore0WDT();
-  attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
+  attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
 
-  while(!c1ready){yield();}
+  while (!c1ready) {
+    yield();
+  }
 
-  while(true){
+  while (true) {
     loop0();
   }
 }
 
-void loop0(){
-  if(WiFi.status()!=WL_CONNECTED){
+void loop0() {
+  if (WiFi.status() != WL_CONNECTED) {
     reconnect();
   }
   handleWiFi();
@@ -177,13 +183,16 @@ void loop0(){
 }
 
 void loop() {
+  /*if (Serial2.available()){
+    sPrintln(String(Serial2.read()));
+    }*/
 }
 
 
 /*======================================================functional methods======================================================*/
 
-void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t * payload, size_t length){
-  switch(type) {
+void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t * payload, size_t length) {
+  switch (type) {
     case WStype_DISCONNECTED:
       removeClient(clientNo);
       break;
@@ -198,14 +207,14 @@ void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t * payload, size_t
   }
 }
 
-void removeClient (int spot){
+void removeClient (int spot) {
   Serial.printf("[%u] Disconnected!\n", spot);
   clients[spot][0] = 0;
   clients[spot][1] = 1;
 }
 
-void addClient (int spot){
-  if(spot < maxWS){
+void addClient (int spot) {
+  if (spot < MAX_WS_CONNECTIONS) {
     IPAddress ip = webSocket.remoteIP(spot);
     Serial.printf("[%u] Connection from ", spot);
     Serial.println(ip.toString());
@@ -215,11 +224,11 @@ void addClient (int spot){
   }
 }
 
-void dealWithMessage(String message, uint8_t from){
+void dealWithMessage(String message, uint8_t from) {
   Serial.print(F("Received: \""));
   Serial.print(message);
   Serial.println(F("\""));
-  switch (message.charAt(0)){
+  switch (message.charAt(0)) {
     case 's': //setup message
       Serial.println(F("Parsing setup message"));
       parseSystemMessage(message.substring(1), from);
@@ -237,17 +246,19 @@ void dealWithMessage(String message, uint8_t from){
   }
 }
 
-void reconnect(){
-  detachInterrupt(digitalPinToInterrupt(escTriggerPin));
+void reconnect() {
+  detachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN));
   WiFi.disconnect();
   int counterWiFi = 0;
-  while(WiFi.status()==WL_CONNECTED){yield();}
+  while (WiFi.status() == WL_CONNECTED) {
+    yield();
+  }
   Serial.print("Reconnecting");
   WiFi.begin(ssid, password);
-  while(WiFi.status()!=WL_CONNECTED){
+  while (WiFi.status() != WL_CONNECTED) {
     delay(300);
     Serial.print(".");
-    if(counterWiFi == 30){
+    if (counterWiFi == 30) {
       Serial.println();
       Serial.println("WiFi-Connection could not be established!");
       break;
@@ -255,14 +266,14 @@ void reconnect(){
     counterWiFi++;
   }
   Serial.println();
-  attachInterrupt(digitalPinToInterrupt(escTriggerPin), escir, RISING);
+  attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
 }
 
-void receiveSerial(){
-  if(Serial.available()){
+void receiveSerial() {
+  if (Serial.available()) {
     String readout = Serial.readStringUntil('\n');
     int val = readout.substring(1).toInt();
-    switch(readout.charAt(0)){
+    switch (readout.charAt(0)) {
       case 'a':
         armed = val > 0;
         ctrlMode = 0;
@@ -291,17 +302,17 @@ void receiveSerial(){
   }
 }
 
-void escir(){
-  for (int i = 0; i<trend_amount-1; i++){
-    rps_was[i] = rps_was[i+1];
+void escir() {
+  for (int i = 0; i < trend_amount - 1; i++) {
+    rps_was[i] = rps_was[i + 1];
   }
-  rps_was[trend_amount-1] = 0;
+  rps_was[trend_amount - 1] = 0;
   if (armed) {
 
-    if (wifiFlag){
+    if (true) {
       //once when new throttle value is given
       wifiFlag = false;
-      switch (ctrlMode){
+      switch (ctrlMode) {
         case 0:
           setThrottle(req_value);
           break;
@@ -315,7 +326,7 @@ void escir(){
       }
     }
     //every esc cycle: calculation of throttle if necessary
-    switch (ctrlMode){
+    switch (ctrlMode) {
       case 0:
         break;
       case 1:
@@ -329,15 +340,16 @@ void escir(){
   } else {
     setThrottle(0);
   }
-  escOutputCounter = (escOutputCounter == 2000) ? 0 : escOutputCounter+1;
+  escOutputCounter = (escOutputCounter == TRANSMISSION_IND) ? 0 : escOutputCounter + 1;
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, LOW);
+  delayMicroseconds(20);
   esc_send_value(escValue, false);
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, HIGH);
 }
 
-void setThrottle(double newThrottle){ //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
+void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
   newThrottle = (newThrottle > 2000) ? 2000 : newThrottle;
   newThrottle = (newThrottle < 0) ? 0 : newThrottle;
   throttle = newThrottle;
@@ -345,10 +357,10 @@ void setThrottle(double newThrottle){ //throttle value between 0 and 2000 --> es
   escValue = appendChecksum(newThrottle);
 }
 
-double calcThrottle(int target, int was[]){
+double calcThrottle(int target, int was[]) {
   double was_avg = 0;
   int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
-  for(int i = 0; i < trend_amount; i++){
+  for (int i = 0; i < trend_amount; i++) {
     int t = i - ta_div_2;
     was_sum += was[i];
     t_sq_sum += pow(t, 2);
@@ -359,28 +371,28 @@ double calcThrottle(int target, int was[]){
   double m = (double)t_multi_was_sum / (double)t_sq_sum;
 
   double prediction = m * ((double)trend_amount - (double)ta_div_2) + (double)was_avg;
-  double delta_rpm = target - prediction;
-  double delta_throttle = rpm_a * pow(delta_rpm, 3) + rpm_b * pow(delta_rpm, 2) + rpm_c * delta_rpm;
+  double delta_rps = target - prediction;
+  double delta_throttle = rps_a * pow(delta_rps, 3) + rps_b * pow(delta_rps, 2) + rps_c * delta_rps;
 
   throttle += delta_throttle;
 
   return throttle;
 }
 
-void handleWiFi(){
+void handleWiFi() {
   webSocket.loop();
-  if (lastTelemetry + telemetryUpdateMS < millis()){
+  if (lastTelemetry + TELEMETRY_UPDATE_MS < millis()) {
     lastTelemetry = millis();
     sendTelemetry();
   }
 }
 
-void parseSystemMessage(String clippedMessage, uint8_t id){
-  while (clippedMessage.indexOf("!") == 0){
+void parseSystemMessage(String clippedMessage, uint8_t id) {
+  while (clippedMessage.indexOf("!") == 0) {
     clippedMessage = clippedMessage.substring(1);
 
     //parse single command
-    switch (clippedMessage.charAt(0)){
+    switch (clippedMessage.charAt(0)) {
       case 'd':
         clients[id][0] = clippedMessage.substring(1).toInt();
         break;
@@ -396,12 +408,12 @@ void parseSystemMessage(String clippedMessage, uint8_t id){
   }
 }
 
-void parseControlMessage(String clippedMessage){
-  while (clippedMessage.indexOf("!") == 0){
+void parseControlMessage(String clippedMessage) {
+  while (clippedMessage.indexOf("!") == 0) {
     clippedMessage = clippedMessage.substring(1);
 
     //parse single command
-    switch (clippedMessage.charAt(0)){
+    switch (clippedMessage.charAt(0)) {
       case 'a':
         armed = clippedMessage.substring(1).toInt() > 0;
         setThrottle(0);
@@ -421,11 +433,11 @@ void parseControlMessage(String clippedMessage){
   wifiFlag = true;
 }
 
-void sendTelemetry(){
+void sendTelemetry() {
   int velMPU = (int)(speedMPU * 1000 + .5);
-  int velWheel = (int)((float)30 * PI * (float)rps_was[trend_amount-1]);
+  int velWheel = (int)((float)30 * PI * (float)rps_was[trend_amount - 1]);
   int slipPercent = 0;
-  if(velWheel != 0){
+  if (velWheel != 0) {
     slipPercent = (float)(velWheel - velMPU) / velWheel * 100;
   }
   //String telemetryData2 = "";
@@ -443,30 +455,32 @@ void sendTelemetry(){
   telemetryData1 += velWheel;
   telemetryData1 += "!c";
   telemetryData1 += ((int)(acceleration * 1000 + .5));
-  for (int i = 0; i < maxWS; i++){
-    if (clients[i][0] == 1 && clients[i][1] == 1){
+  for (int i = 0; i < MAX_WS_CONNECTIONS; i++) {
+    if (clients[i][0] == 1 && clients[i][1] == 1) {
       webSocket.sendTXT(i, telemetryData1);
     }
   }
 }
 
-void printSerial(){
+void printSerial() {
   Serial.print(toBePrinted);
   toBePrinted = "";
 }
 
-void sPrint(String s){
+void sPrint(String s) {
   toBePrinted += s;
 }
 
-void sPrintln(String s){
+void sPrintln(String s) {
   toBePrinted += s;
   toBePrinted += "\n";
 }
 
-uint16_t appendChecksum(uint16_t value){
+uint16_t appendChecksum(uint16_t value) {
   value &= 0x7FF;
-  value = (value << 1) | ESC_TELEMETRY_REQUEST;
+  escOutputCounter2 = (escOutputCounter2 == ESC_TELEMETRY_REQUEST) ? 0 : escOutputCounter2 + 1;
+  bool telem = escOutputCounter2 == 0;
+  value = (value << 1) | telem;
   int csum = 0, csum_data = value;
   for (int i = 0; i < 3; i++) {
     csum ^=  csum_data;   // xor data by nibbles
@@ -477,7 +491,7 @@ uint16_t appendChecksum(uint16_t value){
   return value;
 }
 
-void esc_init(uint8_t channel, uint8_t pin){
+void esc_init(uint8_t channel, uint8_t pin) {
   rmt_config_t config;
   config.rmt_mode = RMT_MODE_TX;
   config.channel = ((rmt_channel_t) channel);
@@ -502,7 +516,17 @@ void setup_rmt_data_buffer(uint16_t value) {
   uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
   for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
     uint16_t bit_is_set = value & mask;
-    esc_data_buffer[bit] = bit_is_set ? (rmt_item32_t){{{T1H, 1, T1L, 0}}} : (rmt_item32_t){{{T0H, 1, T0L, 0}}};
+    esc_data_buffer[bit] = bit_is_set ? (rmt_item32_t) {
+      {{
+          T1H, 1, T1L, 0
+        }
+      }
+} : (rmt_item32_t) {
+      {{
+          T0H, 1, T0L, 0
+        }
+      }
+    };
     mask >>= 1;
   }
 }

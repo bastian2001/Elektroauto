@@ -65,17 +65,6 @@
             android:layout_weight="1"
             android:text="Race Mode" />
 
-        <Button
-            android:id="@+id/buttonStartRace"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:layout_weight="1"
-            android:text="Button"
-            android:visibility="gone" />
-
         <include
             layout="@layout/control_screen"
             android:layout_width="match_parent"

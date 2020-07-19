@@ -5,11 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -22,6 +23,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,11 +37,15 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
 
     private EditText editTextIP, editTextValue;
-    private Button buttonArm, buttonDisarm, buttonSet, buttonStartRace;
+    private Button buttonArm, buttonDisarm, buttonSet, buttonSoftDisarm, buttonStartRace;
     private TextView textViewTelemetry;
     private ImageButton ibReconnect;
     private Spinner spinnerMode;
@@ -42,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
     private Switch switchRaceMode;
 
     private boolean res_armed = false;
-    private int res_ctrlMode = 0, res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0, res_voltage = 0;
+    private int res_ctrlMode = 0, res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0, res_voltage = 0, res_temp = 0;
+
+    private final int LOG_FRAMES = 5000, JSON_PACKET_SIZE = 100;
+    private int[] throttle_log = new int[LOG_FRAMES], rps_log = new int[LOG_FRAMES], voltage_log = new int[LOG_FRAMES], acceleration_log = new int[LOG_FRAMES], temp_log = new int[LOG_FRAMES];
 
     SharedPreferences mPreferences;
     SharedPreferences.Editor mEditor;
@@ -92,6 +106,64 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (txt.startsWith("{")){
+                    try {
+                        JSONObject root = new JSONObject(txt);
+                        final int firstPos = root.getInt("firstIndex");
+                        Log.d("random", "got packet with firstPos" + firstPos);
+                        JSONArray throttleArray = root.getJSONArray("throttle");
+                        JSONArray accelerationArray = root.getJSONArray("acceleration");
+                        JSONArray rpsArray = root.getJSONArray("rps");
+                        JSONArray voltageArray = root.getJSONArray("voltage");
+                        JSONArray temperatureArray = root.getJSONArray("temperature");
+                        for (int pos = 0; pos < JSON_PACKET_SIZE; pos++){
+                            throttle_log[firstPos + pos] = throttleArray.getInt(pos);
+                            acceleration_log[firstPos + pos] = accelerationArray.getInt(pos);
+                            rps_log[firstPos + pos] = rpsArray.getInt(pos);
+                            voltage_log[firstPos + pos] = voltageArray.getInt(pos);
+                            temp_log[firstPos + pos] = temperatureArray.getInt(pos);
+                        }
+                        boolean isFinished = true;
+                        for (int i = 0; i < LOG_FRAMES && isFinished; i+=JSON_PACKET_SIZE){
+                            if (throttle_log[i] == -1) isFinished = false;
+                        }
+                        Log.d("random", "isFinished: " + isFinished);
+                        if (isFinished){
+                            JSONObject output = new JSONObject();
+                            JSONArray finalThrottleArray = new JSONArray(throttle_log);
+                            JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
+                            JSONArray finalRpsArray = new JSONArray(rps_log);
+                            JSONArray finalVoltageArray = new JSONArray(voltage_log);
+                            JSONArray finalTemperatureArray = new JSONArray(temp_log);
+                            output.put("throttle", finalThrottleArray);
+                            output.put("acceleration", finalAccelerationArray);
+                            output.put("rps", finalRpsArray);
+                            output.put("voltage", finalVoltageArray);
+                            output.put("temperature", finalTemperatureArray);
+                            File jsonOutputFile = new File((MainActivity.this).getExternalFilesDir(null), "output.json");
+                            Log.d("random", "file name is " + jsonOutputFile.toString());
+                            FileOutputStream fos = new FileOutputStream(jsonOutputFile);
+                            OutputStreamWriter osw = new OutputStreamWriter(fos);
+                            BufferedWriter bufferedWriter = new BufferedWriter(osw);
+                            bufferedWriter.write(output.toString());
+                            bufferedWriter.close();
+                            Log.d("random", output.toString());
+                            throttle_log = new int[LOG_FRAMES];
+                            acceleration_log = new int[LOG_FRAMES];
+                            rps_log = new int[LOG_FRAMES];
+                            voltage_log = new int[LOG_FRAMES];
+                            temp_log = new int[LOG_FRAMES];
+                            for (int i = 0; i < LOG_FRAMES; i+=JSON_PACKET_SIZE){
+                                throttle_log[i] = -1;
+                            }
+                        }
+                    } catch (JSONException | IOException e) {
+                        Log.e("random", "error");
+                        e.printStackTrace();
+                        Log.e("random", e.toString());
+                    }
+                    return;
+                }
                 Log.d("WSCommunication", "received: " + txt);
                 String[] response_separated = txt.split("!");
                 for (String s : response_separated) {
@@ -107,6 +179,11 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case 'm':
                             res_ctrlMode = val;
+                            break;
+                        case 'e':
+                            if (val > 0 != switchRaceMode.isChecked()){
+                                changeRaceModeToggle(val > 0);
+                            }
                             break;
                         case 'u':
                             res_voltage = val;
@@ -129,15 +206,18 @@ public class MainActivity extends AppCompatActivity {
                         case 'c':
                             res_acceleration = val;
                             break;
+                        case 'p':
+                            res_temp = val;
+                            break;
                         default:
-                            Toast.makeText(MainActivity.this, "Da stimmt was mit der Antwort nicht! Unbekanntes Attribut", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Da stimmt was mit der Antwort nicht! Unbekanntes Attribut: " + s.charAt(0), Toast.LENGTH_SHORT).show();
                             break;
                     }
                 }
 
                 textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nModus: " + getResources().getStringArray(R.array.ctrlModeOptions)[res_ctrlMode] +
-                        "\nSpannung: " + ((float)res_voltage / 100)  + "Throttle: " + res_throttle + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float)res_velocity1 / 1000.0) +
-                        "m/s\nGeschwindigkeit (Räder): " + ((float)res_velocity2 / 1000.0) + "m/s\nBeschleunigung: " + res_acceleration);
+                        "\nSpannung: " + ((float)res_voltage / 100)  + "V\nThrottle: " + res_throttle + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float)res_velocity1 / 1000.0) +
+                        "m/s\nGeschwindigkeit (Räder): " + ((float)res_velocity2 / 1000.0) + "m/s\nBeschleunigung: " + res_acceleration + " rel. Einheiten\nTemperatur: " + res_temp + "°C");
             }
         });
     }
@@ -154,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    private void start() {
+    private void wsStart() {
         okhttp3.Request request = new okhttp3.Request.Builder().url("ws://" + editTextIP.getText().toString()).build();
         EchoWebSocketListener listener = new EchoWebSocketListener();
         client = new OkHttpClient();
@@ -178,11 +258,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("random", Environment.getExternalStorageState().toString());
 
-        editTextValue = findViewById(R.id.editTextDuration);
+        editTextValue = findViewById(R.id.editTextValue);
         seekBarValue = findViewById(R.id.seekBarDuration);
         buttonArm = findViewById(R.id.buttonArm);
         buttonDisarm = findViewById(R.id.buttonDisarm);
+        buttonSoftDisarm = findViewById(R.id.buttonSoftDisarm);
         buttonSet = findViewById(R.id.buttonSet);
         textViewTelemetry = findViewById(R.id.textViewTelemetry);
         spinnerMode = findViewById(R.id.spinnerMode);
@@ -195,6 +277,10 @@ public class MainActivity extends AppCompatActivity {
         mEditor = mPreferences.edit();
 
         editTextIP.setText(mPreferences.getString("IP", "192.168.0.75"));
+
+        for (int i = 0; i < LOG_FRAMES; i+=JSON_PACKET_SIZE){
+            throttle_log[i] = -1;
+        }
 
         buttonArm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,15 +302,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });//Disarm
+        buttonSoftDisarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (res_armed) {
+                    sendSoftDisarm();
+                } else {
+                    Toast.makeText(MainActivity.this, "Bereits disarmed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });//Soft disarm
         buttonSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (res_armed) {
-                    setValue(getEditableValue(editTextValue.getText()));
-                } else {
-                    editTextValue.setText("0");
-                    Toast.makeText(MainActivity.this, "Zuerst Arming durchführen!", Toast.LENGTH_SHORT).show();
-                }
+                onSetPressed();
             }
         });//Setzt die momentan eingetragene Dauer
         ibReconnect.setOnClickListener(new View.OnClickListener() {
@@ -237,6 +328,13 @@ public class MainActivity extends AppCompatActivity {
                 mEditor.commit();
             }
         }); //reconnect
+        editTextValue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                onSetPressed();
+                return false;
+            }
+        });
 
         seekBarValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -278,17 +376,17 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (rmUserChanged){
                     // transmit rm change to arduino
-                    buttonView.setOnCheckedChangeListener(null);
-                    buttonView.setChecked(!isChecked);
-                    buttonView.setOnCheckedChangeListener(this);
-                    sendRaceMode(isChecked);
+                    changeRaceModeToggle(!isChecked);
+                    if (!res_armed || isChecked)
+                        sendRaceMode(isChecked);
                 } else {
-                    buttonStartRace.setVisibility(!isChecked ? View.VISIBLE : View.GONE);
+                    buttonArm.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+                    buttonStartRace.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 }
             }
         });
 
-        start();
+        wsStart();
 
         autoSend = setInterval(new Runnable() {
             @Override
@@ -296,6 +394,15 @@ public class MainActivity extends AppCompatActivity {
                 sendRequest();
             }
         }, requestUpdateMS);
+    }
+
+    private void onSetPressed() {
+        if (res_armed) {
+            setValue(getEditableValue(editTextValue.getText()));
+        } else {
+            editTextValue.setText("0");
+            Toast.makeText(MainActivity.this, "Zuerst Arming durchführen!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public int getEditableValue(Editable e){
@@ -345,8 +452,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void setValue(int value){
         if (!res_armed){
-            spinnerMode.setSelection(0);
-            seekBarValue.setMax(2000);
+            // spinnerMode.setSelection(0);
+            // seekBarValue.setMax(2000);
             value = 0;
         } else {
             value = Math.max(0, value);
@@ -368,6 +475,18 @@ public class MainActivity extends AppCompatActivity {
         setValue(0);
         String text = (a ? "c!a1" : "c!a0");
         send(text);
+    }
+
+    public void sendSoftDisarm(){
+        setValue(0);
+        String text = "c!m1!v0";
+        send(text);
+        setTimeout(new Runnable() {
+            @Override
+            public void run() {
+                sendArmed(false);
+            }
+        }, 1000);
     }
 
     public void sendRaceMode (boolean r){
