@@ -55,25 +55,28 @@
 //WiFi and WebSockets settings
 #define ssid "KNS_WLAN_24G"
 #define password "YZKswQHaE4xyKqdP"
-//#define ssid "Coworking"
-//#define password "86577103963855526306"
-//#define ssid "Bastian"
-//#define password "hallo123"
+// #define ssid "Coworking"
+// #define password "86577103963855526306"
+// #define ssid "bastian"
+// #define password "hallo123"
 #define MAX_WS_CONNECTIONS 5
 #define TELEMETRY_UPDATE_MS 20
 #define TELEMETRY_UPDATE_ADD 20
 
 //debugging settings
-// #define PRINT_SERIAL_ACK
-// #define PRINT_INIT
-// #define PRINT_WEBSOCKET
-#define PRINT_WIFI_MESSAGES
+#define PRINT_SETUP
+// #define PRINT_TELEMETRY_THROTTLE
+// #define PRINT_TELEMETRY_RPS
+// #define PRINT_TELEMETRY_TEMP
+// #define PRINT_TELEMETRY_ERPM
+// #define PRINT_TELEMETRY_VOLTAGE
+#define PRINT_WEBSOCKET_CONNECTIONS
+#define PRINT_INCOMING_MESSAGES
+#define PRINT_MEANINGS
+#define PRINT_BROADCASTS
+// #define PRINT_SINGLE_OUTGOING_MESSAGES
 // #define PRINT_RACE_MODE_JSON
-// #define PRINT_RPS
-// #define PRINT_ERPM
-// #define PRINT_THROTTLE
-// #define PRINT_VOLTAGE
-// #define PRINT_TEMP
+
 
 
 /*======================================================global variables==================================================*/
@@ -99,10 +102,11 @@ float acceleration = 0, speedMPU = 0, distMPU = 0;
 
 //system variables
 double throttle = 0;
-bool armed = false, c1ready = false, raceMode = false;
+bool armed = false, c1ready = false;
 int ctrlMode = 0, req_value = 0;
 uint16_t escValue = 0;
 uint16_t errorCount = 0;
+uint16_t cutoffVoltage = 900;
 
 //WiFi/WebSockets variables
 WebSocketsServer webSocket = WebSocketsServer(80);
@@ -121,14 +125,16 @@ bool newValueFlag = false;
 //arbitrary variables
 int16_t escOutputCounter = 0, escOutputCounter2 = 0, escOutputCounter3 = 0;
 
-//logging variables
+//race mode variables
 uint16_t throttle_log[LOG_FRAMES], rps_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
 int16_t acceleration_log[LOG_FRAMES];
 uint8_t temp_log[LOG_FRAMES];
 uint16_t logPosition = 0;
-bool raceModeSendValues = false;
+bool raceModeSendValues = false, raceMode = false, raceActive = false;
 
-void broadcastWSMessage(String text, bool justActive);
+void broadcastWSMessage(String text, bool justActive = false, int del = 0, bool noPrint = false);
+void setArmed(bool arm, bool sendBroadcast = false);
+void startRace();
 
 
 /*======================================================functional methods================================================*/
@@ -155,9 +161,7 @@ void sendTelemetry() {
     slipPercent = (float)(velWheel - velMPU) / velWheel * 100;
   }
   //String telemetryData2 = "";
-  String telemetryData = armed ? "a1!m" : "a0!m";
-  telemetryData += ctrlMode;
-  telemetryData += "!p";
+  String telemetryData = armed ? "TELEMETRY a1!p" : "TELEMETRY a0!p";
   telemetryData += telemetryTemp;
   telemetryData += "!u";
   telemetryData += telemetryVoltage;
@@ -173,8 +177,11 @@ void sendTelemetry() {
   telemetryData += velWheel;
   telemetryData += "!c";
   telemetryData += ((int)(acceleration * 1000 + .5));
-  telemetryData += raceMode ? "!e1" : "!e0";
-  broadcastWSMessage(telemetryData, true);
+  if (raceMode && !raceActive){
+    telemetryData += "!o";
+    telemetryData += req_value;
+  }
+  broadcastWSMessage(telemetryData, true, 0, true);
 }
 
 void esc_init(uint8_t channel, uint8_t pin) {
@@ -197,17 +204,7 @@ void setup_rmt_data_buffer(uint16_t value) {
   uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
   for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
     uint16_t bit_is_set = value & mask;
-    esc_data_buffer[bit] = bit_is_set ? (rmt_item32_t) {
-      {{
-          T1H, 1, T1L, 0
-        }
-      }
-      } : (rmt_item32_t) {
-      {{
-          T0H, 1, T0L, 0
-        }
-      }
-    };
+    esc_data_buffer[bit] = bit_is_set ? (rmt_item32_t) {{{T1H, 1, T1L, 0}}} : (rmt_item32_t) {{{T0H, 1, T0L, 0}}};
     mask >>= 1;
   }
 }
@@ -241,8 +238,33 @@ void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> e
   escValue = appendChecksum(newThrottle);
 }
 
+void setArmed (bool arm, bool sendBroadcast){
+  if (arm != armed){
+    if (!raceActive){
+      req_value = 0;
+      rps_target = 0;
+    }
+    broadcastWSMessage(arm ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
+    armed = arm;
+    setThrottle(0);
+  } else if (sendBroadcast){
+    broadcastWSMessage(arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
+  }
+}
+
+void startRace(){
+  if (!raceActive && raceMode){
+    broadcastWSMessage("BLOCK RACEMODETOGGLE ON");
+    raceActive = true;
+    setArmed(true);
+    newValueFlag = true;
+  } else if (!raceMode) {
+    broadcastWSMessage("SET RACEMODETOGGLE OFF");
+  }
+}
+
 void removeClient (int spot) {
-  #ifdef PRINT_WEBSOCKET
+  #ifdef PRINT_WEBSOCKET_CONNECTIONS
     Serial.printf("[%u] Disconnected!\n", spot);
   #endif
   if (clients[spot][1] == 1) telemetryClientsCounter--;
@@ -252,43 +274,69 @@ void removeClient (int spot) {
 }
 
 void addClient (int spot) {
-  if (spot < MAX_WS_CONNECTIONS) {
+  if (spot < MAX_WS_CONNECTIONS && !raceActive) {
     clientsCounter++;
-    #ifdef PRINT_WEBSOCKET
+    if (!armed && !raceMode){
+      webSocket.sendTXT(spot, "BLOCK VALUE 0");
+    } else if (raceMode){
+      webSocket.sendTXT(spot, "SET RACEMODE ON");
+    }
+    String modeText = "SET MODESPINNER ";
+    modeText += ctrlMode;
+    webSocket.sendTXT(spot, modeText);
+    #ifdef PRINT_WEBSOCKET_CONNECTIONS
       IPAddress ip = webSocket.remoteIP(spot);
       Serial.printf("[%u] Connection from ", spot);
       Serial.println(ip.toString());
     #endif
   } else {
-    #ifdef PRINT_WEBSOCKET
+    #ifdef PRINT_WEBSOCKET_CONNECTIONS
       Serial.println(F("Connection refused. All spots filled!"));
     #endif
     webSocket.disconnect(spot);
   }
 }
 
-void broadcastWSMessage(String text, bool justActive){
+void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
+  #ifdef PRINT_BROADCASTS
+    uint8_t noOfDevices = 0;
+  #endif
   for (int i = 0; i < MAX_WS_CONNECTIONS; i++) {
     if (clients[i][0] == 1 && (!justActive || clients[i][1] == 1)) {
       webSocket.sendTXT(i, text);
+      #ifdef PRINT_BROADCASTS
+        noOfDevices++;
+      #endif
+      if (del != 0){
+        delay(del);
+      }
     }
   }
+  #ifdef PRINT_BROADCASTS
+    if (noOfDevices > 0 && !noPrint){
+      Serial.print("Broadcasted ");
+      Serial.print(text);
+      Serial.print(" to a total of ");
+      Serial.print(noOfDevices);
+      Serial.println(" devices.");
+    }
+  #endif
 }
 
 void dealWithMessage(String message, uint8_t from) {
-  #ifdef PRINT_WIFI_MESSAGES
+  #ifdef PRINT_INCOMING_MESSAGES
     Serial.print(F("Received: \""));
     Serial.print(message);
     Serial.println(F("\""));
   #endif
   int dividerPos = message.indexOf(":");
   String command = dividerPos == -1 ? message : message.substring(0, dividerPos);
-  if (command == "DEVICE" && dividerPos != -1){
+  if (command == "DEVICE" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     int value = valueStr.toInt();
     if (valueStr == "APP") value = 1;
     clients[from][0] = value;
-  } else if (command == "TELEMETRY" && dividerPos != -1){
+  } else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
     int value = valueStr.toInt();
@@ -296,16 +344,17 @@ void dealWithMessage(String message, uint8_t from) {
     if (clients[from][1] > 0 && value == 0) telemetryClientsCounter--;
     if (clients[from][1] == 0 && value > 0) telemetryClientsCounter++;
     clients[from][1] = value;
+    #ifdef PRINT_MEANINGS
+      Serial.print("Setting telemetry of spot ");
+      Serial.print(from);
+      Serial.println(value > 0 ? " ON" : " OFF");
+    #endif
   } else if (command == "ARMED" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
     int value = valueStr.toInt();
     if (valueStr == "YES" || valueStr == "TRUE") value = 1;
-    armed = value > 0;
-    setThrottle(0);
-    broadcastWSMessage(armed ? "UNBLOCK VALUE" : "BLOCK VALUE 0", false);
-    broadcastWSMessage(armed ? "UNBLOCK MODESPINNER" : "BLOCK MODESPINNER 0", false);
-    newValueFlag = true;
+    setArmed(value > 0, true);
   } else if (command == "MODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -316,18 +365,33 @@ void dealWithMessage(String message, uint8_t from) {
         value = 2;
     }
     ctrlMode = value;
+    String modeText = "SET MODESPINNER ";
+    modeText += ctrlMode;
+    broadcastWSMessage(modeText);
     newValueFlag = true;
   } else if (command == "VALUE" && dividerPos != -1){
-    int value = message.substring(dividerPos + 1).toInt();
-    req_value = value;
+    req_value = message.substring(dividerPos + 1).toInt();
     newValueFlag = true;
-  } else if (command =="RACEMODE" && dividerPos != -1){
+  } else if (command == "RACEMODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
-    int value = valueStr.toInt();
-    if (valueStr == "ON") value = 1;
+    bool raceModeOn = valueStr.toInt() > 0;
+    if (valueStr == "ON") raceModeOn = 1;
+    if (raceModeOn){
+      broadcastWSMessage("SET RACEMODETOGGLE ON");
+      broadcastWSMessage("UNBLOCK VALUE");
+    } else {
+      broadcastWSMessage("SET RACEMODETOGGLE OFF");
+      if (!armed)
+        broadcastWSMessage("BLOCK VALUE 0");
+    }
+    raceMode = raceModeOn;
   } else if (command == "STARTRACE"){
-  } else {
+    startRace();
+  } else if (command == "PING") {
+    webSocket.sendTXT(from, "PONG");
+  } else if (command == "CUTOFFVOLTAGE"){
+    cutoffVoltage = message.substring(dividerPos + 1).toInt();
   }
 }
 
@@ -378,27 +442,27 @@ void escir() {
   rps_was[TREND_AMOUNT - 1] = (int) ((double) telemetryERPM / (double) 4.2); // *100/7(cause Erpm)/60(cause erpM)
   escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG) ? 0 : escOutputCounter3 + 1;
   if (escOutputCounter3 == 0){ // print debug telemetry over Serial
-    #ifdef PRINT_THROTTLE
+    #ifdef PRINT_TELEMETRY_THROTTLE
       sPrint((String)((int)throttle));
       sPrint("\t");
     #endif
-    #ifdef PRINT_TEMP
+    #ifdef PRINT_TELEMETRY_TEMP
       sPrint((String)telemetryTemp);
       sPrint("\t");
     #endif
-    #ifdef PRINT_VOLTAGE
+    #ifdef PRINT_TELEMETRY_VOLTAGE
       sPrint((String)telemetryVoltage);
       sPrint("\t");
     #endif
-    #ifdef PRINT_RPS
+    #ifdef PRINT_TELEMETRY_RPS
       sPrint((String)rps_was[TREND_AMOUNT - 1]);
       sPrint("\t");
     #endif
-    #ifdef PRINT_ERPM
+    #ifdef PRINT_TELEMETRY_ERPM
       sPrint((String)telemetryERPM);
       sPrint("\t");
     #endif
-    #if defined(PRINT_THROTTLE) || defined(PRINT_TEMP) || defined(PRINT_VOLTAGE) || defined(PRINT_RPS) || defined(PRINT_ERPM)
+    #if defined(PRINT_TELEMETRY_THROTTLE) || defined(PRINT_TELEMETRY_TEMP) || defined(PRINT_TELEMETRY_VOLTAGE) || defined(PRINT_TELEMETRY_RPS) || defined(PRINT_TELEMETRY_ERPM)
       sPrintln("");
     #endif
   }
@@ -446,7 +510,7 @@ void escir() {
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, HIGH);
   #endif
-  if (raceMode && logPosition < LOG_FRAMES){
+  if (raceActive){
     throttle_log[logPosition] = (uint16_t)(throttle + .5);
     acceleration_log[logPosition] = 0;
     rps_log[logPosition] = rps_was[TREND_AMOUNT - 1];
@@ -454,12 +518,14 @@ void escir() {
     temp_log[logPosition] = telemetryTemp;
     logPosition++;
     if (logPosition == LOG_FRAMES){
+      sPrintln("sending race log now");
+      raceActive = false;
       raceModeSendValues = true;
     }
   }
 }
 
-bool isComplete(){
+bool isTelemetryComplete(){
   return escTelemetry[3] == 0 && escTelemetry[4] == 0 && escTelemetry[5] == 0 && escTelemetry[6] == 0;
 }
 
@@ -469,20 +535,15 @@ void getTelemetry(){
       escTelemetry[i] = escTelemetry[i+1];
     }
     escTelemetry[9] = (char) Serial2.read();
-    if (isComplete()){
+    if (isTelemetryComplete()){
       telemetryTemp = escTelemetry[0];
       telemetryVoltage = (escTelemetry[1] << 8) | escTelemetry[2];
       telemetryERPM = (escTelemetry[7] << 8) | escTelemetry[8];
       for (uint8_t i = 0; i < 9; i++){
         escTelemetry[i] = B1;
       }
-      if (telemetryVoltage == 257){
-        armed = false;
-        setThrottle(0);
-        rps_target = 0;
-        req_value = 0;
-        newValueFlag = true;
-        // ctrlMode = 0;
+      if (/*telemetryVoltage == 257*/telemetryVoltage < cutoffVoltage){
+        setArmed(false);
       }
       if (telemetryTemp > 140 || telemetryVoltage > 2000 || telemetryVoltage < 500 || telemetryERPM > 2000){
         errorCount++;
@@ -502,7 +563,7 @@ void reconnect() {
   while (WiFi.status() == WL_CONNECTED) {
     yield();
   }
-  #ifdef PRINT_INIT
+  #ifdef PRINT_SETUP
     Serial.print("Reconnecting");
   #endif
   WiFi.begin(ssid, password);
@@ -510,7 +571,7 @@ void reconnect() {
     delay(300);
     Serial.print(".");
     if (counterWiFi == 30) {
-      #ifdef PRINT_INIT
+      #ifdef PRINT_SETUP
         Serial.println();
         Serial.println("WiFi-Connection could not be established!");
       #endif
@@ -518,7 +579,7 @@ void reconnect() {
     }
     counterWiFi++;
   }
-  #ifdef PRINT_INIT
+  #ifdef PRINT_SETUP
     Serial.println();
   #endif
   attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
@@ -528,35 +589,27 @@ void reconnect() {
 void receiveSerial() {
   if (Serial.available()) {
     String readout = Serial.readStringUntil('\n');
-    int val = readout.substring(1).toInt();
+    dealWithMessage(readout, 255);
+    float val = readout.substring(1).toFloat();
     switch (readout.charAt(0)) {
-      case 'a':
-        armed = val > 0;
-        ctrlMode = 0;
-        setThrottle(0);
-        break;
-      case 'd':
-        ctrlMode = 0;
-        setThrottle((double)val);
-        #ifdef PRINT_SERIAL_ACK
-          Serial.print("Throttle: ");
-          Serial.println((int)throttle);
-        #endif
-        break;
-      case 'r':
-        ctrlMode = 1;
-        rps_target = val;
-        break;
+    //   case 'a':
+    //     armed = val > 0;
+    //     ctrlMode = 0;
+    //     setThrottle(0);
+    //     break;
+    //   case 'd':
+    //     ctrlMode = 0;
+    //     setThrottle((double)val);
+    //     break;
+    //   case 'r':
+    //     ctrlMode = 1;
+    //     rps_target = val;
+    //     break;
       case 'p':
         pidMulti = val;
         break;
       case 'c':
         reconnect();
-        break;
-      default:
-        #ifdef PRINT_SERIAL_ACK
-          Serial.println("Not found!");
-        #endif
         break;
     }
   }
@@ -571,9 +624,12 @@ void handleWiFi() {
 }
 
 void sendRaceLog(){
+  raceModeSendValues = false;
   Serial2.end();
   Serial.println("sendRaceLog triggered");
   for (uint16_t i = 0; i < LOG_FRAMES; i += 100){
+    Serial.print("package no. ");
+    Serial.println(i / 100);
     DynamicJsonDocument doc = DynamicJsonDocument(10000);
     doc["firstIndex"] = i;
     JsonArray JsonThrottleArray = doc.createNestedArray("throttle");
@@ -594,9 +650,10 @@ void sendRaceLog(){
     #ifdef PRINT_RACE_MODE_JSON
       serializeJson(doc, Serial);
     #endif
-    broadcastWSMessage(JsonOutput, true);
-    delay(1);
+    broadcastWSMessage(JsonOutput, true, 5, true);
+    delay(10);
   }
+  broadcastWSMessage("SET RACEMODETOGGLE OFF");
   Serial2.begin(115200);
 }
 
@@ -610,7 +667,7 @@ void loop0() {
   if (WiFi.status() != WL_CONNECTED) {
     reconnect();
   }
-  if (logPosition == LOG_FRAMES){
+  if (raceModeSendValues){
     sendRaceLog();
     logPosition = 0;
   }
@@ -651,17 +708,17 @@ void setup() {
   WiFi.setTxPower(WIFI_POWER_MINUS_1dBm);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-  #ifdef PRINT_INIT
+  #ifdef PRINT_SETUP
     Serial.print("Connecting to "); Serial.println(ssid);
   #endif
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    #ifdef PRINT_INIT
+    #ifdef PRINT_SETUP
       Serial.println("WiFi-Connection could not be established!");
       Serial.println("Restart...");
     #endif
     ESP.restart();
   }
-  #ifdef PRINT_INIT
+  #ifdef PRINT_SETUP
     Serial.print("IP: ");
     Serial.println(WiFi.localIP());
   #endif
@@ -694,26 +751,26 @@ void setup() {
   }
 
   //setup termination
-  #ifdef PRINT_INIT
+  #ifdef PRINT_SETUP
     Serial.println("ready");
   #endif
 
-  #ifdef PRINT_THROTTLE
+  #ifdef PRINT_TELEMETRY_THROTTLE
     Serial.print("Throttle\t");
   #endif
-  #ifdef PRINT_TEMP
+  #ifdef PRINT_TELEMETRY_TEMP
     Serial.print("Temp\t");
   #endif
-  #ifdef PRINT_VOLTAGE
+  #ifdef PRINT_TELEMETRY_VOLTAGE
     Serial.print("Voltage\t");
   #endif
-  #ifdef PRINT_RPS
+  #ifdef PRINT_TELEMETRY_RPS
     Serial.print("RPS\t");
   #endif
-  #ifdef PRINT_ERPM
+  #ifdef PRINT_TELEMETRY_ERPM
     Serial.print("ERPM\t");
   #endif
-  #if defined(PRINT_THROTTLE) || defined(PRINT_TEMP) || defined(PRINT_VOLTAGE) || defined(PRINT_RPS) || defined(PRINT_ERPM)
+  #if defined(PRINT_TELEMETRY_THROTTLE) || defined(PRINT_TELEMETRY_TEMP) || defined(PRINT_TELEMETRY_VOLTAGE) || defined(PRINT_TELEMETRY_RPS) || defined(PRINT_TELEMETRY_ERPM)
     Serial.println();
   #endif
   c1ready = true;

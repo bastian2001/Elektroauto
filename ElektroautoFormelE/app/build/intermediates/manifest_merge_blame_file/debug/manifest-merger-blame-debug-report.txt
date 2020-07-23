@@ -21,7 +21,7 @@
 13-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:7:22-78
 14
 15    <application
-15-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:11:5-26:19
+15-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:11:5-27:19
 16        android:allowBackup="true"
 16-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:12:9-35
 17        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -32,30 +32,32 @@
 20-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:13:9-45
 21        android:label="@string/app_name"
 21-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:14:9-41
-22        android:roundIcon="@mipmap/launcher_icon_round"
-22-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:15:9-56
-23        android:supportsRtl="true"
-23-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:16:9-35
-24        android:testOnly="true"
-25        android:theme="@style/AppTheme" >
-25-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:17:9-40
-26        <activity
-26-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:18:9-25:20
-27            android:name="com.bastian.eauto.MainActivity"
-27-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:18:19-47
-28            android:screenOrientation="sensorPortrait" >
-28-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:19:13-55
-29            <intent-filter>
-29-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:20:13-24:29
-30                <action android:name="android.intent.action.MAIN" />
-30-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:21:17-69
-30-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:21:25-66
-31
-32                <category android:name="android.intent.category.LAUNCHER" />
-32-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:23:17-77
-32-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:23:27-74
-33            </intent-filter>
-34        </activity>
-35    </application>
-36
-37</manifest>
+22        android:requestLegacyExternalStorage="true"
+22-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:18:9-52
+23        android:roundIcon="@mipmap/launcher_icon_round"
+23-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:15:9-56
+24        android:supportsRtl="true"
+24-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:16:9-35
+25        android:testOnly="true"
+26        android:theme="@style/AppTheme" >
+26-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:17:9-40
+27        <activity
+27-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:19:9-26:20
+28            android:name="com.bastian.eauto.MainActivity"
+28-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:19:19-47
+29            android:screenOrientation="sensorPortrait" >
+29-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:20:13-55
+30            <intent-filter>
+30-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:21:13-25:29
+31                <action android:name="android.intent.action.MAIN" />
+31-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:22:17-69
+31-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:22:25-66
+32
+33                <category android:name="android.intent.category.LAUNCHER" />
+33-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:24:17-77
+33-->/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/AndroidManifest.xml:24:27-74
+34            </intent-filter>
+35        </activity>
+36    </application>
+37
+38</manifest>

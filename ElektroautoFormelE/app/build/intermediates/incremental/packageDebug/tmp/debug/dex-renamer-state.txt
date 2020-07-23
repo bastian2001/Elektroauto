@@ -1,4 +1,4 @@
-#Thu Jul 09 20:00:39 CEST 2020
+#Thu Jul 23 23:32:50 CEST 2020
 base.0=/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
 path.1=classes.dex
 renamed.1=classes2.dex

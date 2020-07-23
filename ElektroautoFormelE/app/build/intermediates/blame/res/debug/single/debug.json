@@ -48,6 +48,10 @@
         "source": "/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/res/mipmap-mdpi/launcher_icon_round.png"
     },
     {
+        "merged": "/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/build/intermediates/res/merged/debug/drawable_ping.xml.flat",
+        "source": "/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/res/drawable/ping.xml"
+    },
+    {
         "merged": "/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher_round.png.flat",
         "source": "/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
     },

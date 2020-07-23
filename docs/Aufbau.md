@@ -1,7 +1,7 @@
 # Pin assignments
 
 ```
-| 0  | 2  | 25         | 17        | 22  | 23           | 33     |
+| 0  | 2  | 25         | 16        | 22  | 23           | 33     |
 |----|----|------------|-----------|-----|--------------|--------|
 | TX | RX | ESC output | ESC telem | LED | transm. ind. | ESC IR |
 ```
@@ -36,6 +36,9 @@
 - start race
   - key: STARTRACE
   - value: none
+- ping
+  - key: PING
+  - value: none
 
 # Responses
 
@@ -44,14 +47,14 @@
 - format: `[command] [...args]`
 - set interface element
   - command: SET
-  - args[0]: [RACEMODETOGGLE|MODESPINNER|VALUE|ARMED]
-  - args[1]: [OFF alias [NO, FALSE, WEB, THROTTLE, 0]|ON alias [YES, TRUE, APP, RPS, 1]|2 alias SLIP|3...2000]
+  - args[0]: [RACEMODETOGGLE|MODESPINNER|VALUE]
+  - args[1]: [OFF alias [FALSE, THROTTLE, 0]|ON alias [TRUE, RPS, 1]|2 alias SLIP|3...2000]
   - example: `SET MODESPINNER THROTTLE`
   - unblocks this interface element
 - block interface element
   - command: BLOCK
-  - args[0]: [VALUE]
-  - args[1]: 0...2000
+  - args[0]: [VALUE|RACEMODETOGGLE]
+  - args[1]: 0...2000|ON|off
   - example: `BLOCK VALUE 0`
 - unblock interface element
   - command: UNBLOCK
@@ -60,6 +63,7 @@
 
 ## Telemetry response
 
+- prefix: "TELEMETRY "
 - a: armed
 - m: mode
 - t: throttle
@@ -67,10 +71,11 @@
 - s: slip
 - v: velocity (mpu)
 - w: velocity (wheels)
-- e: acceleration (mpu)
+- c: acceleration (mpu)
 - u: voltage (cV)
 - p: temperature (°C)
-- example: a0!m0!t0!r0!s0!v0!w0!e0!u740!p30
+- o: override slider value (optional)
+- example: TELEMETRY a0!m0!t0!r0!s0!v0!w0!c0!u740!p30
 
 # CPU core assignments
 
