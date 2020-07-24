@@ -60,6 +60,10 @@
   - command: UNBLOCK
   - args[0]: [VALUE]
   - example: `UNBLOCK VALUE`
+- create a Toast message
+  - command: MESSSAGE
+  - ...args: message
+  - example: `MESSAGE bereits disarmed`
 
 ## Telemetry response
 

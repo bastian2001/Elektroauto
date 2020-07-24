@@ -71,38 +71,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cad899bc-e912-46f5-adbc-e5792a663ea7" name="Default Changelist" comment="dshot mX values configured">
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ping.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/blame/res/debug/single/debug.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/blame/res/debug/single/debug.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeDebugResources/merger.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeDebugResources/merger.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/instant_app_manifest/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/instant_app_manifest/debug/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$10.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$8.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$9.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$EchoWebSocketListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$EchoWebSocketListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/manifest_merge_blame_file/debug/manifest-merger-blame-debug-report.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/manifest_merge_blame_file/debug/manifest-merger-blame-debug-report.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/merged_manifests/debug/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/merged_manifests/debug/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/outputs/apk/debug/app-debug.apk" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/outputs/apk/debug/app-debug.apk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build/outputs/logs/manifest-merger-debug-report.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/outputs/logs/manifest-merger-debug-report.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/bastian/eauto/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/bastian/eauto/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docs/Aufbau.md" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/Aufbau.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/control_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/control_screen.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -296,9 +272,10 @@
       <screen x="3840" y="0" width="1920" height="1080" />
     </state>
     <state x="4713" y="259" key="#xdebugger.XInspectDialog/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594239187849" />
-    <state x="818" y="281" width="274" height="464" key="AndroidProcessChooserDialog" timestamp="1595447241484">
-      <screen x="0" y="0" width="1920" height="1046" />
+    <state x="2738" y="279" width="274" height="464" key="AndroidProcessChooserDialog" timestamp="1595603237917">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
+    <state x="2738" y="279" key="AndroidProcessChooserDialog/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595603237917" />
     <state x="818" y="281" key="AndroidProcessChooserDialog/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447241484" />
     <state x="2738" y="290" key="AndroidProcessChooserDialog/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595369023904" />
     <state x="4658" y="290" width="274" height="464" key="AndroidProcessChooserDialog/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594239565982" />
@@ -310,51 +287,63 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2668" y="281" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595360194505" />
-    <state width="1874" height="279" key="GridCell.Tab.0.bottom" timestamp="1595539199922">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1877" height="281" key="GridCell.Tab.0.bottom" timestamp="1595606646479">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="1877" height="281" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595606646479" />
+    <state width="1877" height="281" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595606636711" />
     <state width="1874" height="340" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="279" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595539199922" />
     <state width="1874" height="276" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594327191362" />
-    <state width="1874" height="279" key="GridCell.Tab.0.center" timestamp="1595539199922">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1877" height="281" key="GridCell.Tab.0.center" timestamp="1595606646479">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="1877" height="281" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595606646479" />
+    <state width="1877" height="281" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595606636710" />
     <state width="1874" height="340" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="279" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595539199922" />
     <state width="1874" height="276" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594327191361" />
-    <state width="1874" height="279" key="GridCell.Tab.0.left" timestamp="1595539199921">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1877" height="281" key="GridCell.Tab.0.left" timestamp="1595606646479">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="1877" height="281" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595606646479" />
+    <state width="1877" height="281" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595606636710" />
     <state width="1874" height="340" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="279" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595539199921" />
     <state width="1874" height="276" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594327191361" />
-    <state width="1874" height="279" key="GridCell.Tab.0.right" timestamp="1595539199922">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1877" height="281" key="GridCell.Tab.0.right" timestamp="1595606646479">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state width="1877" height="281" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595606646479" />
+    <state width="1877" height="281" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595606636710" />
     <state width="1874" height="340" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="279" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595539199922" />
     <state width="1874" height="276" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594327191361" />
-    <state width="1874" height="340" key="GridCell.Tab.1.bottom" timestamp="1595447315717">
-      <screen x="0" y="0" width="1920" height="1046" />
+    <state width="1877" height="347" key="GridCell.Tab.1.bottom" timestamp="1595603304473">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
+    <state width="1877" height="347" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595603304473" />
     <state width="1874" height="340" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="340" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595369133258" />
     <state width="1874" height="340" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594317069750" />
-    <state width="1874" height="340" key="GridCell.Tab.1.center" timestamp="1595447315717">
-      <screen x="0" y="0" width="1920" height="1046" />
+    <state width="1877" height="347" key="GridCell.Tab.1.center" timestamp="1595603304472">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
+    <state width="1877" height="347" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595603304472" />
     <state width="1874" height="340" key="GridCell.Tab.1.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="340" key="GridCell.Tab.1.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595369133258" />
     <state width="1874" height="340" key="GridCell.Tab.1.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594317069750" />
-    <state width="1874" height="340" key="GridCell.Tab.1.left" timestamp="1595447315717">
-      <screen x="0" y="0" width="1920" height="1046" />
+    <state width="1877" height="347" key="GridCell.Tab.1.left" timestamp="1595603304472">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
+    <state width="1877" height="347" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595603304472" />
     <state width="1874" height="340" key="GridCell.Tab.1.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="340" key="GridCell.Tab.1.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595369133258" />
     <state width="1874" height="340" key="GridCell.Tab.1.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594317069750" />
-    <state width="1874" height="340" key="GridCell.Tab.1.right" timestamp="1595447315717">
-      <screen x="0" y="0" width="1920" height="1046" />
+    <state width="1877" height="347" key="GridCell.Tab.1.right" timestamp="1595603304473">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
+    <state width="1877" height="347" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595603304473" />
     <state width="1874" height="340" key="GridCell.Tab.1.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="340" key="GridCell.Tab.1.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595369133258" />
     <state width="1874" height="340" key="GridCell.Tab.1.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1594317069750" />

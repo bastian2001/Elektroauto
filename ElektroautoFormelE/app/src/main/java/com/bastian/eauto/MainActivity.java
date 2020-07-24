@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinnerMode;
     private SeekBar seekBarValue;
     private Switch switchRaceMode;
-    private int espMode = 0;
+    private int espMode = 0, modeBeforeSoftDisarm = 0;
     private int res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0, res_voltage = 0, res_temp = 0;
     private int[] throttle_log = new int[LOG_FRAMES], rps_log = new int[LOG_FRAMES], voltage_log = new int[LOG_FRAMES], acceleration_log = new int[LOG_FRAMES], temp_log = new int[LOG_FRAMES];
     private MainActivity.TaskHandle autoSend;
@@ -190,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
         seekBarValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b) {
-                    editTextValue.setText("" + i);
                     newSeekbarValueAvailable = true;
                     newSeekbarValue = i;
                 }
@@ -208,22 +207,17 @@ public class MainActivity extends AppCompatActivity {
         spinnerMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int r = (int) (Math.random() * 1000);
-                Log.d("random", "listener: " + modeUserChanged);
                 if (modeUserChanged) {
-                    Log.d("random", "listener: sending mode " + i + ", espmode is " + espMode + ", " + r);
-                    changeModeSpinner(espMode);
                     wsSend("MODE:" + i);
-                    Log.d("random", "listener: sent mode " + i + " and changed back to " + espMode + ", " + r);
-                } else {
-                    Log.d("random", "listener: new mode is " + i + ", espmode is " + espMode + ", " + r);
-                    if (i <= 1) {
-                        seekBarValue.setMax(2000);
-                    } else {
-                        seekBarValue.setMax(20);
-                    }
-                    modeUserChanged = true;
                 }
+                if (i == 0) {
+                    seekBarValue.setMax(350);
+                } else if (i == 1) {
+                    seekBarValue.setMax(90);
+                } else {
+                    seekBarValue.setMax(20);
+                }
+                modeUserChanged = true;
             }
 
             @Override
@@ -273,12 +267,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeModeSpinner(int position){
-        int r = (int) (Math.random() * 1000);
-        Log.d("random", "changing mode to " + position + ", espMode is " + espMode + ", " + r);
-        modeUserChanged = false;
-        Log.d("random", "set: " + modeUserChanged);
-        spinnerMode.setSelection(position, false);
-        Log.d("random", r + ", did it!");
+        if (spinnerMode.getSelectedItemPosition() != position) {
+            modeUserChanged = false;
+            spinnerMode.setSelection(position, false);
+        }
     }
 
     private void output(final String txt) {
@@ -386,21 +378,18 @@ public class MainActivity extends AppCompatActivity {
                                 res_throttle = val;
                                 if (mode == 0 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
                                     seekBarValue.setProgress(val);
-                                    editTextValue.setText("" + val);
                                 }
                                 break;
                             case 'r':
                                 res_rps = val;
                                 if (mode == 1 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
                                     seekBarValue.setProgress(val);
-                                    editTextValue.setText("" + val);
                                 }
                                 break;
                             case 's':
                                 res_slip = val;
                                 if (mode == 2 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
                                     seekBarValue.setProgress(val);
-                                    editTextValue.setText("" + val);
                                 }
                                 break;
                             case 'v':
@@ -416,8 +405,13 @@ public class MainActivity extends AppCompatActivity {
                                 res_temp = val;
                                 break;
                             case 'o':
-                                if (!seekbarTouch && !editTextIsInFocus){
+                                editTextValue.setText("" + val);
+                                if (!seekbarTouch){
                                     seekBarValue.setProgress(val);
+                                }
+                                break;
+                            case 'q':
+                                if (!editTextIsInFocus){
                                     editTextValue.setText("" + val);
                                 }
                                 break;
@@ -635,17 +629,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendSoftDisarm(){
+        modeBeforeSoftDisarm = espMode;
         wsSend("MODE:RPS");
         setTimeout(new Runnable() {
             @Override
             public void run() {
                 wsSend("VALUE:0");
             }
-        }, 5);
+        }, 2);
         setTimeout(new Runnable() {
             @Override
             public void run() {
                 sendArmed(false);
+                wsSend("MODE:" + modeBeforeSoftDisarm);
             }
         }, 1000);
     }

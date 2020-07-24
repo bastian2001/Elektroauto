@@ -11,7 +11,7 @@
 
 #include <Arduino.h>
 #include "WiFi.h"
-#include "Wire.h"
+// #include "Wire.h"
 //#include "I2Cdev.h"
 //#include "MPU6050.h"
 #include <WebSocketsServer.h>
@@ -86,12 +86,12 @@ TaskHandle_t Task1;
 String toBePrinted = "";
 
 //rps control variables
-int rps_target = 0;
-int rps_was[TREND_AMOUNT];
+int targetRPS = 0;
+int previousRPS[TREND_AMOUNT];
 double pidMulti = 7;
-double rps_a = .00000008;
-double rps_b = .000006;
-double rps_c = .01;
+double rpsA = .00000008;
+double rpsB = .000006;
+double rpsC = .01;
 
 //MPU variables
 //MPU6050 mpu;
@@ -102,11 +102,11 @@ float acceleration = 0, speedMPU = 0, distMPU = 0;
 
 //system variables
 double throttle = 0;
-bool armed = false, c1ready = false;
-int ctrlMode = 0, req_value = 0;
+bool armed = false, c1ready = false, newReqValueForTelemetry = true;
+int ctrlMode = 0, reqValue = 0;
 uint16_t escValue = 0;
 uint16_t errorCount = 0;
-uint16_t cutoffVoltage = 900;
+// uint16_t cutoffVoltage = 900;
 
 //WiFi/WebSockets variables
 WebSocketsServer webSocket = WebSocketsServer(80);
@@ -155,7 +155,7 @@ void sPrintln(String s) {
 
 void sendTelemetry() {
   int velMPU = (int)(speedMPU * 1000 + .5);
-  int velWheel = (int)((float)30 * PI * (float)rps_was[TREND_AMOUNT - 1]);
+  int velWheel = (int)((float)30 * PI * (float)previousRPS[TREND_AMOUNT - 1]);
   int slipPercent = 0;
   if (velWheel != 0) {
     slipPercent = (float)(velWheel - velMPU) / velWheel * 100;
@@ -168,7 +168,7 @@ void sendTelemetry() {
   telemetryData += "!t";
   telemetryData += ((int) throttle);
   telemetryData += "!r";
-  telemetryData += rps_was[TREND_AMOUNT - 1];
+  telemetryData += previousRPS[TREND_AMOUNT - 1];
   telemetryData += "!s";
   telemetryData += slipPercent;
   telemetryData += "!v";
@@ -177,9 +177,10 @@ void sendTelemetry() {
   telemetryData += velWheel;
   telemetryData += "!c";
   telemetryData += ((int)(acceleration * 1000 + .5));
-  if (raceMode && !raceActive){
-    telemetryData += "!o";
-    telemetryData += req_value;
+  if (newReqValueForTelemetry){
+    telemetryData += (raceMode && !raceActive) ? "!o" : "!q";
+    telemetryData += reqValue;
+    newReqValueForTelemetry = false;
   }
   broadcastWSMessage(telemetryData, true, 0, true);
 }
@@ -241,8 +242,8 @@ void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> e
 void setArmed (bool arm, bool sendBroadcast){
   if (arm != armed){
     if (!raceActive){
-      req_value = 0;
-      rps_target = 0;
+      reqValue = 0;
+      targetRPS = 0;
     }
     broadcastWSMessage(arm ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
     armed = arm;
@@ -331,7 +332,17 @@ void dealWithMessage(String message, uint8_t from) {
   #endif
   int dividerPos = message.indexOf(":");
   String command = dividerPos == -1 ? message : message.substring(0, dividerPos);
-  if (command == "DEVICE" && dividerPos != -1 && from != 255){
+  if (command == "VALUE" && dividerPos != -1){
+    reqValue = message.substring(dividerPos + 1).toInt();
+    newValueFlag = true;
+    newReqValueForTelemetry = true;
+  } else if (command == "ARMED" && dividerPos != -1){
+    String valueStr = message.substring(dividerPos + 1);
+    valueStr.toUpperCase();
+    int value = valueStr.toInt();
+    if (valueStr == "YES" || valueStr == "TRUE") value = 1;
+    setArmed(value > 0, true);
+  } else if (command == "DEVICE" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     int value = valueStr.toInt();
     if (valueStr == "APP") value = 1;
@@ -349,12 +360,6 @@ void dealWithMessage(String message, uint8_t from) {
       Serial.print(from);
       Serial.println(value > 0 ? " ON" : " OFF");
     #endif
-  } else if (command == "ARMED" && dividerPos != -1){
-    String valueStr = message.substring(dividerPos + 1);
-    valueStr.toUpperCase();
-    int value = valueStr.toInt();
-    if (valueStr == "YES" || valueStr == "TRUE") value = 1;
-    setArmed(value > 0, true);
   } else if (command == "MODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -368,9 +373,6 @@ void dealWithMessage(String message, uint8_t from) {
     String modeText = "SET MODESPINNER ";
     modeText += ctrlMode;
     broadcastWSMessage(modeText);
-    newValueFlag = true;
-  } else if (command == "VALUE" && dividerPos != -1){
-    req_value = message.substring(dividerPos + 1).toInt();
     newValueFlag = true;
   } else if (command == "RACEMODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
@@ -390,8 +392,14 @@ void dealWithMessage(String message, uint8_t from) {
     startRace();
   } else if (command == "PING") {
     webSocket.sendTXT(from, "PONG");
-  } else if (command == "CUTOFFVOLTAGE"){
-    cutoffVoltage = message.substring(dividerPos + 1).toInt();
+  // } else if (command == "CUTOFFVOLTAGE"){
+    // cutoffVoltage = message.substring(dividerPos + 1).toInt();
+  } else if (command == "RPSA"){
+    rpsA = message.substring(dividerPos + 1).toFloat();
+  } else if (command == "RPSB"){
+    rpsB = message.substring(dividerPos + 1).toFloat();
+  } else if (command == "RPSC"){
+    rpsC = message.substring(dividerPos + 1).toFloat();
   }
 }
 
@@ -427,7 +435,7 @@ double calcThrottle(int target, int was[]) {
   double prediction = m * ((double)TREND_AMOUNT - (double)TA_DIV_2) + (double)was_avg;
   if (prediction < 0) prediction = 0;
   double delta_rps = target - prediction;
-  double delta_throttle = rps_a * pow(delta_rps, 3) + rps_b * pow(delta_rps, 2) + rps_c * delta_rps;
+  double delta_throttle = rpsA * pow(delta_rps, 3) + rpsB * pow(delta_rps, 2) + rpsC * delta_rps;
   delta_throttle *= pidMulti;
 
   throttle += delta_throttle;
@@ -437,9 +445,9 @@ double calcThrottle(int target, int was[]) {
 
 void escir() {
   for (int i = 0; i < TREND_AMOUNT - 1; i++) {
-    rps_was[i] = rps_was[i + 1];
+    previousRPS[i] = previousRPS[i + 1];
   }
-  rps_was[TREND_AMOUNT - 1] = (int) ((double) telemetryERPM / (double) 4.2); // *100/7(cause Erpm)/60(cause erpM)
+  previousRPS[TREND_AMOUNT - 1] = (int) ((double) telemetryERPM / (double) 4.2); // *100/7(cause Erpm)/60(cause erpM)
   escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG) ? 0 : escOutputCounter3 + 1;
   if (escOutputCounter3 == 0){ // print debug telemetry over Serial
     #ifdef PRINT_TELEMETRY_THROTTLE
@@ -455,7 +463,7 @@ void escir() {
       sPrint("\t");
     #endif
     #ifdef PRINT_TELEMETRY_RPS
-      sPrint((String)rps_was[TREND_AMOUNT - 1]);
+      sPrint((String)previousRPS[TREND_AMOUNT - 1]);
       sPrint("\t");
     #endif
     #ifdef PRINT_TELEMETRY_ERPM
@@ -473,10 +481,10 @@ void escir() {
       newValueFlag = false;
       switch (ctrlMode) {
         case 0:
-          setThrottle(req_value);
+          setThrottle(reqValue);
           break;
         case 1:
-          rps_target = req_value;
+          targetRPS = reqValue;
           break;
         case 2:
           break;
@@ -489,7 +497,7 @@ void escir() {
       case 0:
         break;
       case 1:
-        setThrottle(calcThrottle(rps_target, rps_was));
+        setThrottle(calcThrottle(targetRPS, previousRPS));
         break;
       case 2:
         break;
@@ -513,7 +521,7 @@ void escir() {
   if (raceActive){
     throttle_log[logPosition] = (uint16_t)(throttle + .5);
     acceleration_log[logPosition] = 0;
-    rps_log[logPosition] = rps_was[TREND_AMOUNT - 1];
+    rps_log[logPosition] = previousRPS[TREND_AMOUNT - 1];
     voltage_log[logPosition] = telemetryVoltage;
     temp_log[logPosition] = telemetryTemp;
     logPosition++;
@@ -542,8 +550,11 @@ void getTelemetry(){
       for (uint8_t i = 0; i < 9; i++){
         escTelemetry[i] = B1;
       }
-      if (/*telemetryVoltage == 257*/telemetryVoltage < cutoffVoltage){
+      if (telemetryVoltage == 257/*telemetryVoltage < cutoffVoltag*/){
+        // bool pArmed = armed;
         setArmed(false);
+        // if (pArmed)
+        //   broadcastWSMessage("MESSAGE Cutoff-Spannung unterschritten. Gerät disarmed", true);
       }
       if (telemetryTemp > 140 || telemetryVoltage > 2000 || telemetryVoltage < 500 || telemetryERPM > 2000){
         errorCount++;
@@ -592,19 +603,6 @@ void receiveSerial() {
     dealWithMessage(readout, 255);
     float val = readout.substring(1).toFloat();
     switch (readout.charAt(0)) {
-    //   case 'a':
-    //     armed = val > 0;
-    //     ctrlMode = 0;
-    //     setThrottle(0);
-    //     break;
-    //   case 'd':
-    //     ctrlMode = 0;
-    //     setThrottle((double)val);
-    //     break;
-    //   case 'r':
-    //     ctrlMode = 1;
-    //     rps_target = val;
-    //     break;
       case 'p':
         pidMulti = val;
         break;
@@ -734,9 +732,9 @@ void setup() {
   ledcAttachPin(ESC_TRIGGER_PIN, 1);
   ledcWrite(1, 127);
 
-  //rps_was Setup
+  //previousRPS Setup
   for (int i = 0; i < TREND_AMOUNT; i++) {
-    rps_was[i] = 0;
+    previousRPS[i] = 0;
   }
 
   //2nd core setup
