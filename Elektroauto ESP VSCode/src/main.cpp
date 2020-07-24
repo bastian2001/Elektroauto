@@ -135,6 +135,7 @@ bool raceModeSendValues = false, raceMode = false, raceActive = false;
 void broadcastWSMessage(String text, bool justActive = false, int del = 0, bool noPrint = false);
 void setArmed(bool arm, bool sendBroadcast = false);
 void startRace();
+void reconnect();
 
 
 /*======================================================functional methods================================================*/
