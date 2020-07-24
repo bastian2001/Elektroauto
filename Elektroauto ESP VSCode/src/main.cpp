@@ -26,7 +26,7 @@
 //Pin numbers
 #define ESC_OUTPUT_PIN 25
 #define ESC_TRIGGER_PIN 33
-#define TRANSMISSION  23
+#define TRANSMISSION 23
 #define LED_BUILTIN 22
 
 //PID loop settings
@@ -115,7 +115,7 @@ unsigned long lastTelemetry = 0;
 uint8_t clientsCounter = 0, telemetryClientsCounter = 0;
 
 //ESC variables
-rmt_item32_t esc_data_buffer[ESC_BUFFER_ITEMS];
+rmt_item32_t escDataBuffer[ESC_BUFFER_ITEMS];
 char escTelemetry[10];
 uint16_t telemetryERPM = 0;
 uint8_t telemetryTemp = 0;
@@ -205,14 +205,14 @@ void setup_rmt_data_buffer(uint16_t value) {
   uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
   for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
     uint16_t bit_is_set = value & mask;
-    esc_data_buffer[bit] = bit_is_set ? (rmt_item32_t) {{{T1H, 1, T1L, 0}}} : (rmt_item32_t) {{{T0H, 1, T0L, 0}}};
+    escDataBuffer[bit] = bit_is_set ? (rmt_item32_t) {{{T1H, 1, T1L, 0}}} : (rmt_item32_t) {{{T0H, 1, T0L, 0}}};
     mask >>= 1;
   }
 }
 
 void esc_send_value(uint16_t value, bool wait) {
   setup_rmt_data_buffer(value);
-  ESP_ERROR_CHECK(rmt_write_items((rmt_channel_t) 0, esc_data_buffer, ESC_BUFFER_ITEMS, wait));
+  ESP_ERROR_CHECK(rmt_write_items((rmt_channel_t) 0, escDataBuffer, ESC_BUFFER_ITEMS, wait));
 }
 
 uint16_t appendChecksum(uint16_t value) {
@@ -342,24 +342,8 @@ void dealWithMessage(String message, uint8_t from) {
     int value = valueStr.toInt();
     if (valueStr == "YES" || valueStr == "TRUE") value = 1;
     setArmed(value > 0, true);
-  } else if (command == "DEVICE" && dividerPos != -1 && from != 255){
-    String valueStr = message.substring(dividerPos + 1);
-    int value = valueStr.toInt();
-    if (valueStr == "APP") value = 1;
-    clients[from][0] = value;
-  } else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
-    String valueStr = message.substring(dividerPos + 1);
-    valueStr.toUpperCase();
-    int value = valueStr.toInt();
-    if (valueStr == "ON") value = 1;
-    if (clients[from][1] > 0 && value == 0) telemetryClientsCounter--;
-    if (clients[from][1] == 0 && value > 0) telemetryClientsCounter++;
-    clients[from][1] = value;
-    #ifdef PRINT_MEANINGS
-      Serial.print("Setting telemetry of spot ");
-      Serial.print(from);
-      Serial.println(value > 0 ? " ON" : " OFF");
-    #endif
+  } else if (command == "PING") {
+    webSocket.sendTXT(from, "PONG");
   } else if (command == "MODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -374,6 +358,24 @@ void dealWithMessage(String message, uint8_t from) {
     modeText += ctrlMode;
     broadcastWSMessage(modeText);
     newValueFlag = true;
+  } else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
+    String valueStr = message.substring(dividerPos + 1);
+    valueStr.toUpperCase();
+    int value = valueStr.toInt();
+    if (valueStr == "ON") value = 1;
+    if (clients[from][1] > 0 && value == 0) telemetryClientsCounter--;
+    if (clients[from][1] == 0 && value > 0) telemetryClientsCounter++;
+    clients[from][1] = value;
+    #ifdef PRINT_MEANINGS
+      Serial.print("Setting telemetry of spot ");
+      Serial.print(from);
+      Serial.println(value > 0 ? " ON" : " OFF");
+    #endif
+  } else if (command == "DEVICE" && dividerPos != -1 && from != 255){
+    String valueStr = message.substring(dividerPos + 1);
+    int value = valueStr.toInt();
+    if (valueStr == "APP") value = 1;
+    clients[from][0] = value;
   } else if (command == "RACEMODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -390,8 +392,6 @@ void dealWithMessage(String message, uint8_t from) {
     raceMode = raceModeOn;
   } else if (command == "STARTRACE"){
     startRace();
-  } else if (command == "PING") {
-    webSocket.sendTXT(from, "PONG");
   // } else if (command == "CUTOFFVOLTAGE"){
     // cutoffVoltage = message.substring(dividerPos + 1).toInt();
   } else if (command == "RPSA"){
@@ -400,6 +400,10 @@ void dealWithMessage(String message, uint8_t from) {
     rpsB = message.substring(dividerPos + 1).toFloat();
   } else if (command == "RPSC"){
     rpsC = message.substring(dividerPos + 1).toFloat();
+  } else if (command == "RECONNECT"){
+    reconnect();
+  } else if (command == "PIDMULTIPLIER"){
+    pidMulti = message.substring(dividerPos + 1).toFloat();
   }
 }
 
@@ -601,15 +605,6 @@ void receiveSerial() {
   if (Serial.available()) {
     String readout = Serial.readStringUntil('\n');
     dealWithMessage(readout, 255);
-    float val = readout.substring(1).toFloat();
-    switch (readout.charAt(0)) {
-      case 'p':
-        pidMulti = val;
-        break;
-      case 'c':
-        reconnect();
-        break;
-    }
   }
 }
 
