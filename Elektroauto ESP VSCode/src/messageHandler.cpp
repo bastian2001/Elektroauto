@@ -22,16 +22,19 @@ void dealWithMessage(String message, uint8_t from) {
   String command = dividerPos == -1 ? message : message.substring(0, dividerPos);
   if (command == "VALUE" && dividerPos != -1){
     reqValue = message.substring(dividerPos + 1).toInt();
-    setNewValue();
-  } else if (command == "ARMED" && dividerPos != -1){
+    setNewTargetValue();
+  }
+  else if (command == "ARMED" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
     int value = valueStr.toInt();
     if (valueStr == "YES" || valueStr == "TRUE") value = 1;
     setArmed(value > 0, true);
-  } else if (command == "PING") {
+  }
+  else if (command == "PING") {
     webSocket.sendTXT(from, "PONG");
-  } else if (command == "MODE" && dividerPos != -1){
+  }
+  else if (command == "MODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
     int value = valueStr.toInt();
@@ -44,8 +47,9 @@ void dealWithMessage(String message, uint8_t from) {
     String modeText = "SET MODESPINNER ";
     modeText += ctrlMode;
     broadcastWSMessage(modeText);
-    setNewValue();
-  } else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
+    setNewTargetValue();
+  }
+  else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
     int value = valueStr.toInt();
@@ -58,12 +62,14 @@ void dealWithMessage(String message, uint8_t from) {
       Serial.print(from);
       Serial.println(value > 0 ? " ON" : " OFF");
     #endif
-  } else if (command == "DEVICE" && dividerPos != -1 && from != 255){
+  }
+  else if (command == "DEVICE" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     int value = valueStr.toInt();
     if (valueStr == "APP") value = 1;
     clients[from][0] = value;
-  } else if (command == "RACEMODE" && dividerPos != -1){
+  }
+  else if (command == "RACEMODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     bool raceModeOn = valueStr.toInt() > 0;
     if (valueStr == "ON") raceModeOn = 1;
@@ -76,19 +82,26 @@ void dealWithMessage(String message, uint8_t from) {
         broadcastWSMessage("BLOCK VALUE 0");
     }
     raceMode = raceModeOn;
-  } else if (command == "STARTRACE"){
+  }
+  else if (command == "STARTRACE"){
     startRace();
-  // } else if (command == "CUTOFFVOLTAGE"){
-    // cutoffVoltage = message.substring(dividerPos + 1).toInt();
-  } else if (command == "RPSA"){
+  }
+  // else if (command == "CUTOFFVOLTAGE"){
+  //   cutoffVoltage = message.substring(dividerPos + 1).toInt();
+  // }
+  else if (command == "RPSA"){
     erpmA = message.substring(dividerPos + 1).toFloat();
-  } else if (command == "RPSB"){
+  }
+  else if (command == "RPSB"){
     erpmB = message.substring(dividerPos + 1).toFloat();
-  } else if (command == "RPSC"){
+  }
+  else if (command == "RPSC"){
     erpmC = message.substring(dividerPos + 1).toFloat();
-  } else if (command == "RECONNECT"){
+  }
+  else if (command == "RECONNECT"){
     reconnect();
-  } else if (command == "PIDMULTIPLIER"){
+  }
+  else if (command == "PIDMULTIPLIER"){
     pidMulti = message.substring(dividerPos + 1).toFloat();
   }
 }

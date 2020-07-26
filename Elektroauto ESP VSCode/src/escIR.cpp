@@ -9,21 +9,41 @@ extern uint16_t telemetryERPM, telemetryVoltage;
 extern uint8_t telemetryTemp;
 extern bool raceModeSendValues;
 bool armed = false, raceActive = false;
-int targetERPM = 0, ctrlMode = 0, reqValue = 0;
 extern uint16_t escValue;
 uint16_t logPosition = 0;
 extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
 extern int acceleration_log[LOG_FRAMES];
 extern uint8_t temp_log[LOG_FRAMES];
-double throttle = 0;
+double throttle = 0, nextThrottle = 0;
 
 void escir() {
+  //set Throttle to evaluated value
+  if (armed){
+    setThrottle(nextThrottle);
+  }
+  #ifdef SEND_TRANSMISSION_IND
+  escOutputCounter = (escOutputCounter == TRANSMISSION_IND) ? 0 : escOutputCounter + 1;
+  if (escOutputCounter == 0)
+    digitalWrite(TRANSMISSION, LOW);
+  delayMicroseconds(20);
+  #endif
+
+  //send value to ESC
+  esc_send_value(escValue, false);
+  #ifdef SEND_TRANSMISSION_IND
+  if (escOutputCounter == 0)
+    digitalWrite(TRANSMISSION, HIGH);
+  #endif
+
+  // record new previousERPM value
   for (int i = 0; i < TREND_AMOUNT - 1; i++) {
     previousERPM[i] = previousERPM[i + 1];
   }
   previousERPM[TREND_AMOUNT - 1] = telemetryERPM;
+
+  // print debug telemetry over Serial
   escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG) ? 0 : escOutputCounter3 + 1;
-  if (escOutputCounter3 == 0){ // print debug telemetry over Serial
+  if (escOutputCounter3 == 0){ 
     #ifdef PRINT_TELEMETRY_THROTTLE
       sPrint((String)((int)throttle));
       sPrint("\t");
@@ -45,33 +65,7 @@ void escir() {
     #endif
   }
 
-  if (armed) {
-    //every esc cycle: calculation of throttle if necessary
-    switch (ctrlMode) {
-      case 0:
-        break;
-      case 1:
-        setThrottle(calcThrottle(targetERPM, previousERPM));
-        break;
-      case 2:
-        break;
-      default:
-        break;
-    }
-  } else {
-    setThrottle(0);
-  }
-  #ifdef SEND_TRANSMISSION_IND
-  escOutputCounter = (escOutputCounter == TRANSMISSION_IND) ? 0 : escOutputCounter + 1;
-  if (escOutputCounter == 0)
-    digitalWrite(TRANSMISSION, LOW);
-  delayMicroseconds(20);
-  #endif
-  esc_send_value(escValue, false);
-  #ifdef SEND_TRANSMISSION_IND
-  if (escOutputCounter == 0)
-    digitalWrite(TRANSMISSION, HIGH);
-  #endif
+  // logging, if race is active
   if (raceActive){
     throttle_log[logPosition] = (uint16_t)throttle;
     acceleration_log[logPosition] = 0;

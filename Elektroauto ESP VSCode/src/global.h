@@ -24,11 +24,15 @@
 #define TRANSMISSION_IND 1000
 #define TELEMETRY_DEBUG 3
 #define MAX_THROTTLE 350
+#define MAX_TARGET_RPS 90
+#define MAX_TARGET_SLIP 20
 // #define SEND_TRANSMISSION_IND
 #define ESC_BUFFER_ITEMS 16
 #define MAX_WS_CONNECTIONS 5
 #define MOTOR_POLE_COUNT 14.0f
+#define WHEEL_DIAMETER 30.0f
 #define RPS_CONVERSION_FACTOR (1.6667f / (MOTOR_POLE_COUNT / 2.0f))
+#define ERPM_TO_MM_PER_SECOND (RPS_CONVERSION_FACTOR * WHEEL_DIAMETER * PI)
 
 //WiFi and WebSockets settings
 #define ssid "KNS_WLAN_24G"
@@ -76,12 +80,15 @@ extern unsigned long lastMPUUpdate;
 extern int counterMPU, MPUoffset, raw_accel;
 extern float acceleration, speedMPU, distMPU;
 
+//slip variables
+extern int targetSlip;
+extern uint16_t speedWheel;
+
 //system variables
-extern double throttle;
+extern double throttle, nextThrottle;
 extern bool armed;
 extern int ctrlMode, reqValue;
 extern uint16_t escValue;
-// extern uint16_t cutoffVoltage = 900;
 
 //WiFi/WebSockets variables
 extern WebSocketsServer webSocket;

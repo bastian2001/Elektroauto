@@ -8,7 +8,7 @@ double pidMulti = 1.5, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
 int escOutputCounter2 = 0;
 bool raceMode = false;
 extern bool armed;
-extern int reqValue, targetERPM;
+int targetERPM = 0, ctrlMode = 0, reqValue = 0, targetSlip = 0;
 uint16_t escValue = 0;
 extern double throttle;
 
@@ -27,6 +27,7 @@ void setArmed (bool arm, bool sendNoChangeBroadcast){
     broadcastWSMessage((raceActive ? arm : arm || raceMode) ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
     armed = arm;
     setThrottle(0);
+    nextThrottle = 0;
   } else if (sendNoChangeBroadcast){
     broadcastWSMessage(arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
   }
@@ -41,14 +42,14 @@ void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> e
   escValue = appendChecksum(newThrottle);
 }
 
-uint16_t appendChecksum(uint16_t value) {
+uint16_t appendChecksum(uint16_t value, bool telemetryRequest) {
   value &= 0x7FF;
-  escOutputCounter2 = (escOutputCounter2 == ESC_TELEMETRY_REQUEST) ? 0 : escOutputCounter2 + 1;
-  bool telem = escOutputCounter2 == 0;
-  value = (value << 1) | telem;
+  // escOutputCounter2 = (escOutputCounter2 == ESC_TELEMETRY_REQUEST) ? 0 : escOutputCounter2 + 1;
+  // bool telem = escOutputCounter2 == 0;
+  value = (value << 1) | telemetryRequest;
   int csum = 0, csum_data = value;
   for (int i = 0; i < 3; i++) {
-    csum ^=  csum_data;   // xor data by nibbles
+    csum ^=  csum_data;
     csum_data >>= 4;
   }
   csum &= 0xf;
@@ -61,13 +62,13 @@ void startRace(){
     broadcastWSMessage("BLOCK RACEMODETOGGLE ON");
     raceActive = true;
     setArmed(true);
-    setNewValue();
+    setNewTargetValue();
   } else if (!raceMode) {
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
   }
 }
 
-double calcThrottle(int target, int was[]) {
+double calcThrottle(int target, int was[], double additionalMultiplier) {
   double was_avg = 0;
   int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
   for (int i = 0; i < TREND_AMOUNT; i++) {
@@ -84,11 +85,9 @@ double calcThrottle(int target, int was[]) {
   if (prediction < 0) prediction = 0;
   double deltaERPM = target - prediction;
   double delta_throttle = erpmA * pow(deltaERPM, 3) + erpmB * pow(deltaERPM, 2) + erpmC * deltaERPM;
-  delta_throttle *= pidMulti;
+  delta_throttle *= pidMulti * additionalMultiplier;
 
-  throttle += delta_throttle;
-
-  return throttle;
+  return throttle + delta_throttle;
 }
 
 void receiveSerial() {
@@ -98,22 +97,27 @@ void receiveSerial() {
   }
 }
 
-int rpsToErpm(float rps){
+float rpsToErpm(float rps){
   return (rps / RPS_CONVERSION_FACTOR + .5f);
 }
-int erpmToRps(float erpm){
+float erpmToRps(float erpm){
   return (erpm * RPS_CONVERSION_FACTOR + .5f);
 }
 
-void setNewValue(){
+void setNewTargetValue(){
   switch (ctrlMode) {
     case 0:
-      setThrottle(reqValue);
+      nextThrottle = reqValue;
       break;
     case 1:
+      if (reqValue > MAX_TARGET_RPS)
+        reqValue = MAX_TARGET_RPS;
       targetERPM = rpsToErpm(reqValue);
       break;
     case 2:
+      if (reqValue > MAX_TARGET_SLIP)
+        reqValue = MAX_TARGET_SLIP;
+      targetSlip = reqValue;
       break;
     default:
       break;
@@ -131,4 +135,26 @@ void sendRaceLog(){
   delay(2);
   broadcastWSBin(logData, LOG_FRAMES * 9, true, 20);
   Serial2.begin(115200);
+}
+
+void evaluateThrottle(){
+  if (armed) {
+    switch (ctrlMode) {
+      int addToTargetERPM;
+      case 0:
+        break;
+      case 1:
+        nextThrottle = calcThrottle(targetERPM, previousERPM);
+        break;
+      case 2:
+        addToTargetERPM = 40 - (throttle * .2);
+        if (addToTargetERPM < 0)
+          addToTargetERPM = 0;
+        targetERPM = ((0.0f - speedMPU) / ((float) targetSlip * .01f - 1)) / ERPM_TO_MM_PER_SECOND + addToTargetERPM;
+        nextThrottle = calcThrottle(targetERPM, previousERPM, .1);
+        break;
+      default:
+        break;
+    }
+  } 
 }

@@ -122,6 +122,12 @@
 
 slip = (vRad - vAuto) / vRad
 
+ <=> slip * vRad = vRad - vAuto
+
+ <=> vRad * slip - vRad = - vAuto
+
+ <=> vRad = (- vAuto) / (slip - 1)
+
 ## Hold RPS
 
 1. d_rps = rps_soll - rps_pred

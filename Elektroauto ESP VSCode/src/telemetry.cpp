@@ -13,6 +13,7 @@ extern bool armed;
 extern int reqValue;
 extern double throttle;
 char escTelemetry[10];
+uint16_t speedWheel = 0;
 
 void getTelemetry(){
   while(Serial2.available()){
@@ -24,16 +25,14 @@ void getTelemetry(){
       telemetryTemp = escTelemetry[0];
       telemetryVoltage = (escTelemetry[1] << 8) | escTelemetry[2];
       telemetryERPM = (escTelemetry[7] << 8) | escTelemetry[8];
+      speedWheel = (float)telemetryERPM * ERPM_TO_MM_PER_SECOND;
       for (uint8_t i = 0; i < 9; i++){
         escTelemetry[i] = B1;
       }
-      if (telemetryVoltage == 257/*telemetryVoltage < cutoffVoltag*/){
-        // bool pArmed = armed;
+      if (telemetryVoltage == 257){
         setArmed(false);
-        // if (pArmed)
-        //   broadcastWSMessage("MESSAGE Cutoff-Spannung unterschritten. Gerät disarmed", true);
       }
-      if (telemetryTemp > 140 || telemetryVoltage > 2000 || telemetryVoltage < 500 || telemetryERPM > 2000){
+      if (telemetryTemp > 140 || telemetryVoltage > 2000 || telemetryVoltage < 500 || telemetryERPM > 8000){
         errorCount++;
         // Serial.println("error");
         break;
@@ -44,11 +43,10 @@ void getTelemetry(){
 }
 
 void sendTelemetry() {
-  int velMPU = (int)(speedMPU * 1000 + .5);
-  int velWheel = (int)((float)30 * PI * (float)previousERPM[TREND_AMOUNT - 1]);
+  float rps = erpmToRps (telemetryERPM);
   int slipPercent = 0;
-  if (velWheel != 0) {
-    slipPercent = (float)(velWheel - velMPU) / velWheel * 100;
+  if (speedWheel != 0) {
+    slipPercent = (float)(speedWheel - speedMPU) / speedWheel * 100;
   }
   //String telemetryData2 = "";
   String telemetryData = armed ? "TELEMETRY a1!p" : "TELEMETRY a0!p";
@@ -58,13 +56,13 @@ void sendTelemetry() {
   telemetryData += "!t";
   telemetryData += (int) throttle;
   telemetryData += "!r";
-  telemetryData += erpmToRps(telemetryERPM);
+  telemetryData += (int) rps;
   telemetryData += "!s";
   telemetryData += slipPercent;
   telemetryData += "!v";
-  telemetryData += velMPU;
+  telemetryData += (int) speedMPU;
   telemetryData += "!w";
-  telemetryData += velWheel;
+  telemetryData += speedWheel;
   telemetryData += "!c";
   telemetryData += ((int)(acceleration * 1000 + .5));
   telemetryData += (raceMode && !raceActive) ? "!o" : "!q";

@@ -33,7 +33,7 @@ TaskHandle_t Task1;
 bool c1ready = false;
 
 //MPU
-float distMPU = 0, speedMPU = 0, acceleration = 0;
+float distMPU = 0, speedMPU = 5000, acceleration = 0;
 int counterMPU = 0, raw_accel = 0, MPUoffset = 0;
 unsigned long lastMPUUpdate = 0;
 
@@ -53,26 +53,23 @@ void loop0() {
   if (raceModeSendValues){
     raceMode = false;
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
-    Serial.println("sfdailusda");
     sendRaceLog();
     logPosition = 0;
   }
   handleWiFi();
   receiveSerial();
   printSerial();
-  getTelemetry();
 }
 
 void loop() {
-  /*if (Serial2.available()){
-    sPrintln(String(Serial2.read()));
-    }*/
+  getTelemetry();
+  evaluateThrottle();
 }
 
 void Task1code( void * parameter) {
   Serial2.begin(115200);
-  disableCore0WDT();
   attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
+  disableCore0WDT();
 
   while (!c1ready) {
     yield();
@@ -87,8 +84,6 @@ void setup() {
   //Serial setup
   Serial.begin(115200);
   Serial.println(RPS_CONVERSION_FACTOR);
-
-  disableCore0WDT();
 
   //WiFi Setup
   WiFi.enableSTA(true);
