@@ -394,7 +394,6 @@ public class MainActivity extends AppCompatActivity {
                 } else*/
                 if (txt.startsWith("TELEMETRY")) {
                     String telemetryText = txt.substring(txt.indexOf(" ") + 1);
-//                    wsLog("received: " + txt);
                     String[] response_separated = telemetryText.split("!");
                     boolean res_armed = false;
                     boolean editTextIsInFocus = editTextValue.hasFocus();
@@ -646,16 +645,6 @@ public class MainActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
-    }
-
-    public int getEditableValue(Editable e){
-        int i;
-        try {
-            i = Integer.parseInt(e.toString());
-        } catch (Exception ex) {
-            i = 0;
-        }
-        return i;
     }
 
     private void changeRaceModeToggle (boolean state){

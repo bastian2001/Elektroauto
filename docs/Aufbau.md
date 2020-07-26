@@ -78,7 +78,8 @@
 - c: acceleration (mpu)
 - u: voltage (cV)
 - p: temperature (°C)
-- o: override slider value (optional)
+- o: override slider and text input - or - 
+- q: override just text input
 - example: TELEMETRY a0!m0!t0!r0!s0!v0!w0!c0!u740!p30
 
 # CPU core assignments
@@ -108,19 +109,12 @@
 
 # Sending the logs
 
-<!-- packets of 100 frames, format (JSON):
-
-```json
-{
-  "firstIndex" : 1300,
-  "throttle" : [1932, 1936, ...],
-  "acceleration" : [...],
-  "rps" : [...],
-  "voltage" : [...],
-  "temperature" : [...]
-}
-``` -->
-
+45KB of binary data:
+0-9999: throttle
+10000-19999: acceleration
+20000-29999: erpm
+30000-39999: voltage
+40000-44999: temperature
 
 # Other notes
 
