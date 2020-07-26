@@ -56,7 +56,7 @@ void sendTelemetry() {
   telemetryData += "!u";
   telemetryData += telemetryVoltage;
   telemetryData += "!t";
-  telemetryData += ((int) throttle);
+  telemetryData += (int) throttle;
   telemetryData += "!r";
   telemetryData += erpmToRps(telemetryERPM);
   telemetryData += "!s";

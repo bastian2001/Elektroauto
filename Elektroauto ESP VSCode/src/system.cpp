@@ -82,7 +82,6 @@ double calcThrottle(int target, int was[]) {
 
   double prediction = m * ((double)TREND_AMOUNT - (double)TA_DIV_2) + (double)was_avg;
   if (prediction < 0) prediction = 0;
-  // double prediction = was[TREND_AMOUNT - 1];
   double deltaERPM = target - prediction;
   double delta_throttle = erpmA * pow(deltaERPM, 3) + erpmB * pow(deltaERPM, 2) + erpmC * deltaERPM;
   delta_throttle *= pidMulti;

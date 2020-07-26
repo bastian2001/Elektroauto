@@ -73,7 +73,7 @@ void escir() {
     digitalWrite(TRANSMISSION, HIGH);
   #endif
   if (raceActive){
-    throttle_log[logPosition] = (uint16_t)(throttle + .5);
+    throttle_log[logPosition] = (uint16_t)throttle;
     acceleration_log[logPosition] = 0;
     erpm_log[logPosition] = previousERPM[TREND_AMOUNT - 1];
     voltage_log[logPosition] = telemetryVoltage;

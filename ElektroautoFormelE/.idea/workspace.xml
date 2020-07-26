@@ -71,8 +71,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cad899bc-e912-46f5-adbc-e5792a663ea7" name="Default Changelist" comment="dshot mX values configured">
+      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/escIR.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/escIR.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/telemetry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/telemetry.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/bastian/eauto/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/bastian/eauto/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeDebugResources/compile-file-map.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$EchoWebSocketListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity$EchoWebSocketListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity.class" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/javac/debug/classes/com/bastian/eauto/MainActivity.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/res/merged/debug/layout_activity_main.xml.flat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/outputs/apk/debug/app-debug.apk" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/outputs/apk/debug/app-debug.apk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../docs/Aufbau.md" beforeDir="false" afterPath="$PROJECT_DIR$/../docs/Aufbau.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -121,8 +131,8 @@
     <property name="DEBUGGABLE_DEVICE" value="huawei-frd_l09-192.168.0.84:5555" />
     <property name="DEBUGGABLE_PROCESS" value="com.bastian.eauto" />
     <property name="DEBUGGER_ID" value="Auto" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="192.168.178.53:5555" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-03-12T14:32:09.621Z" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="192.168.0.85:5555" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-07-26T13:47:15.186Z" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHOW_ALL_PROCESSES" value="false" />
@@ -279,42 +289,43 @@
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2305" y="99" width="1140" height="846" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595281817635" />
-    <state x="2668" y="281" key="FileChooserDialogImpl" timestamp="1595360194505">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="4588" y="281" key="FileChooserDialogImpl" timestamp="1595771293399">
+      <screen x="3840" y="0" width="1920" height="1080" />
     </state>
     <state x="2668" y="281" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595360194505" />
-    <state width="937" height="273" key="GridCell.Tab.0.bottom" timestamp="1595766301621">
+    <state x="4588" y="281" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595771293399" />
+    <state width="937" height="273" key="GridCell.Tab.0.bottom" timestamp="1595769671630">
       <screen x="3840" y="0" width="1920" height="1080" />
     </state>
     <state width="1877" height="281" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595606646479" />
     <state width="1877" height="281" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595606636711" />
     <state width="1874" height="340" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="279" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595539199922" />
-    <state width="937" height="273" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595766301621" />
-    <state width="937" height="273" key="GridCell.Tab.0.center" timestamp="1595766301621">
+    <state width="937" height="273" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595769671630" />
+    <state width="937" height="273" key="GridCell.Tab.0.center" timestamp="1595769671630">
       <screen x="3840" y="0" width="1920" height="1080" />
     </state>
     <state width="1877" height="281" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595606646479" />
     <state width="1877" height="281" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595606636710" />
     <state width="1874" height="340" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="279" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595539199922" />
-    <state width="937" height="273" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595766301621" />
-    <state width="937" height="273" key="GridCell.Tab.0.left" timestamp="1595766301621">
+    <state width="937" height="273" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595769671630" />
+    <state width="937" height="273" key="GridCell.Tab.0.left" timestamp="1595769671630">
       <screen x="3840" y="0" width="1920" height="1080" />
     </state>
     <state width="1877" height="281" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595606646479" />
     <state width="1877" height="281" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595606636710" />
     <state width="1874" height="340" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="279" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595539199921" />
-    <state width="937" height="273" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595766301621" />
-    <state width="937" height="273" key="GridCell.Tab.0.right" timestamp="1595766301621">
+    <state width="937" height="273" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595769671630" />
+    <state width="937" height="273" key="GridCell.Tab.0.right" timestamp="1595769671630">
       <screen x="3840" y="0" width="1920" height="1080" />
     </state>
     <state width="1877" height="281" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1595606646479" />
     <state width="1877" height="281" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040/1920.0.1920.1040@1920.0.1920.1040" timestamp="1595606636710" />
     <state width="1874" height="340" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@0.0.1920.1046" timestamp="1595447315717" />
     <state width="1874" height="279" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595539199922" />
-    <state width="937" height="273" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595766301621" />
+    <state width="937" height="273" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595769671630" />
     <state width="1874" height="340" key="GridCell.Tab.1.bottom" timestamp="1595686188403">
       <screen x="3840" y="0" width="1920" height="1080" />
     </state>
@@ -348,6 +359,10 @@
     </state>
     <state x="2381" y="158" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@1920.0.1920.1080" timestamp="1595369799229" />
     <state x="4301" y="158" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595716365961" />
+    <state x="3542" y="116" width="1720" height="846" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1595769464385">
+      <screen x="3840" y="0" width="1920" height="1080" />
+    </state>
+    <state x="3542" y="116" width="1720" height="846" key="com.android.tools.idea.avdmanager.AvdListDialog/1920.0.1920.1080/0.0.1920.1046/3840.0.1920.1080@3840.0.1920.1080" timestamp="1595769464385" />
     <state x="679" y="355" width="551" height="311" key="edit.logcat.filter.dialog.dimensions" timestamp="1595444961684">
       <screen x="0" y="0" width="1920" height="1046" />
     </state>

@@ -110,11 +110,11 @@
 # Sending the logs
 
 45KB of binary data:
-0-9999: throttle
-10000-19999: acceleration
-20000-29999: erpm
-30000-39999: voltage
-40000-44999: temperature
+1. 0-9999: throttle
+2. 10000-19999: acceleration
+3. 20000-29999: erpm
+4. 30000-39999: voltage
+5. 40000-44999: temperature
 
 # Other notes
 
