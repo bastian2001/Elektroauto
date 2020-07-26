@@ -39,6 +39,17 @@ void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
   #endif
 }
 
+void broadcastWSBin(uint8_t* data, size_t length, bool justActive, int del){
+  for (int i = 0; i < MAX_WS_CONNECTIONS; i++) {
+    if (clients[i][0] == 1 && (!justActive || clients[i][1] == 1)) {
+      webSocket.sendBIN(i, data, length);
+      if (del != 0){
+        delay(del);
+      }
+    }
+  }
+}
+
 void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t * payload, size_t length) {
   switch (type) {
     case WStype_DISCONNECTED:

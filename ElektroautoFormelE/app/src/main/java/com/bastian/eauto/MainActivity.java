@@ -1,10 +1,18 @@
 package com.bastian.eauto;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -36,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.security.acl.Permission;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -56,7 +65,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private static int requestUpdateMS = 40;
-    private final int LOG_FRAMES = 5000, JSON_PACKET_SIZE = 100;
+    private final int LOG_FRAMES = 5000, PACKET_SIZE = 100;
     SharedPreferences mPreferences;
     SharedPreferences.Editor mEditor;
     WebSocket ws;
@@ -69,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private Switch switchRaceMode;
     private int espMode = 0, modeBeforeSoftDisarm = 0;
     private int res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0, res_voltage = 0, res_temp = 0;
-    private int[] throttle_log = new int[LOG_FRAMES], rps_log = new int[LOG_FRAMES], voltage_log = new int[LOG_FRAMES], acceleration_log = new int[LOG_FRAMES], temp_log = new int[LOG_FRAMES];
+    private int[] throttle_log = new int[LOG_FRAMES], erpm_log = new int[LOG_FRAMES], voltage_log = new int[LOG_FRAMES], acceleration_log = new int[LOG_FRAMES], temp_log = new int[LOG_FRAMES];
     private MainActivity.TaskHandle autoSend;
     private boolean newSeekbarValueAvailable = false;
     private int newSeekbarValue = -1;
@@ -80,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private static int PING_AMOUNT = 20;
     private int pingCounter = 0;
     private int[] pingArray = new int[PING_AMOUNT];
+    private boolean firstStartup = true;
 
     private static TaskHandle setTimeout(final Runnable r, long delay) {
         final Handler h = new Handler();
@@ -130,9 +140,9 @@ public class MainActivity extends AppCompatActivity {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mPreferences.edit();
 
-        editTextIP.setText(mPreferences.getString("IP", "192.168.0.75"));
+        editTextIP.setText(mPreferences.getString("IP", "192.168.0.111"));
 
-        for (int i = 0; i < LOG_FRAMES; i+=JSON_PACKET_SIZE){
+        for (int i = 0; i < LOG_FRAMES; i+=PACKET_SIZE){
             throttle_log[i] = -1;
         }
 
@@ -207,6 +217,8 @@ public class MainActivity extends AppCompatActivity {
         spinnerMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (firstStartup)
+                    return;
                 if (modeUserChanged) {
                     wsSend("MODE:" + i);
                 }
@@ -254,6 +266,13 @@ public class MainActivity extends AppCompatActivity {
                 sendRequest();
             }
         }, requestUpdateMS);
+
+        setTimeout(new Runnable() {
+            @Override
+            public void run() {
+                firstStartup = false;
+            }
+        }, 200);
     }
 
     private void wsLog(final String txt) {
@@ -266,6 +285,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            String[] perm = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            requestPermissions(perm, 0);
+        }
+        super.onStart();
+    }
+
     private void changeModeSpinner(int position){
         if (spinnerMode.getSelectedItemPosition() != position) {
             modeUserChanged = false;
@@ -273,47 +301,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void output(final String txt) {
+    private void onWSText(final String txt) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (txt.startsWith("{")){
+                /*if (txt.startsWith("{")){
                     try {
                         JSONObject root = new JSONObject(txt);
                         final int firstPos = root.getInt("firstIndex");
+                        Log.d("random", "" + firstPos);
                         JSONArray throttleArray = root.getJSONArray("throttle");
                         JSONArray accelerationArray = root.getJSONArray("acceleration");
-                        JSONArray rpsArray = root.getJSONArray("rps");
+                        JSONArray erpmArray = root.getJSONArray("erpm");
                         JSONArray voltageArray = root.getJSONArray("voltage");
                         JSONArray temperatureArray = root.getJSONArray("temperature");
-                        for (int pos = 0; pos < JSON_PACKET_SIZE; pos++){
+                        for (int pos = 0; pos < PACKET_SIZE; pos++){
                             throttle_log[firstPos + pos] = throttleArray.getInt(pos);
                             acceleration_log[firstPos + pos] = accelerationArray.getInt(pos);
-                            rps_log[firstPos + pos] = rpsArray.getInt(pos);
+                            erpm_log[firstPos + pos] = erpmArray.getInt(pos);
                             voltage_log[firstPos + pos] = voltageArray.getInt(pos);
                             temp_log[firstPos + pos] = temperatureArray.getInt(pos);
                         }
                         boolean isFinished = true;
-                        for (int i = 0; i < LOG_FRAMES && isFinished; i+=JSON_PACKET_SIZE){
+                        for (int i = 0; i < LOG_FRAMES && isFinished; i+=PACKET_SIZE){
                             if (throttle_log[i] == -1) isFinished = false;
                         }
                         if (isFinished){
                             JSONObject output = new JSONObject();
                             JSONArray finalThrottleArray = new JSONArray(throttle_log);
                             JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
-                            JSONArray finalRpsArray = new JSONArray(rps_log);
+                            JSONArray finalERPMArray = new JSONArray(erpm_log);
                             JSONArray finalVoltageArray = new JSONArray(voltage_log);
                             JSONArray finalTemperatureArray = new JSONArray(temp_log);
                             output.put("throttle", finalThrottleArray);
                             output.put("acceleration", finalAccelerationArray);
-                            output.put("rps", finalRpsArray);
+                            output.put("erpm", finalERPMArray);
                             output.put("voltage", finalVoltageArray);
                             output.put("temperature", finalTemperatureArray);
-                            String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH), 2) + "-"
+                            String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
                                     + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
                                     + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
                                     + prefixZero(Calendar.getInstance().get(Calendar.SECOND), 2) + ".json";
-                            File folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
+                            File folder;
+                            boolean permissionGranted = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                            if (permissionGranted){
+                                folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
+                            } else {
+                                folder = getExternalFilesDir("Formel-E-Logs");
+                            }
                             if (!folder.exists()){
                                 folder.mkdir();
                             }
@@ -336,26 +371,30 @@ public class MainActivity extends AppCompatActivity {
                                 BufferedWriter bufferedWriter = new BufferedWriter(osw);
                                 bufferedWriter.write(output.toString());
                                 bufferedWriter.close();
-                                Toast.makeText(MainActivity.this, "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert", Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, permissionGranted ? "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert" : "Da die Berechtigung nicht erteilt wurde, wurde der Log unter " + file.getAbsolutePath() + " gespeichert.", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
                             }
 
                             throttle_log = new int[LOG_FRAMES];
                             acceleration_log = new int[LOG_FRAMES];
-                            rps_log = new int[LOG_FRAMES];
+                            erpm_log = new int[LOG_FRAMES];
                             voltage_log = new int[LOG_FRAMES];
                             temp_log = new int[LOG_FRAMES];
-                            for (int i = 0; i < LOG_FRAMES; i+=JSON_PACKET_SIZE){
+                            for (int i = 0; i < LOG_FRAMES; i+=PACKET_SIZE){
                                 throttle_log[i] = -1;
                             }
                         }
-                    } catch (JSONException | IOException e) {
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
-                } else if (txt.startsWith("TELEMETRY")) {
+                } else*/
+                if (txt.startsWith("TELEMETRY")) {
                     String telemetryText = txt.substring(txt.indexOf(" ") + 1);
-                    wsLog("received: " + txt);
+//                    wsLog("received: " + txt);
                     String[] response_separated = telemetryText.split("!");
                     boolean res_armed = false;
                     boolean editTextIsInFocus = editTextValue.hasFocus();
@@ -405,7 +444,8 @@ public class MainActivity extends AppCompatActivity {
                                 res_temp = val;
                                 break;
                             case 'o':
-                                editTextValue.setText("" + val);
+                                if (!editTextIsInFocus)
+                                    editTextValue.setText("" + val);
                                 if (!seekbarTouch){
                                     seekBarValue.setProgress(val);
                                 }
@@ -679,11 +719,11 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            output(text);
+            onWSText(text);
         }
         @Override
         public void onMessage(WebSocket webSocket, ByteString bytes) {
-            output(bytes.hex());
+            onWSBin(bytes);
         }
         @Override
         public void onClosing(WebSocket webSocket, int code, String reason) {
@@ -695,5 +735,86 @@ public class MainActivity extends AppCompatActivity {
             t.printStackTrace();
             wsLog("Error: " + t.getMessage());
         }
+    }
+
+    void onWSBin(final ByteString bin) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                byte[] bytes = bin.toByteArray();
+                for (int i = 0; i < LOG_FRAMES; i++){
+                    throttle_log[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);
+                    acceleration_log[i] = (((bytes[i * 2 + LOG_FRAMES * 2 + 1]) << 8) & 0xFF) | (bytes[i * 2 + LOG_FRAMES * 2] & 0xFF);
+                    erpm_log[i] = (((bytes[i * 2 + LOG_FRAMES * 4 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 4] & 0xFF);
+                    voltage_log[i] = (((bytes[i * 2 + LOG_FRAMES * 6 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 6] & 0xFF);
+                    temp_log[i] = (bytes[i + LOG_FRAMES * 8] & 0xFF);
+                }
+
+                try {
+                    JSONObject output = new JSONObject();
+                    JSONArray finalThrottleArray = new JSONArray(throttle_log);
+                    JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
+                    JSONArray finalERPMArray = new JSONArray(erpm_log);
+                    JSONArray finalVoltageArray = new JSONArray(voltage_log);
+                    JSONArray finalTemperatureArray = new JSONArray(temp_log);
+                    output.put("throttle", finalThrottleArray);
+                    output.put("acceleration", finalAccelerationArray);
+                    output.put("erpm", finalERPMArray);
+                    output.put("voltage", finalVoltageArray);
+                    output.put("temperature", finalTemperatureArray);
+                    String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
+                            + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
+                            + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
+                            + prefixZero(Calendar.getInstance().get(Calendar.SECOND), 2) + ".json";
+                    File folder;
+                    boolean permissionGranted = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                    if (permissionGranted) {
+                        folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
+                    } else {
+                        folder = getExternalFilesDir("Formel-E-Logs");
+                    }
+                    if (!folder.exists()) {
+                        folder.mkdir();
+                    }
+                    File file = new File(folder, fileName);
+                    if (file.exists()) {
+                        String p = file.getAbsolutePath();
+                        int i;
+                        for (i = 2; i < 100; i++) {
+                            if (!(new File(p + "_" + i).exists())) break;
+                        }
+                        if (i == 100) {
+                            file = null;
+                        } else {
+                            file = new File(p + "_" + i);
+                        }
+                    }
+                    if (file != null) {
+                        FileOutputStream fos = new FileOutputStream(file);
+                        OutputStreamWriter osw = new OutputStreamWriter(fos);
+                        BufferedWriter bufferedWriter = new BufferedWriter(osw);
+                        bufferedWriter.write(output.toString());
+                        bufferedWriter.close();
+                        Toast.makeText(MainActivity.this, permissionGranted ? "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert" : "Da die Berechtigung nicht erteilt wurde, wurde der Log unter " + file.getAbsolutePath() + " gespeichert.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
+                    }
+
+                    throttle_log = new int[LOG_FRAMES];
+                    acceleration_log = new int[LOG_FRAMES];
+                    erpm_log = new int[LOG_FRAMES];
+                    voltage_log = new int[LOG_FRAMES];
+                    temp_log = new int[LOG_FRAMES];
+                    for (int i = 0; i < LOG_FRAMES; i += PACKET_SIZE) {
+                        throttle_log[i] = -1;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

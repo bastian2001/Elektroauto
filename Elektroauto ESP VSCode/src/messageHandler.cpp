@@ -6,11 +6,12 @@
 extern WebSocketsServer webSocket;
 extern bool raceMode;
 extern uint8_t clients[MAX_WS_CONNECTIONS][2];
-extern bool armed, newValueFlag;
+extern bool armed;
 extern int ctrlMode, reqValue;
 
-uint8_t telemetryClientsCounter;
-extern double pidMulti, rpsA, rpsB, rpsC;
+uint8_t telemetryClientsCounter = 0;
+extern double pidMulti, erpmA, erpmB, erpmC;
+
 void dealWithMessage(String message, uint8_t from) {
   #ifdef PRINT_INCOMING_MESSAGES
     Serial.print(F("Received: \""));
@@ -21,7 +22,7 @@ void dealWithMessage(String message, uint8_t from) {
   String command = dividerPos == -1 ? message : message.substring(0, dividerPos);
   if (command == "VALUE" && dividerPos != -1){
     reqValue = message.substring(dividerPos + 1).toInt();
-    newValueFlag = true;
+    setNewValue();
   } else if (command == "ARMED" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -43,7 +44,7 @@ void dealWithMessage(String message, uint8_t from) {
     String modeText = "SET MODESPINNER ";
     modeText += ctrlMode;
     broadcastWSMessage(modeText);
-    newValueFlag = true;
+    setNewValue();
   } else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -64,7 +65,6 @@ void dealWithMessage(String message, uint8_t from) {
     clients[from][0] = value;
   } else if (command == "RACEMODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
-    valueStr.toUpperCase();
     bool raceModeOn = valueStr.toInt() > 0;
     if (valueStr == "ON") raceModeOn = 1;
     if (raceModeOn){
@@ -81,11 +81,11 @@ void dealWithMessage(String message, uint8_t from) {
   // } else if (command == "CUTOFFVOLTAGE"){
     // cutoffVoltage = message.substring(dividerPos + 1).toInt();
   } else if (command == "RPSA"){
-    rpsA = message.substring(dividerPos + 1).toFloat();
+    erpmA = message.substring(dividerPos + 1).toFloat();
   } else if (command == "RPSB"){
-    rpsB = message.substring(dividerPos + 1).toFloat();
+    erpmB = message.substring(dividerPos + 1).toFloat();
   } else if (command == "RPSC"){
-    rpsC = message.substring(dividerPos + 1).toFloat();
+    erpmC = message.substring(dividerPos + 1).toFloat();
   } else if (command == "RECONNECT"){
     reconnect();
   } else if (command == "PIDMULTIPLIER"){

@@ -27,6 +27,8 @@
 // #define SEND_TRANSMISSION_IND
 #define ESC_BUFFER_ITEMS 16
 #define MAX_WS_CONNECTIONS 5
+#define MOTOR_POLE_COUNT 14.0f
+#define RPS_CONVERSION_FACTOR (1.6667f / (MOTOR_POLE_COUNT / 2.0f))
 
 //WiFi and WebSockets settings
 #define ssid "KNS_WLAN_24G"
@@ -41,7 +43,6 @@
 //debugging settings
 #define PRINT_SETUP
 // #define PRINT_TELEMETRY_THROTTLE
-// #define PRINT_TELEMETRY_RPS
 // #define PRINT_TELEMETRY_TEMP
 // #define PRINT_TELEMETRY_ERPM
 // #define PRINT_TELEMETRY_VOLTAGE
@@ -62,12 +63,12 @@
 
 
 //rps control variables
-extern int targetRPS;
-extern int previousRPS[TREND_AMOUNT];
+extern int targetERPM;
+extern int previousERPM[TREND_AMOUNT];
 extern double pidMulti;
-extern double rpsA; //große Änderungen: zu viel -> overshooting bei großen Anpassungen, abwürgen. Zu wenig -> langsames Anpassen bei großen Änderungen
-extern double rpsB;
-extern double rpsC; //responsiveness: zu viel -> schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -> langsames Anpassen bei kleinen Änderungen
+extern double erpmA; //große Änderungen: zu viel -> overshooting bei großen Anpassungen, abwürgen. Zu wenig -> langsames Anpassen bei großen Änderungen
+extern double erpmB;
+extern double erpmC; //responsiveness: zu viel -> schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -> langsames Anpassen bei kleinen Änderungen
 
 //MPU variables
 //MPU6050 mpu;
@@ -91,13 +92,9 @@ extern uint8_t telemetryClientsCounter;
 extern uint16_t telemetryERPM;
 extern uint8_t telemetryTemp;
 extern uint16_t telemetryVoltage;
-extern bool newValueFlag;
-
-//arbitrary variables
-extern int escOutputCounter, escOutputCounter2, escOutputCounter3;
 
 //race mode variables
-extern uint16_t throttle_log[LOG_FRAMES], rps_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
+extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
 extern int acceleration_log[LOG_FRAMES];
 extern uint8_t temp_log[LOG_FRAMES];
 extern uint16_t logPosition;

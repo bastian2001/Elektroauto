@@ -17,7 +17,6 @@
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
 #include "math.h"
-#include "ArduinoJson.h"
 
 #include "global.h"
 #include "system.h"
@@ -34,73 +33,13 @@ TaskHandle_t Task1;
 bool c1ready = false;
 
 //MPU
-float distMPU, speedMPU, acceleration;
-int counterMPU, raw_accel, MPUoffset;
-unsigned long lastMPUUpdate;
-
-//rps control
-double pidMulti, rpsA, rpsB, rpsC;
-int previousRPS[TREND_AMOUNT], targetRPS;
+float distMPU = 0, speedMPU = 0, acceleration = 0;
+int counterMPU = 0, raw_accel = 0, MPUoffset = 0;
+unsigned long lastMPUUpdate = 0;
 
 //webSocket
 WebSocketsServer webSocket = WebSocketsServer(80);
 uint8_t clients[MAX_WS_CONNECTIONS][2];
-
-//esc
-int escOutputCounter, escOutputCounter2, escOutputCounter3;
-uint16_t escValue;
-uint16_t telemetryERPM, telemetryVoltage;
-uint8_t telemetryTemp;
-
-//raceMode
-bool raceMode, raceActive, raceModeSendValues;
-uint16_t logPosition;
-uint16_t throttle_log[LOG_FRAMES], rps_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
-int acceleration_log[LOG_FRAMES];
-uint8_t temp_log[LOG_FRAMES];
-
-//system
-bool armed, newValueFlag;
-int ctrlMode, reqValue;
-double throttle;
-
-
-/*======================================================functional methods================================================*/
-
-void sendRaceLog(){
-  raceModeSendValues = false;
-  Serial2.end();
-  Serial.println("sendRaceLog triggered");
-  for (uint16_t i = 0; i < LOG_FRAMES; i += 100){
-    Serial.print("package no. ");
-    Serial.println(i / 100);
-    DynamicJsonDocument doc = DynamicJsonDocument(10000);
-    doc["firstIndex"] = i;
-    JsonArray JsonThrottleArray = doc.createNestedArray("throttle");
-    JsonArray JsonAccelerationArray = doc.createNestedArray("acceleration");
-    JsonArray JsonRPSArray = doc.createNestedArray("rps");
-    JsonArray JsonVoltageArray = doc.createNestedArray("voltage");
-    JsonArray JsonTemperatureArray = doc.createNestedArray("temperature");
-    for (uint8_t i2 = 0; i2 < 100; i2++){
-      JsonThrottleArray.add(throttle_log[i + i2]);
-      JsonAccelerationArray.add(acceleration_log[i + i2]);
-      JsonRPSArray.add(rps_log[i + i2]);
-      JsonVoltageArray.add(voltage_log[i + i2]);
-      JsonTemperatureArray.add(temp_log[i + i2]);
-    }
-    delay(1);
-    String JsonOutput = "";
-    serializeJson(doc, JsonOutput);
-    #ifdef PRINT_RACE_MODE_JSON
-      serializeJson(doc, Serial);
-    #endif
-    broadcastWSMessage(JsonOutput, true, 5, true);
-    delay(10);
-  }
-  broadcastWSMessage("SET RACEMODETOGGLE OFF");
-  Serial2.begin(115200);
-}
-
 
 
 
@@ -112,6 +51,9 @@ void loop0() {
     reconnect();
   }
   if (raceModeSendValues){
+    raceMode = false;
+    broadcastWSMessage("SET RACEMODETOGGLE OFF");
+    Serial.println("sfdailusda");
     sendRaceLog();
     logPosition = 0;
   }
@@ -141,50 +83,11 @@ void Task1code( void * parameter) {
   }
 }
 
-void setupVariables(){
-  telemetryERPM = 0;
-  telemetryTemp = 0;
-  telemetryVoltage = 0;
-  newValueFlag = false;
-
-  telemetryClientsCounter = 0;
-
-  distMPU = 0;
-  speedMPU = 0;
-  acceleration = 0;
-  counterMPU = 0;
-  lastMPUUpdate = 0;
-  raw_accel = 0;
-  MPUoffset = 0;
-
-  targetRPS = 0;
-  pidMulti = 7;
-  rpsA = 0.00000008;
-  rpsB = 0.000006;
-  rpsC = 0.01;
-
-  throttle = 0;
-  armed = false;
-  escValue = 0;
-  ctrlMode = 0;
-  reqValue = 0;
-
-  escOutputCounter = 0;
-  escOutputCounter2 = 0;
-  escOutputCounter3 = 0;
-
-  raceActive = false;
-  raceModeSendValues = false;
-  raceMode = false;
-  logPosition = 0;
-}
-
 void setup() {
-
-  setupVariables();
-
   //Serial setup
   Serial.begin(115200);
+  Serial.println(RPS_CONVERSION_FACTOR);
+
   disableCore0WDT();
 
   //WiFi Setup
@@ -218,13 +121,8 @@ void setup() {
   ledcAttachPin(ESC_TRIGGER_PIN, 1);
   ledcWrite(1, 127);
 
-  //previousRPS Setup
-  for (int i = 0; i < TREND_AMOUNT; i++) {
-    previousRPS[i] = 0;
-  }
-
   //2nd core setup
-  xTaskCreatePinnedToCore( Task1code, "Task1", 10000, NULL, 0, &Task1, 0);
+  xTaskCreatePinnedToCore( Task1code, "Task1", 50000, NULL, 0, &Task1, 0);
 
   //WebSockets init
   webSocket.begin();
@@ -248,13 +146,10 @@ void setup() {
   #ifdef PRINT_TELEMETRY_VOLTAGE
     Serial.print("Voltage\t");
   #endif
-  #ifdef PRINT_TELEMETRY_RPS
-    Serial.print("RPS\t");
-  #endif
   #ifdef PRINT_TELEMETRY_ERPM
     Serial.print("ERPM\t");
   #endif
-  #if defined(PRINT_TELEMETRY_THROTTLE) || defined(PRINT_TELEMETRY_TEMP) || defined(PRINT_TELEMETRY_VOLTAGE) || defined(PRINT_TELEMETRY_RPS) || defined(PRINT_TELEMETRY_ERPM)
+  #if defined(PRINT_TELEMETRY_THROTTLE) || defined(PRINT_TELEMETRY_TEMP) || defined(PRINT_TELEMETRY_VOLTAGE) || defined(PRINT_TELEMETRY_ERPM)
     Serial.println();
   #endif
   c1ready = true;

@@ -2,25 +2,32 @@
 #include "wifiStuff.h"
 #include "system.h"
 #include "messageHandler.h"
+#include "ArduinoJson.h"
 
-extern double pidMulti, rpsA, rpsB, rpsC;
-extern int escOutputCounter2;
-extern bool raceMode, raceActive;
-extern bool armed, newValueFlag;
-extern int reqValue, targetRPS;
-extern uint16_t escValue;
+double pidMulti = 1.5, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
+int escOutputCounter2 = 0;
+bool raceMode = false;
+extern bool armed;
+extern int reqValue, targetERPM;
+uint16_t escValue = 0;
 extern double throttle;
 
-void setArmed (bool arm, bool sendBroadcast){
+//raceMode
+uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
+int acceleration_log[LOG_FRAMES];
+uint8_t temp_log[LOG_FRAMES];
+bool raceModeSendValues = false;
+
+void setArmed (bool arm, bool sendNoChangeBroadcast){
   if (arm != armed){
     if (!raceActive){
       reqValue = 0;
-      targetRPS = 0;
+      targetERPM = 0;
     }
-    broadcastWSMessage(arm ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
+    broadcastWSMessage((raceActive ? arm : arm || raceMode) ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
     armed = arm;
     setThrottle(0);
-  } else if (sendBroadcast){
+  } else if (sendNoChangeBroadcast){
     broadcastWSMessage(arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
   }
 }
@@ -54,7 +61,7 @@ void startRace(){
     broadcastWSMessage("BLOCK RACEMODETOGGLE ON");
     raceActive = true;
     setArmed(true);
-    newValueFlag = true;
+    setNewValue();
   } else if (!raceMode) {
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
   }
@@ -75,8 +82,9 @@ double calcThrottle(int target, int was[]) {
 
   double prediction = m * ((double)TREND_AMOUNT - (double)TA_DIV_2) + (double)was_avg;
   if (prediction < 0) prediction = 0;
-  double delta_rps = target - prediction;
-  double delta_throttle = rpsA * pow(delta_rps, 3) + rpsB * pow(delta_rps, 2) + rpsC * delta_rps;
+  // double prediction = was[TREND_AMOUNT - 1];
+  double deltaERPM = target - prediction;
+  double delta_throttle = erpmA * pow(deltaERPM, 3) + erpmB * pow(deltaERPM, 2) + erpmC * deltaERPM;
   delta_throttle *= pidMulti;
 
   throttle += delta_throttle;
@@ -89,4 +97,39 @@ void receiveSerial() {
     String readout = Serial.readStringUntil('\n');
     dealWithMessage(readout, 255);
   }
+}
+
+int rpsToErpm(float rps){
+  return (rps / RPS_CONVERSION_FACTOR + .5f);
+}
+int erpmToRps(float erpm){
+  return (erpm * RPS_CONVERSION_FACTOR + .5f);
+}
+
+void setNewValue(){
+  switch (ctrlMode) {
+    case 0:
+      setThrottle(reqValue);
+      break;
+    case 1:
+      targetERPM = rpsToErpm(reqValue);
+      break;
+    case 2:
+      break;
+    default:
+      break;
+  }
+}
+
+void sendRaceLog(){
+  raceModeSendValues = false;
+  uint8_t logData[LOG_FRAMES * 9];
+  memcpy(logData, throttle_log, LOG_FRAMES * 2);
+  memcpy(logData + LOG_FRAMES * 2, acceleration_log, LOG_FRAMES * 2);
+  memcpy(logData + LOG_FRAMES * 4, erpm_log, LOG_FRAMES * 2);
+  memcpy(logData + LOG_FRAMES * 6, voltage_log, LOG_FRAMES * 2);
+  memcpy(logData + LOG_FRAMES * 8, temp_log, LOG_FRAMES);
+  delay(2);
+  broadcastWSBin(logData, LOG_FRAMES * 9, true, 20);
+  Serial2.begin(115200);
 }

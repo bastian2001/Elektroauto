@@ -108,7 +108,7 @@
 
 # Sending the logs
 
-packets of 100 frames, format (JSON):
+<!-- packets of 100 frames, format (JSON):
 
 ```json
 {
@@ -119,7 +119,8 @@ packets of 100 frames, format (JSON):
   "voltage" : [...],
   "temperature" : [...]
 }
-```
+``` -->
+
 
 # Other notes
 

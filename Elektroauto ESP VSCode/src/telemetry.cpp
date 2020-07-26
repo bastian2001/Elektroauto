@@ -6,9 +6,9 @@
 
 uint16_t errorCount = 0;
 extern bool raceMode, raceActive;
-extern int previousRPS[TREND_AMOUNT];
-extern uint16_t telemetryERPM, telemetryVoltage;
-extern uint8_t telemetryTemp;
+extern int previousERPM[TREND_AMOUNT];
+uint16_t telemetryERPM = 0, telemetryVoltage = 0;
+uint8_t telemetryTemp = 0;
 extern bool armed;
 extern int reqValue;
 extern double throttle;
@@ -45,7 +45,7 @@ void getTelemetry(){
 
 void sendTelemetry() {
   int velMPU = (int)(speedMPU * 1000 + .5);
-  int velWheel = (int)((float)30 * PI * (float)previousRPS[TREND_AMOUNT - 1]);
+  int velWheel = (int)((float)30 * PI * (float)previousERPM[TREND_AMOUNT - 1]);
   int slipPercent = 0;
   if (velWheel != 0) {
     slipPercent = (float)(velWheel - velMPU) / velWheel * 100;
@@ -58,7 +58,7 @@ void sendTelemetry() {
   telemetryData += "!t";
   telemetryData += ((int) throttle);
   telemetryData += "!r";
-  telemetryData += previousRPS[TREND_AMOUNT - 1];
+  telemetryData += erpmToRps(telemetryERPM);
   telemetryData += "!s";
   telemetryData += slipPercent;
   telemetryData += "!v";
