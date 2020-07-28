@@ -71,12 +71,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cad899bc-e912-46f5-adbc-e5792a663ea7" name="Default Changelist" comment="dshot mX values configured">
-      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/platformio.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/platformio.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/escIR.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/escIR.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/global.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/global.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/system.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/system.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/system.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/telemetry.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/telemetry.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/mpuFunctions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/mpuFunctions.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -84,7 +82,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="192.168.0.85:5555" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_30" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />

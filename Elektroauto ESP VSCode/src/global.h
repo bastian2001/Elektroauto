@@ -22,7 +22,7 @@
 #define T_RESET 21 // reset length in multiples of bit time
 #define ESC_TELEMETRY_REQUEST 0
 #define TRANSMISSION_IND 1000
-#define TELEMETRY_DEBUG 3
+#define TELEMETRY_DEBUG -1
 // #define SEND_TRANSMISSION_IND
 #define ESC_BUFFER_ITEMS 16
 
