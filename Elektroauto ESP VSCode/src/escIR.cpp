@@ -11,9 +11,9 @@ extern bool raceModeSendValues;
 bool armed = false, raceActive = false;
 extern uint16_t escValue;
 uint16_t logPosition = 0;
-extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
-extern int acceleration_log[LOG_FRAMES];
-extern uint8_t temp_log[LOG_FRAMES];
+extern uint16_t throttleLog[LOG_FRAMES], erpmLog[LOG_FRAMES], voltageLog[LOG_FRAMES];
+extern int accelerationLog[LOG_FRAMES];
+extern uint8_t tempLog[LOG_FRAMES];
 double throttle = 0, nextThrottle = 0;
 
 void escir() {
@@ -67,11 +67,11 @@ void escir() {
 
   // logging, if race is active
   if (raceActive){
-    throttle_log[logPosition] = (uint16_t)throttle;
-    acceleration_log[logPosition] = 0;
-    erpm_log[logPosition] = previousERPM[TREND_AMOUNT - 1];
-    voltage_log[logPosition] = telemetryVoltage;
-    temp_log[logPosition] = telemetryTemp;
+    throttleLog[logPosition] = (uint16_t)throttle;
+    accelerationLog[logPosition] = 0;
+    erpmLog[logPosition] = previousERPM[TREND_AMOUNT - 1];
+    voltageLog[logPosition] = telemetryVoltage;
+    tempLog[logPosition] = telemetryTemp;
     logPosition++;
     if (logPosition == LOG_FRAMES){
       raceActive = false;

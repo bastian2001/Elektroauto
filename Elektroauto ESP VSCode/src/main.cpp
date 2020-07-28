@@ -24,18 +24,14 @@
 #include "wifiStuff.h"
 #include "escIR.h"
 #include "telemetry.h"
+#include "mpuFunctions.h"
 
 
 /*======================================================global variables==================================================*/
 
 //Core 0 variables
-TaskHandle_t Task1;
-bool c1ready = false;
-
-//MPU
-float distMPU = 0, speedMPU = 5000, acceleration = 0;
-int counterMPU = 0, raw_accel = 0, MPUoffset = 0;
-unsigned long lastMPUUpdate = 0;
+TaskHandle_t core0Task;
+bool c1ready = false, c0ready = false;
 
 //webSocket
 WebSocketsServer webSocket = WebSocketsServer(80);
@@ -62,14 +58,26 @@ void loop0() {
 }
 
 void loop() {
+  // handleMPU(); // timer instead of pwm first
   getTelemetry();
-  evaluateThrottle();
+  calculateThrottle();
 }
 
-void Task1code( void * parameter) {
+void core0Code( void * parameter) {
   Serial2.begin(115200);
   attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
+
+
+  //WebSockets init
+  webSocket.begin();
+  webSocket.onEvent(onWebSocketEvent);
+  for (int i = 0; i < MAX_WS_CONNECTIONS; i++) {
+    clients[i][0] = 0;
+    clients[i][1] = 0;
+  }
+
   disableCore0WDT();
+  c0ready = true;
 
   while (!c1ready) {
     yield();
@@ -83,7 +91,8 @@ void Task1code( void * parameter) {
 void setup() {
   //Serial setup
   Serial.begin(115200);
-  Serial.println(RPS_CONVERSION_FACTOR);
+  
+  disableCore1WDT();
 
   //WiFi Setup
   WiFi.enableSTA(true);
@@ -105,6 +114,12 @@ void setup() {
     Serial.println(WiFi.localIP());
   #endif
 
+  //MPU initialization
+  // initMPU(); // timer instead of pwm first
+
+  //core 0 setup
+  xTaskCreatePinnedToCore( core0Code, "core0Task", 50000, NULL, 0, &core0Task, 0);
+
   //ESC pins Setup
   pinMode(ESC_OUTPUT_PIN, OUTPUT);
   pinMode(ESC_TRIGGER_PIN, OUTPUT);
@@ -115,17 +130,6 @@ void setup() {
   ledcSetup(1, ESC_FREQ, 8);
   ledcAttachPin(ESC_TRIGGER_PIN, 1);
   ledcWrite(1, 127);
-
-  //2nd core setup
-  xTaskCreatePinnedToCore( Task1code, "Task1", 50000, NULL, 0, &Task1, 0);
-
-  //WebSockets init
-  webSocket.begin();
-  webSocket.onEvent(onWebSocketEvent);
-  for (int i = 0; i < MAX_WS_CONNECTIONS; i++) {
-    clients[i][0] = 0;
-    clients[i][1] = 0;
-  }
 
   //setup termination
   #ifdef PRINT_SETUP
@@ -148,5 +152,8 @@ void setup() {
     Serial.println();
   #endif
   c1ready = true;
+  while(!c0ready){
+    yield();
+  }
   lastMPUUpdate = millis();
 }

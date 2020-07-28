@@ -25,7 +25,7 @@ void getTelemetry(){
       telemetryTemp = escTelemetry[0];
       telemetryVoltage = (escTelemetry[1] << 8) | escTelemetry[2];
       telemetryERPM = (escTelemetry[7] << 8) | escTelemetry[8];
-      speedWheel = (float)telemetryERPM * ERPM_TO_MM_PER_SECOND;
+      speedWheel = (float)telemetryERPM * ERPM_TO_MM_PER_SECOND / GEAR_RATIO;
       for (uint8_t i = 0; i < 9; i++){
         escTelemetry[i] = B1;
       }
