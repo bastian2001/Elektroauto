@@ -15,7 +15,6 @@ extern uint16_t throttleLog[LOG_FRAMES], erpmLog[LOG_FRAMES], voltageLog[LOG_FRA
 extern int accelerationLog[LOG_FRAMES];
 extern uint8_t tempLog[LOG_FRAMES];
 double throttle = 0, nextThrottle = 0;
-portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
 void escir() {
   //set Throttle to evaluated value
@@ -36,15 +35,12 @@ void escir() {
     digitalWrite(TRANSMISSION, HIGH);
   #endif
 
-
-
   // record new previousERPM value
   for (int i = 0; i < TREND_AMOUNT - 1; i++) {
     previousERPM[i] = previousERPM[i + 1];
   }
   previousERPM[TREND_AMOUNT - 1] = telemetryERPM;
 
-  #if TELEMETRY_DEBUG > -1
   // print debug telemetry over Serial
   escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG) ? 0 : escOutputCounter3 + 1;
   if (escOutputCounter3 == 0){ 
@@ -68,7 +64,6 @@ void escir() {
       sPrintln("");
     #endif
   }
-  #endif
 
   // logging, if race is active
   if (raceActive){

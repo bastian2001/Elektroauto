@@ -37,9 +37,6 @@ bool c1ready = false, c0ready = false;
 WebSocketsServer webSocket = WebSocketsServer(80);
 uint8_t clients[MAX_WS_CONNECTIONS][2];
 
-//escIR timer variables
-hw_timer_t * timer = NULL;
-
 
 
 
@@ -61,18 +58,15 @@ void loop0() {
 }
 
 void loop() {
-  handleMPU();
+  // handleMPU(); // timer instead of pwm first
   getTelemetry();
   calculateThrottle();
 }
 
 void core0Code( void * parameter) {
   Serial2.begin(115200);
+  attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
 
-  timer = timerBegin(0, 80, true);
-  timerAttachInterrupt(timer, &escir, true);
-  timerAlarmWrite(timer, 1000, true);
-  timerAlarmEnable(timer);
 
   //WebSockets init
   webSocket.begin();
@@ -121,7 +115,7 @@ void setup() {
   #endif
 
   //MPU initialization
-  initMPU();
+  // initMPU(); // timer instead of pwm first
 
   //core 0 setup
   xTaskCreatePinnedToCore( core0Code, "core0Task", 50000, NULL, 0, &core0Task, 0);
@@ -142,7 +136,6 @@ void setup() {
     Serial.println("ready");
   #endif
 
-  #if TELEMETRY_DEBUG > -1
   #ifdef PRINT_TELEMETRY_THROTTLE
     Serial.print("Throttle\t");
   #endif
@@ -158,12 +151,9 @@ void setup() {
   #if defined(PRINT_TELEMETRY_THROTTLE) || defined(PRINT_TELEMETRY_TEMP) || defined(PRINT_TELEMETRY_VOLTAGE) || defined(PRINT_TELEMETRY_ERPM)
     Serial.println();
   #endif
-  #endif
-
   c1ready = true;
   while(!c0ready){
     yield();
   }
-
   lastMPUUpdate = millis();
 }
