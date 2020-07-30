@@ -2,7 +2,6 @@
 #include "global.h"
 #include "system.h"
 #include "escSetup.h"
-#include "mpuFunctions.h"
 
 int escOutputCounter = 0, escOutputCounter3 = 0;
 int previousERPM[TREND_AMOUNT];
@@ -16,17 +15,13 @@ extern uint16_t throttleLog[LOG_FRAMES], erpmLog[LOG_FRAMES], voltageLog[LOG_FRA
 extern int accelerationLog[LOG_FRAMES];
 extern uint8_t tempLog[LOG_FRAMES];
 double throttle = 0, nextThrottle = 0;
-extern bool updatedValue;
-volatile bool escirFinished = false;
-// portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
+portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
-void IRAM_ATTR escir() {
-  while (escirFinished){}
+void escir() {
   //set Throttle to evaluated value
   if (armed){
     setThrottle(nextThrottle);
   }
-
   #ifdef SEND_TRANSMISSION_IND
   escOutputCounter = (escOutputCounter == TRANSMISSION_IND) ? 0 : escOutputCounter + 1;
   if (escOutputCounter == 0)
@@ -41,9 +36,7 @@ void IRAM_ATTR escir() {
     digitalWrite(TRANSMISSION, HIGH);
   #endif
 
-  // int now = micros() % 1000;
-  // if (now > 20)
-  // sPrintln(String(now % 1000));
+
 
   // record new previousERPM value
   for (int i = 0; i < TREND_AMOUNT - 1; i++) {
@@ -80,7 +73,7 @@ void IRAM_ATTR escir() {
   // logging, if race is active
   if (raceActive){
     throttleLog[logPosition] = (uint16_t)throttle;
-    accelerationLog[logPosition] = raw_accel;
+    accelerationLog[logPosition] = 0;
     erpmLog[logPosition] = previousERPM[TREND_AMOUNT - 1];
     voltageLog[logPosition] = telemetryVoltage;
     tempLog[logPosition] = telemetryTemp;
@@ -90,5 +83,4 @@ void IRAM_ATTR escir() {
       raceModeSendValues = true;
     }
   }
-  escirFinished = true;
 }

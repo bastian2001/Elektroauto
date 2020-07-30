@@ -1,3 +1,3 @@
 void handleMPU();
 void initMPU();
-double rawAccelToPhysicalAccel(int acceleration);
+float rawAccelToPhysicalAccel(int acceleration);

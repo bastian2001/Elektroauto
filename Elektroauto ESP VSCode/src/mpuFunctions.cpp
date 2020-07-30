@@ -6,34 +6,47 @@
 
 //MPU
 uint16_t distMPU = 0;
-double speedMPU = 0, acceleration = 0;
-int16_t raw_accel = 0;
-// unsigned long lastMPUUpdate = 0;
+float speedMPU = 0, acceleration = 0;
+int raw_accel = 0, MPUoffset = 0;
+unsigned long lastMPUUpdate = 0;
 MPU6050 mpu;
 bool mpuReady = false;
-extern bool updatedValue;
 portMUX_TYPE mpuMux = portMUX_INITIALIZER_UNLOCKED;
 
 float rawAccelToPhysicalAccel(int acceleration){
-    return (float) acceleration / (16.384f / (float)pow(2, ACCEL_RANGE + 1) / 9.81f);
+    return (float) acceleration / (16.384f / (float) pow(2, ACCEL_RANGE + 1) / 9.81f);
 }
 
 void handleMPU(){
-    mpuReady = mpu.testConnection();
-    Serial.println(mpuReady);
-    if (mpuReady){
-        raw_accel = mpu.getAccelerationX();
-        if (armed && throttle > 0){
-            acceleration = rawAccelToPhysicalAccel(raw_accel);
-            speedMPU += acceleration / 1000.0;
-            distMPU += speedMPU / 1000;
-        } else {
-            acceleration = 0;
-            speedMPU = 0;
-            distMPU = 0;
+    unsigned long now = millis();
+    if (lastMPUUpdate < now){
+        // portENTER_CRITICAL(&mpuMux);
+        // mpuReady = mpu.testConnection();
+        // portEXIT_CRITICAL(&mpuMux);
+        lastMPUUpdate = now;
+        if (mpuReady){
+            long ddddd = millis();
+            portENTER_CRITICAL(&mpuMux);
+            long eeeee = millis();
+            raw_accel = mpu.getAccelerationX();
+            long fffff = millis();
+            portEXIT_CRITICAL(&mpuMux);
+            long ggggg = millis();
+            sPrint (String(ddddd)); sPrint("\t");
+            sPrint (String(eeeee - ddddd)); sPrint("\t");
+            sPrint (String(fffff - eeeee)); sPrint("\t");
+            sPrintln (String(ggggg - fffff));
+            if (armed && throttle > 0){
+                acceleration = rawAccelToPhysicalAccel(raw_accel);
+                speedMPU += acceleration / 1000.0f;
+                distMPU += speedMPU / 1000;
+            } else {
+                acceleration = 0;
+                speedMPU = 0;
+                distMPU = 0;
+            }
         }
     }
-    updatedValue = true;
 }
 
 void initMPU(){

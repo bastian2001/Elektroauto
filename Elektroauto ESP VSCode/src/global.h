@@ -22,6 +22,7 @@
 #define T_RESET 21 // reset length in multiples of bit time
 #define ESC_TELEMETRY_REQUEST 0
 #define TRANSMISSION_IND 1000
+#define TELEMETRY_DEBUG -1
 // #define SEND_TRANSMISSION_IND
 #define ESC_BUFFER_ITEMS 16
 
@@ -48,14 +49,13 @@
 
 //debugging settings
 #define PRINT_SETUP
-#define TELEMETRY_DEBUG -1
 // #define PRINT_TELEMETRY_THROTTLE
 // #define PRINT_TELEMETRY_TEMP
 // #define PRINT_TELEMETRY_ERPM
 // #define PRINT_TELEMETRY_VOLTAGE
-// #define PRINT_WEBSOCKET_CONNECTIONS
+#define PRINT_WEBSOCKET_CONNECTIONS
 #define PRINT_INCOMING_MESSAGES
-// #define PRINT_MEANINGS
+#define PRINT_MEANINGS
 #define PRINT_BROADCASTS
 // #define PRINT_SINGLE_OUTGOING_MESSAGES
 // #define PRINT_RACE_MODE_JSON
@@ -82,13 +82,11 @@ extern double erpmC; //responsiveness: zu viel -> schnelles wackeln um den eigen
 
 //MPU variables
 //MPU6050 mpu;
-// extern unsigned long lastMPUUpdate;
-extern int16_t raw_accel;
-extern double acceleration, speedMPU;
+extern unsigned long lastMPUUpdate;
+extern int MPUoffset, raw_accel;
+extern float acceleration, speedMPU;
 extern uint16_t distMPU;
 extern bool mpuReady;
-
-extern bool updatedValue;
 
 //slip variables
 extern int targetSlip;
@@ -109,7 +107,6 @@ extern uint8_t telemetryClientsCounter;
 extern uint16_t telemetryERPM;
 extern uint8_t telemetryTemp;
 extern uint16_t telemetryVoltage;
-extern volatile bool escirFinished;
 
 //race mode variables
 extern uint16_t throttleLog[LOG_FRAMES], erpmLog[LOG_FRAMES], voltageLog[LOG_FRAMES];

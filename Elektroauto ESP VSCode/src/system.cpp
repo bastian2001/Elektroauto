@@ -34,7 +34,7 @@ void setArmed (bool arm, bool sendNoChangeBroadcast){
   }
 }
 
-void IRAM_ATTR setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
+void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
   newThrottle = (newThrottle > 2000) ? 2000 : newThrottle;
   newThrottle = (newThrottle < 0) ? 0 : newThrottle;
   newThrottle = (newThrottle > MAX_THROTTLE) ? MAX_THROTTLE : newThrottle;
@@ -43,7 +43,7 @@ void IRAM_ATTR setThrottle(double newThrottle) { //throttle value between 0 and 
   escValue = appendChecksum(newThrottle);
 }
 
-uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest) {
+uint16_t appendChecksum(uint16_t value, bool telemetryRequest) {
   value &= 0x7FF;
   // escOutputCounter2 = (escOutputCounter2 == ESC_TELEMETRY_REQUEST) ? 0 : escOutputCounter2 + 1;
   // bool telem = escOutputCounter2 == 0;
@@ -139,7 +139,6 @@ void sendRaceLog(){
 }
 
 void calculateThrottle(){
-  updatedValue = false;
   if (armed) {
     switch (ctrlMode) {
       int addToTargetERPM;
