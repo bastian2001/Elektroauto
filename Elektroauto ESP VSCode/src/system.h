@@ -10,4 +10,4 @@ float rpsToErpm(float rps);
 float erpmToRps(float erpm);
 void setNewTargetValue();
 void sendRaceLog();
-void calculateThrottle();
+void evaluateThrottle();

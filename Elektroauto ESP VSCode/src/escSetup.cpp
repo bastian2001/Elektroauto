@@ -6,13 +6,13 @@ rmt_item32_t escDataBuffer[ESC_BUFFER_ITEMS];
 void esc_init(uint8_t channel, uint8_t pin) {
   rmt_config_t config;
   config.rmt_mode = RMT_MODE_TX;
-  config.channel = (rmt_channel_t) channel;
-  config.gpio_num = (gpio_num_t) pin;
+  config.channel = ((rmt_channel_t) channel);
+  config.gpio_num = ((gpio_num_t) pin);
   config.mem_block_num = 3;
   config.tx_config.loop_en = false;
   config.tx_config.carrier_en = false;
   config.tx_config.idle_output_en = true;
-  config.tx_config.idle_level = (rmt_idle_level_t) 0;
+  config.tx_config.idle_level = ((rmt_idle_level_t) 0);
   config.clk_div = 6; // target: DShot 300 (300kbps)
 
   ESP_ERROR_CHECK(rmt_config(&config));

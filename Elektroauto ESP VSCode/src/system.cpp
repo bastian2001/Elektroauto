@@ -11,12 +11,11 @@ extern bool armed;
 int targetERPM = 0, ctrlMode = 0, reqValue = 0, targetSlip = 0;
 uint16_t escValue = 0;
 extern double throttle;
-extern bool mpuReady;
 
 //raceMode
-uint16_t throttleLog[LOG_FRAMES], erpmLog[LOG_FRAMES], voltageLog[LOG_FRAMES];
-int accelerationLog[LOG_FRAMES];
-uint8_t tempLog[LOG_FRAMES];
+uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
+int acceleration_log[LOG_FRAMES];
+uint8_t temp_log[LOG_FRAMES];
 bool raceModeSendValues = false;
 
 void setArmed (bool arm, bool sendNoChangeBroadcast){
@@ -128,17 +127,17 @@ void setNewTargetValue(){
 void sendRaceLog(){
   raceModeSendValues = false;
   uint8_t logData[LOG_FRAMES * 9];
-  memcpy(logData, throttleLog, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 2, accelerationLog, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 4, erpmLog, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 6, voltageLog, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 8, tempLog, LOG_FRAMES);
+  memcpy(logData, throttle_log, LOG_FRAMES * 2);
+  memcpy(logData + LOG_FRAMES * 2, acceleration_log, LOG_FRAMES * 2);
+  memcpy(logData + LOG_FRAMES * 4, erpm_log, LOG_FRAMES * 2);
+  memcpy(logData + LOG_FRAMES * 6, voltage_log, LOG_FRAMES * 2);
+  memcpy(logData + LOG_FRAMES * 8, temp_log, LOG_FRAMES);
   delay(2);
   broadcastWSBin(logData, LOG_FRAMES * 9, true, 20);
   Serial2.begin(115200);
 }
 
-void calculateThrottle(){
+void evaluateThrottle(){
   if (armed) {
     switch (ctrlMode) {
       int addToTargetERPM;
@@ -148,17 +147,11 @@ void calculateThrottle(){
         nextThrottle = calcThrottle(targetERPM, previousERPM);
         break;
       case 2:
-        if (mpuReady){
-          addToTargetERPM = 40 - (throttle * .2);
-          if (addToTargetERPM < 0)
-            addToTargetERPM = 0;
-          targetERPM = ((0.0f - speedMPU) / ((float) targetSlip * .01f - 1)) / ERPM_TO_MM_PER_SECOND + addToTargetERPM;
-          nextThrottle = calcThrottle(targetERPM, previousERPM, .1);
-        } else {
-          ctrlMode = 1;
-          setArmed(false, true);
-          broadcastWSMessage ("MESSAGE Keine Verbindung zum Beschleunigungssensor!");
-        }
+        addToTargetERPM = 40 - (throttle * .2);
+        if (addToTargetERPM < 0)
+          addToTargetERPM = 0;
+        targetERPM = ((0.0f - speedMPU) / ((float) targetSlip * .01f - 1)) / ERPM_TO_MM_PER_SECOND + addToTargetERPM;
+        nextThrottle = calcThrottle(targetERPM, previousERPM, .1);
         break;
       default:
         break;
