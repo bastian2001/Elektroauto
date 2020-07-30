@@ -25,6 +25,7 @@
 #include "escIR.h"
 #include "telemetry.h"
 #include "mpuFunctions.h"
+#include "messageHandler.h"
 
 
 /*======================================================global variables==================================================*/
@@ -39,6 +40,8 @@ uint8_t clients[MAX_WS_CONNECTIONS][2];
 
 //escIR timer variables
 hw_timer_t * timer = NULL;
+
+bool updatedValue = false;
 
 
 
@@ -61,22 +64,22 @@ void loop0() {
 }
 
 void loop() {
-  handleMPU();
+  if (escirFinished){
+    // handleMPU();
+    escirFinished = false;
+  }
   getTelemetry();
-  calculateThrottle();
+  if (updatedValue)
+    calculateThrottle();
 }
 
 void core0Code( void * parameter) {
   Serial2.begin(115200);
 
-  timer = timerBegin(0, 80, true);
-  timerAttachInterrupt(timer, &escir, true);
-  timerAlarmWrite(timer, 1000, true);
-  timerAlarmEnable(timer);
-
   //WebSockets init
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
+  setArmed(true);
   for (int i = 0; i < MAX_WS_CONNECTIONS; i++) {
     clients[i][0] = 0;
     clients[i][1] = 0;
@@ -128,14 +131,14 @@ void setup() {
 
   //ESC pins Setup
   pinMode(ESC_OUTPUT_PIN, OUTPUT);
-  pinMode(ESC_TRIGGER_PIN, OUTPUT);
   pinMode(TRANSMISSION, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(TRANSMISSION, HIGH);
   esc_init(0, ESC_OUTPUT_PIN);
-  ledcSetup(1, ESC_FREQ, 8);
-  ledcAttachPin(ESC_TRIGGER_PIN, 1);
-  ledcWrite(1, 127);
+  timer = timerBegin(0, 80, true);
+  timerAttachInterrupt(timer, &escir, true);
+  timerAlarmWrite(timer, 1000, true);
+  timerAlarmEnable(timer);
 
   //setup termination
   #ifdef PRINT_SETUP
@@ -165,5 +168,5 @@ void setup() {
     yield();
   }
 
-  lastMPUUpdate = millis();
+  // lastMPUUpdate = millis();
 }

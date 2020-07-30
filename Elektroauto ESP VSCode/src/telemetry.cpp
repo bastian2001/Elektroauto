@@ -14,6 +14,7 @@ extern int reqValue;
 extern double throttle;
 char escTelemetry[10];
 uint16_t speedWheel = 0;
+extern bool updatedValue;
 
 void getTelemetry(){
   while(Serial2.available()){
@@ -22,6 +23,7 @@ void getTelemetry(){
     }
     escTelemetry[9] = (char) Serial2.read();
     if (isTelemetryComplete()){
+      updatedValue = true;
       telemetryTemp = escTelemetry[0];
       telemetryVoltage = (escTelemetry[1] << 8) | escTelemetry[2];
       telemetryERPM = (escTelemetry[7] << 8) | escTelemetry[8];
