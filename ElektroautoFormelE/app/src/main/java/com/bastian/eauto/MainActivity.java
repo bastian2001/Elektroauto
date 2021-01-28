@@ -223,9 +223,9 @@ public class MainActivity extends AppCompatActivity {
                     wsSend("MODE:" + i);
                 }
                 if (i == 0) {
-                    seekBarValue.setMax(350);
+                    seekBarValue.setMax(2000);
                 } else if (i == 1) {
-                    seekBarValue.setMax(90);
+                    seekBarValue.setMax(1500);
                 } else {
                     seekBarValue.setMax(20);
                 }
