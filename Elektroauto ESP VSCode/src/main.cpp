@@ -11,9 +11,6 @@
 
 #include <Arduino.h>
 #include "WiFi.h"
-// #include "Wire.h"
-//#include "I2Cdev.h"
-//#include "MPU6050.h"
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
 #include "math.h"
@@ -64,10 +61,10 @@ void loop0() {
 }
 
 void loop() {
-  if (escirFinished){
+  // if (escirFinished){
     // handleMPU();
-    escirFinished = false;
-  }
+    // escirFinished = false;
+  // }
   getTelemetry();
   if (updatedValue)
     calculateThrottle();
@@ -124,7 +121,7 @@ void setup() {
   #endif
 
   //MPU initialization
-  initMPU();
+  // initMPU();
 
   //core 0 setup
   xTaskCreatePinnedToCore( core0Code, "core0Task", 50000, NULL, 0, &core0Task, 0);
@@ -137,7 +134,7 @@ void setup() {
   esc_init(0, ESC_OUTPUT_PIN);
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &escir, true);
-  timerAlarmWrite(timer, 1000, true);
+  timerAlarmWrite(timer, ESC_FREQ, true);
   timerAlarmEnable(timer);
 
   //setup termination

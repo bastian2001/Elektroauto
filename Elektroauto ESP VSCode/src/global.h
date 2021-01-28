@@ -12,7 +12,7 @@
 #define LED_BUILTIN 22
 
 //ESC values
-#define ESC_FREQ 1000
+#define ESC_FREQ 800
 #define CLK_DIV 3 //DShot 150: 12, DShot 300: 6, DShot 600: 3
 #define TT 44 // total bit time
 #define T0H 17 // 0 bit high time
@@ -26,8 +26,8 @@
 #define ESC_BUFFER_ITEMS 16
 
 //motor and wheel properties
-#define MAX_THROTTLE 350
-#define MAX_TARGET_RPS 90
+#define MAX_THROTTLE 2000
+#define MAX_TARGET_RPS 1500
 #define MAX_TARGET_SLIP 20
 #define MOTOR_POLE_COUNT 14.0f
 #define WHEEL_DIAMETER 30.0f
@@ -37,8 +37,10 @@
 
 //WiFi and WebSockets settings
 #define MAX_WS_CONNECTIONS 5
-#define ssid "KNS_WLAN_24G"
-#define password "YZKswQHaE4xyKqdP"
+#define ssid "Fritz!Boxgraben"
+#define password "WirBoxenEuchWeg"
+// #define ssid "KNS_WLAN_24G"
+// #define password "YZKswQHaE4xyKqdP"
 // #define ssid "Coworking"
 // #define password "86577103963855526306"
 // #define ssid "bastian"
@@ -109,7 +111,7 @@ extern uint8_t telemetryClientsCounter;
 extern uint16_t telemetryERPM;
 extern uint8_t telemetryTemp;
 extern uint16_t telemetryVoltage;
-extern volatile bool escirFinished;
+// extern volatile bool escirFinished;
 
 //race mode variables
 extern uint16_t throttleLog[LOG_FRAMES], erpmLog[LOG_FRAMES], voltageLog[LOG_FRAMES];

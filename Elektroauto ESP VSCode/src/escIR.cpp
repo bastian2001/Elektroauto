@@ -17,11 +17,10 @@ extern int accelerationLog[LOG_FRAMES];
 extern uint8_t tempLog[LOG_FRAMES];
 double throttle = 0, nextThrottle = 0;
 extern bool updatedValue;
-volatile bool escirFinished = false;
+// volatile bool escirFinished = false;
 // portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
 void IRAM_ATTR escir() {
-  while (escirFinished){}
   //set Throttle to evaluated value
   if (armed){
     setThrottle(nextThrottle);
@@ -90,5 +89,4 @@ void IRAM_ATTR escir() {
       raceModeSendValues = true;
     }
   }
-  escirFinished = true;
 }

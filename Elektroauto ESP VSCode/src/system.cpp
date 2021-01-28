@@ -2,9 +2,8 @@
 #include "wifiStuff.h"
 #include "system.h"
 #include "messageHandler.h"
-#include "ArduinoJson.h"
 
-double pidMulti = 1.5, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
+double pidMulti = 0.2, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
 int escOutputCounter2 = 0;
 bool raceMode = false;
 extern bool armed;
