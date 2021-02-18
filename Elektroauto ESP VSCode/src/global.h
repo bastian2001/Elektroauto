@@ -25,12 +25,14 @@
 #define ESC_BUFFER_ITEMS 16
 
 //motor and wheel properties
+#define TELEMETRY_DEBUG 3
 #define MAX_THROTTLE 350
 #define MAX_TARGET_RPS 90
 #define MAX_TARGET_SLIP 20
+// #define SEND_TRANSMISSION_IND
+#define ESC_BUFFER_ITEMS 16
 #define MOTOR_POLE_COUNT 14.0f
 #define WHEEL_DIAMETER 30.0f
-#define GEAR_RATIO 1.0f
 #define RPS_CONVERSION_FACTOR (1.6667f / (MOTOR_POLE_COUNT / 2.0f))
 #define ERPM_TO_MM_PER_SECOND (RPS_CONVERSION_FACTOR * WHEEL_DIAMETER * PI)
 
@@ -45,14 +47,13 @@
 
 //debugging settings
 #define PRINT_SETUP
-#define TELEMETRY_DEBUG -1
 // #define PRINT_TELEMETRY_THROTTLE
 // #define PRINT_TELEMETRY_TEMP
 // #define PRINT_TELEMETRY_ERPM
 // #define PRINT_TELEMETRY_VOLTAGE
-// #define PRINT_WEBSOCKET_CONNECTIONS
+#define PRINT_WEBSOCKET_CONNECTIONS
 #define PRINT_INCOMING_MESSAGES
-// #define PRINT_MEANINGS
+#define PRINT_MEANINGS
 #define PRINT_BROADCASTS
 // #define PRINT_SINGLE_OUTGOING_MESSAGES
 // #define PRINT_RACE_MODE_JSON
@@ -63,9 +64,6 @@
 
 //logging settings
 #define LOG_FRAMES 5000
-
-//MPU settings
-#define ACCEL_RANGE 0x00 //0: 2g, 1: 4g, 2: 8g, 3: 16g
 
 
 
@@ -79,13 +77,9 @@ extern double erpmC; //responsiveness: zu viel -> schnelles wackeln um den eigen
 
 //MPU variables
 //MPU6050 mpu;
-// extern unsigned long lastMPUUpdate;
-extern int16_t raw_accel;
-extern double acceleration, speedMPU;
-extern uint16_t distMPU;
-extern bool mpuReady;
-
-extern bool updatedValue;
+extern unsigned long lastMPUUpdate;
+extern int counterMPU, MPUoffset, raw_accel;
+extern float acceleration, speedMPU, distMPU;
 
 //slip variables
 extern int targetSlip;
@@ -106,12 +100,11 @@ extern uint8_t telemetryClientsCounter;
 extern uint16_t telemetryERPM;
 extern uint8_t telemetryTemp;
 extern uint16_t telemetryVoltage;
-// extern volatile bool escirFinished;
 
 //race mode variables
-extern uint16_t throttleLog[LOG_FRAMES], erpmLog[LOG_FRAMES], voltageLog[LOG_FRAMES];
-extern int accelerationLog[LOG_FRAMES];
-extern uint8_t tempLog[LOG_FRAMES];
+extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
+extern int acceleration_log[LOG_FRAMES];
+extern uint8_t temp_log[LOG_FRAMES];
 extern uint16_t logPosition;
 extern bool raceModeSendValues, raceMode, raceActive;
 

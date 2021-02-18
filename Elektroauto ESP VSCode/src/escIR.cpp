@@ -2,7 +2,6 @@
 #include "global.h"
 #include "system.h"
 #include "escSetup.h"
-#include "mpuFunctions.h"
 
 int escOutputCounter = 0, escOutputCounter3 = 0;
 int previousERPM[TREND_AMOUNT];
@@ -12,20 +11,16 @@ extern bool raceModeSendValues;
 bool armed = false, raceActive = false;
 extern uint16_t escValue;
 uint16_t logPosition = 0;
-extern uint16_t throttleLog[LOG_FRAMES], erpmLog[LOG_FRAMES], voltageLog[LOG_FRAMES];
-extern int accelerationLog[LOG_FRAMES];
-extern uint8_t tempLog[LOG_FRAMES];
+extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
+extern int acceleration_log[LOG_FRAMES];
+extern uint8_t temp_log[LOG_FRAMES];
 double throttle = 0, nextThrottle = 0;
-extern bool updatedValue;
-// volatile bool escirFinished = false;
-// portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
-void IRAM_ATTR escir() {
+void escir() {
   //set Throttle to evaluated value
   if (armed){
     setThrottle(nextThrottle);
   }
-
   #ifdef SEND_TRANSMISSION_IND
   escOutputCounter = (escOutputCounter == TRANSMISSION_IND) ? 0 : escOutputCounter + 1;
   if (escOutputCounter == 0)
@@ -40,17 +35,12 @@ void IRAM_ATTR escir() {
     digitalWrite(TRANSMISSION, HIGH);
   #endif
 
-  // int now = micros() % 1000;
-  // if (now > 20)
-  // sPrintln(String(now % 1000));
-
   // record new previousERPM value
   for (int i = 0; i < TREND_AMOUNT - 1; i++) {
     previousERPM[i] = previousERPM[i + 1];
   }
   previousERPM[TREND_AMOUNT - 1] = telemetryERPM;
 
-  #if TELEMETRY_DEBUG > -1
   // print debug telemetry over Serial
   escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG) ? 0 : escOutputCounter3 + 1;
   if (escOutputCounter3 == 0){ 
@@ -74,15 +64,14 @@ void IRAM_ATTR escir() {
       sPrintln("");
     #endif
   }
-  #endif
 
   // logging, if race is active
   if (raceActive){
-    throttleLog[logPosition] = (uint16_t)throttle;
-    accelerationLog[logPosition] = raw_accel;
-    erpmLog[logPosition] = previousERPM[TREND_AMOUNT - 1];
-    voltageLog[logPosition] = telemetryVoltage;
-    tempLog[logPosition] = telemetryTemp;
+    throttle_log[logPosition] = (uint16_t)throttle;
+    acceleration_log[logPosition] = 0;
+    erpm_log[logPosition] = previousERPM[TREND_AMOUNT - 1];
+    voltage_log[logPosition] = telemetryVoltage;
+    temp_log[logPosition] = telemetryTemp;
     logPosition++;
     if (logPosition == LOG_FRAMES){
       raceActive = false;
