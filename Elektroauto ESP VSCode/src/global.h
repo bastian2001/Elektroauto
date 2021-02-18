@@ -20,14 +20,13 @@
 #define T0L (TT - T0H) // 0 bit low time
 #define T1L (TT - T1H) // 1 bit low time
 #define T_RESET 21 // reset length in multiples of bit time
-#define ESC_TELEMETRY_REQUEST 0
 #define TRANSMISSION_IND 1000
-// #define SEND_TRANSMISSION_IND
+// #define SEND_TRANSMISSION_IND //whether to enable or disable the transmission indicator overall
 #define ESC_BUFFER_ITEMS 16
 
 //motor and wheel properties
-#define MAX_THROTTLE 2000
-#define MAX_TARGET_RPS 1500
+#define MAX_THROTTLE 350
+#define MAX_TARGET_RPS 90
 #define MAX_TARGET_SLIP 20
 #define MOTOR_POLE_COUNT 14.0f
 #define WHEEL_DIAMETER 30.0f
@@ -39,10 +38,6 @@
 #define MAX_WS_CONNECTIONS 5
 #define ssid "Fritz!Boxgraben"
 #define password "WirBoxenEuchWeg"
-// #define ssid "KNS_WLAN_24G"
-// #define password "YZKswQHaE4xyKqdP"
-// #define ssid "Coworking"
-// #define password "86577103963855526306"
 // #define ssid "bastian"
 // #define password "hallo123"
 #define TELEMETRY_UPDATE_MS 20
@@ -104,7 +99,7 @@ extern uint16_t escValue;
 
 //WiFi/WebSockets variables
 extern WebSocketsServer webSocket;
-extern uint8_t clients[MAX_WS_CONNECTIONS][2]; //[device (disconnected, app, web, ajax)][telemetry (off, on)]
+extern uint8_t clients[MAX_WS_CONNECTIONS][2]; //[device (disconnected, app, web)][telemetry (off, on)]
 extern uint8_t telemetryClientsCounter;
 
 //ESC variables

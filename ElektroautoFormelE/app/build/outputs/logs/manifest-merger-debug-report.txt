@@ -1,6 +1,5 @@
 -- Merging decision tree log ---
 manifest
-<<<<<<< Updated upstream
 ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-30:12
 INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-30:12
 INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-30:12
@@ -10,16 +9,6 @@ MERGED from [androidx.preference:preference:1.1.1] C:\Users\bascs\.gradle\caches
 MERGED from [com.google.android.material:material:1.2.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\fee048776b4040c0a73e83e4303a6cff\material-1.2.1\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\bf96d2b5a86ecd602a621e7e96856420\appcompat-1.2.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\7c0677be8011741026309ef690a9f4db\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
-=======
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-MERGED from [androidx.preference:preference:1.1.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\e3ce7e7cf0568bf54350349961cc10db\preference-1.1.1\AndroidManifest.xml:17:1-24:12
-MERGED from [com.google.android.material:material:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\d776e52f087aabc381b0b4907fc988e8\material-1.2.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.appcompat:appcompat:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\bf96d2b5a86ecd602a621e7e96856420\appcompat-1.2.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\75baa063235eedb7ab2cc635bdb88d73\constraintlayout-1.1.3\AndroidManifest.xml:2:1-11:12
->>>>>>> Stashed changes
 MERGED from [androidx.appcompat:appcompat-resources:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ee9b51f71825564f346013ea1d4d0318\jetified-appcompat-resources-1.2.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\4c1ade53cc4b20d7bc631ac17d3bfca4\drawerlayout-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\65b26ec11e574f5d68d3fe93c8217bcb\jetified-viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
@@ -33,12 +22,7 @@ MERGED from [androidx.recyclerview:recyclerview:1.1.0] C:\Users\bascs\.gradle\ca
 MERGED from [androidx.customview:customview:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\d1ea25f3382273eed14315b543469208\customview-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\2118a7099009bdd29f0289728ee82c0d\loader-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.activity:activity:1.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\2d2a73585fe4f95076865d735ed19c29\jetified-activity-1.1.0\AndroidManifest.xml:17:1-24:12
-<<<<<<< Updated upstream
 MERGED from [androidx.core:core:1.3.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ae3468b444d41a56f261ecbb8448fe17\core-1.3.1\AndroidManifest.xml:17:1-26:12
-=======
-MERGED from [androidx.core:core:1.3.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\429fb715fcc7711d4ab133e350b6f531\core-1.3.0\AndroidManifest.xml:17:1-26:12
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\7c0677be8011741026309ef690a9f4db\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
->>>>>>> Stashed changes
 MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ffb6a67829fa40d4c0493cb7e147e8f7\cardview-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\67aa86ef8808cac41aa5afe6d271f3ea\versionedparcelable-1.1.0\AndroidManifest.xml:17:1-27:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\d45a7c6a9e0bde829e8ef33e16b5a75d\jetified-lifecycle-viewmodel-savedstate-2.2.0\AndroidManifest.xml:17:1-24:12
@@ -50,7 +34,6 @@ MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\bascs\.gradle
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\336e4d7f5d818582899034e03216341f\lifecycle-livedata-core-2.2.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\e737982ea91fdf7ea321d344c75db0be\core-runtime-2.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\1e0614212b25f4ae67724a3587ed8129\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:17:1-24:12
-<<<<<<< Updated upstream
 INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-30:12
 INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-30:12
 INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-30:12
@@ -138,91 +121,6 @@ MERGED from [androidx.appcompat:appcompat:1.2.0] C:\Users\bascs\.gradle\caches\t
 MERGED from [androidx.appcompat:appcompat:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\bf96d2b5a86ecd602a621e7e96856420\appcompat-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\7c0677be8011741026309ef690a9f4db\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\7c0677be8011741026309ef690a9f4db\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
-=======
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-	package
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:3:5-32
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-	android:versionName
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-	android:versionCode
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-29:12
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-	xmlns:android
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:11-69
-uses-permission#android.permission.WAKE_LOCK
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:5:5-68
-	android:name
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:5:22-65
-uses-permission#android.permission.INTERNET
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:6:5-67
-	android:name
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:6:22-64
-uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:7:5-81
-	android:name
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:7:22-78
-application
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:11:5-27:19
-MERGED from [com.google.android.material:material:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\d776e52f087aabc381b0b4907fc988e8\material-1.2.0\AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.material:material:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\d776e52f087aabc381b0b4907fc988e8\material-1.2.0\AndroidManifest.xml:22:5-20
-MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\75baa063235eedb7ab2cc635bdb88d73\constraintlayout-1.1.3\AndroidManifest.xml:9:5-20
-MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\75baa063235eedb7ab2cc635bdb88d73\constraintlayout-1.1.3\AndroidManifest.xml:9:5-20
-MERGED from [androidx.core:core:1.3.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\429fb715fcc7711d4ab133e350b6f531\core-1.3.0\AndroidManifest.xml:24:5-89
-MERGED from [androidx.core:core:1.3.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\429fb715fcc7711d4ab133e350b6f531\core-1.3.0\AndroidManifest.xml:24:5-89
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\67aa86ef8808cac41aa5afe6d271f3ea\versionedparcelable-1.1.0\AndroidManifest.xml:24:5-25:19
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\67aa86ef8808cac41aa5afe6d271f3ea\versionedparcelable-1.1.0\AndroidManifest.xml:24:5-25:19
-	android:requestLegacyExternalStorage
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:18:9-52
-	android:appComponentFactory
-		ADDED from [androidx.core:core:1.3.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\429fb715fcc7711d4ab133e350b6f531\core-1.3.0\AndroidManifest.xml:24:18-86
-	android:supportsRtl
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:16:9-35
-	android:label
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:14:9-41
-	android:roundIcon
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:15:9-56
-	android:icon
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:13:9-45
-	android:allowBackup
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:12:9-35
-	android:theme
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:17:9-40
-activity#com.bastian.eauto.MainActivity
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:19:9-26:20
-	android:screenOrientation
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:20:13-55
-	android:name
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:19:19-47
-intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:21:13-25:29
-action#android.intent.action.MAIN
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:22:17-69
-	android:name
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:22:25-66
-category#android.intent.category.LAUNCHER
-ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:24:17-77
-	android:name
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:24:27-74
-uses-sdk
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-MERGED from [androidx.preference:preference:1.1.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\e3ce7e7cf0568bf54350349961cc10db\preference-1.1.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.preference:preference:1.1.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\e3ce7e7cf0568bf54350349961cc10db\preference-1.1.1\AndroidManifest.xml:20:5-22:41
-MERGED from [com.google.android.material:material:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\d776e52f087aabc381b0b4907fc988e8\material-1.2.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.material:material:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\d776e52f087aabc381b0b4907fc988e8\material-1.2.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.appcompat:appcompat:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\bf96d2b5a86ecd602a621e7e96856420\appcompat-1.2.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.appcompat:appcompat:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\bf96d2b5a86ecd602a621e7e96856420\appcompat-1.2.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\75baa063235eedb7ab2cc635bdb88d73\constraintlayout-1.1.3\AndroidManifest.xml:5:5-7:41
-MERGED from [androidx.constraintlayout:constraintlayout:1.1.3] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\75baa063235eedb7ab2cc635bdb88d73\constraintlayout-1.1.3\AndroidManifest.xml:5:5-7:41
->>>>>>> Stashed changes
 MERGED from [androidx.appcompat:appcompat-resources:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ee9b51f71825564f346013ea1d4d0318\jetified-appcompat-resources-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.appcompat:appcompat-resources:1.2.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ee9b51f71825564f346013ea1d4d0318\jetified-appcompat-resources-1.2.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\4c1ade53cc4b20d7bc631ac17d3bfca4\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
@@ -249,15 +147,8 @@ MERGED from [androidx.loader:loader:1.0.0] C:\Users\bascs\.gradle\caches\transfo
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\2118a7099009bdd29f0289728ee82c0d\loader-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity:1.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\2d2a73585fe4f95076865d735ed19c29\jetified-activity-1.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.activity:activity:1.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\2d2a73585fe4f95076865d735ed19c29\jetified-activity-1.1.0\AndroidManifest.xml:20:5-22:41
-<<<<<<< Updated upstream
 MERGED from [androidx.core:core:1.3.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ae3468b444d41a56f261ecbb8448fe17\core-1.3.1\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.core:core:1.3.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ae3468b444d41a56f261ecbb8448fe17\core-1.3.1\AndroidManifest.xml:20:5-22:41
-=======
-MERGED from [androidx.core:core:1.3.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\429fb715fcc7711d4ab133e350b6f531\core-1.3.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.core:core:1.3.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\429fb715fcc7711d4ab133e350b6f531\core-1.3.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\7c0677be8011741026309ef690a9f4db\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\7c0677be8011741026309ef690a9f4db\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
->>>>>>> Stashed changes
 MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ffb6a67829fa40d4c0493cb7e147e8f7\cardview-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.cardview:cardview:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\ffb6a67829fa40d4c0493cb7e147e8f7\cardview-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\67aa86ef8808cac41aa5afe6d271f3ea\versionedparcelable-1.1.0\AndroidManifest.xml:20:5-22:41
@@ -280,7 +171,6 @@ MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\bascs\.gradle\cache
 MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\e737982ea91fdf7ea321d344c75db0be\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\1e0614212b25f4ae67724a3587ed8129\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\1e0614212b25f4ae67724a3587ed8129\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:20:5-22:41
-<<<<<<< Updated upstream
 INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 	android:targetSdkVersion
@@ -291,15 +181,3 @@ INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\
 		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-=======
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-	android:targetSdkVersion
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-	android:minSdkVersion
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		ADDED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		INJECTED from D:\bastian\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
->>>>>>> Stashed changes

@@ -3,7 +3,7 @@
 #include "system.h"
 #include "messageHandler.h"
 
-double pidMulti = 0.2, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
+double pidMulti = 1, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
 int escOutputCounter2 = 0;
 bool raceMode = false;
 extern bool armed;
@@ -44,8 +44,6 @@ void IRAM_ATTR setThrottle(double newThrottle) { //throttle value between 0 and 
 
 uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest) {
   value &= 0x7FF;
-  // escOutputCounter2 = (escOutputCounter2 == ESC_TELEMETRY_REQUEST) ? 0 : escOutputCounter2 + 1;
-  // bool telem = escOutputCounter2 == 0;
   value = (value << 1) | telemetryRequest;
   int csum = 0, csum_data = value;
   for (int i = 0; i < 3; i++) {
