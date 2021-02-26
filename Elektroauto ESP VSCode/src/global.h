@@ -23,22 +23,20 @@
 #define ESC_TELEMETRY_REQUEST 0
 #define TRANSMISSION_IND 1000
 #define TELEMETRY_DEBUG 3
-#define MAX_THROTTLE 350
-#define MAX_TARGET_RPS 90
+#define MAX_THROTTLE 2000
+#define MAX_TARGET_RPS 1500
 #define MAX_TARGET_SLIP 20
 // #define SEND_TRANSMISSION_IND
 #define ESC_BUFFER_ITEMS 16
 #define MAX_WS_CONNECTIONS 5
-#define MOTOR_POLE_COUNT 14.0f
+#define MOTOR_POLE_COUNT 12.0f
 #define WHEEL_DIAMETER 30.0f
 #define RPS_CONVERSION_FACTOR (1.6667f / (MOTOR_POLE_COUNT / 2.0f))
 #define ERPM_TO_MM_PER_SECOND (RPS_CONVERSION_FACTOR * WHEEL_DIAMETER * PI)
 
 //WiFi and WebSockets settings
-#define ssid "KNS_WLAN_24G"
-#define password "YZKswQHaE4xyKqdP"
-// #define ssid "Coworking"
-// #define password "86577103963855526306"
+#define ssid "Fritz!Boxgraben"
+#define password "WirBoxenEuchWeg"
 // #define ssid "bastian"
 // #define password "hallo123"
 #define TELEMETRY_UPDATE_MS 20

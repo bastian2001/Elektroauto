@@ -67,7 +67,7 @@
 
 ## Telemetry response
 
-- prefix: "TELEMETRY "
+- prefix: "TELEMETRY"
 - a: armed
 - m: mode
 - t: throttle
@@ -80,7 +80,7 @@
 - p: temperature (°C)
 - o: override slider and text input - or - 
 - q: override just text input
-- example: TELEMETRY a0!m0!t0!r0!s0!v0!w0!c0!u740!p30
+- example: `TELEMETRY a0!m0!t0!r0!s0!v0!w0!c0!u740!p30`
 
 # CPU core assignments
 
@@ -120,7 +120,7 @@
 
 ## Slip calculation
 
-slip = (vRad - vAuto) / vRad
+slip = (vRad - vAuto) / vRad = 1 - vAuto / vRad
 
  <=> slip * vRad = vRad - vAuto
 
@@ -131,7 +131,7 @@ slip = (vRad - vAuto) / vRad
 ## Hold RPS
 
 1. d_rps = rps_soll - rps_pred
-2. d*thr = d_rps³ * .00000015+d*rps² * .000006+d_rps \* .006 &nbsp;&nbsp;&nbsp;&nbsp;(each ms, for PID_DIV = 0)
+2. d_thr = d_rps³ * .00000015+d_rps² * .000006+d_rps \* .006 &nbsp;&nbsp;&nbsp;&nbsp;(each ms, for PID_DIV = 0)
 
 ## ESC telemetry protocol
 
