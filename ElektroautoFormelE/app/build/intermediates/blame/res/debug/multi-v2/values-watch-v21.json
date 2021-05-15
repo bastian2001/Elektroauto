@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/run/media/bastian/01D639315D2CB4C0/Users/bascs/Documents/Projekte/Elektroauto/ElektroautoFormelE/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-watch-v21/values-watch-v21.xml",
+            "outputFile": "D:\\Dokumente\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-watch-v21\\values-watch-v21.xml",
             "map": [
                 {
-                    "source": "/home/bastian/.gradle/caches/transforms-2/files-2.1/c2c5fa787d66aaf40578b3071f4d283f/appcompat-1.1.0/res/values-watch-v21/values-watch-v21.xml",
+                    "source": "C:\\Users\\bascs\\.gradle\\caches\\transforms-2\\files-2.1\\bf96d2b5a86ecd602a621e7e96856420\\appcompat-1.2.0\\res\\values-watch-v21\\values-watch-v21.xml",
                     "from": {
                         "startLines": "2,6,10",
                         "startColumns": "4,4,4",
