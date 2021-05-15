@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -60,13 +61,14 @@ public class MainActivity extends AppCompatActivity {
     private OkHttpClient client;
 
     //views
-    private EditText editTextIP, editTextValue;
+    private EditText editTextIP, editTextValue, editTextCommand;
     private Button buttonArm, buttonDisarm, buttonSet, buttonSoftDisarm, buttonStartRace;
     private TextView textViewTelemetry;
     private ImageButton ibReconnect, ibPing;
     private Spinner spinnerMode;
     private SeekBar seekBarValue;
     private Switch switchRaceMode;
+    private Button buttonSend;
 
     //main variables
     private int espMode = 0, modeBeforeSoftDisarm = 0;
@@ -90,9 +92,7 @@ public class MainActivity extends AppCompatActivity {
         final Handler h = new Handler();
         h.postDelayed(r, delay);
         return new TaskHandle() {
-            public void invalidate() {
-                h.removeCallbacks(r);
-            }
+            public void invalidate() { h.removeCallbacks(r); }
         };
     }
 
@@ -101,9 +101,7 @@ public class MainActivity extends AppCompatActivity {
         final Handler h = new Handler();
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run() {
-                h.post(r);
-            }
+            public void run() { h.post(r); }
         }, interval, interval);
         return new TaskHandle() {
             public void invalidate() {
@@ -131,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
         editTextIP = findViewById(R.id.editTextIP);
         buttonStartRace = findViewById(R.id.buttonStartRace);
         switchRaceMode = findViewById(R.id.switchRaceMode);
+        buttonSend = findViewById(R.id.buttonSend);
+        editTextCommand = findViewById(R.id.editTextCommand);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mPreferences.edit();
@@ -211,6 +211,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         buttonStartRace.setOnClickListener(_v -> wsSend("STARTRACE"));
+
+        buttonSend.setOnClickListener(_v -> {
+            wsSend(editTextCommand.getText().toString());
+        });
 
         wsStart();
 
