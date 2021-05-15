@@ -10,7 +10,11 @@ extern bool armed;
 int targetERPM = 0, ctrlMode = 0, reqValue = 0, targetSlip = 0;
 uint16_t escValue = 0;
 extern double throttle;
+
+//voltage warning
 uint16_t cutoffVoltage = 600, voltageWarning = 720;
+uint32_t nextCheck = 0;
+uint8_t voltageWarningCount = 0;
 
 //raceMode
 uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
@@ -155,4 +159,18 @@ void evaluateThrottle(){
         break;
     }
   } 
+}
+
+void checkVoltage(){
+  if (millis() > nextCheck){
+    nextCheck += 10000;
+    if (telemetryVoltage < voltageWarning && telemetryVoltage != 0 && telemetryVoltage != 257){
+      voltageWarningCount++;
+      if (voltageWarningCount % 5 == 3){
+        broadcastWSMessage("MESSAGE Warnung! Spannung niedrig!", true, 0);
+      }
+    } else {
+      voltageWarningCount = 0;
+    }
+  }
 }
