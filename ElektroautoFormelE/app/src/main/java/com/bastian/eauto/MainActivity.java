@@ -64,7 +64,7 @@ import org.json.JSONObject;
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
 
-    private static int requestUpdateMS = 40;
+    private static int requestUpdateMS = 10;
     private final int LOG_FRAMES = 5000, PACKET_SIZE = 100;
     SharedPreferences mPreferences;
     SharedPreferences.Editor mEditor;
@@ -579,7 +579,7 @@ public class MainActivity extends AppCompatActivity {
                             totalPing += pingArray[i];
                         }
                         int avgPing = (int)(totalPing / PING_AMOUNT);
-                        Toast.makeText(getApplicationContext(), "Ping-Ergebnisse\nMenge: " + PING_AMOUNT + "\nDurchschnitt: " + avgPing + "\nMin: " + minPing + "\nMax: " + maxPing, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Ping-Ergebnisse\nMenge: " + PING_AMOUNT + "\nDurchschnitt: " + avgPing + "\nMin: " + minPing + "\nMax: " + maxPing, Toast.LENGTH_SHORT).show();
                     } else {
                         pMillis = System.currentTimeMillis();
                         wsSend("PING");
