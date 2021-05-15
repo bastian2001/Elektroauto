@@ -5,7 +5,7 @@
 // #include "I2Cdev.h"
 
 // //MPU
-uint16_t distMPU = 0;
+int16_t distMPU = 0;
 double speedMPU = 0, acceleration = 0;
 int16_t raw_accel = 0;
 unsigned long lastMPUUpdate = 0;

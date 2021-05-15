@@ -38,8 +38,8 @@
 
 //WiFi and WebSockets settings
 #define MAX_WS_CONNECTIONS 5
-#define ssid "Fritz!Boxgraben"
-#define password "WirBoxenEuchWeg"
+#define ssid "Bloedfrauen und -maenner"
+#define password "CaputDraconis"
 // #define ssid "bastian"
 // #define password "hallo123"
 #define TELEMETRY_UPDATE_MS 20
@@ -79,7 +79,7 @@ extern double erpmC; //responsiveness: zu viel -> schnelles wackeln um den eigen
 //MPU6050 mpu;
 extern unsigned long lastMPUUpdate;
 extern int16_t counterMPU, MPUoffset, raw_accel;
-extern uint16_t distMPU;
+extern int16_t distMPU;
 extern double speedMPU, acceleration;
 
 //slip variables
