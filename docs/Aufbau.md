@@ -39,6 +39,19 @@
 - ping
   - key: PING
   - value: none
+- error count
+  - key: ERRORCOUNT
+  - value: none
+- set cutoff coltage
+  - key: CUTOFFVOLTAGE
+  - value: [new cutoff voltage in cV]
+  - example: `CUTOFFVOLTAGE:1480` for 14.8V
+- set RPS control variables
+  - keys: RPSA, RPSB, RPSC, PIDMULTIPLIER
+  - value: [value]
+- reconnect to WiFi
+  - key: RECONNECT
+  - value: none
 
 # Responses
 
@@ -61,7 +74,7 @@
   - args[0]: [VALUE]
   - example: `UNBLOCK VALUE`
 - create a Toast message
-  - command: MESSSAGE
+  - command: MESSAGE
   - ...args: message
   - example: `MESSAGE bereits disarmed`
 
@@ -78,7 +91,7 @@
 - c: acceleration (mpu)
 - u: voltage (cV)
 - p: temperature (°C)
-- o: override slider and text input - or - 
+- o: override slider and text input - or -
 - q: override just text input
 - example: TELEMETRY a0!m0!t0!r0!s0!v0!w0!c0!u740!p30
 
@@ -110,6 +123,7 @@
 # Sending the logs
 
 45KB of binary data:
+
 1. 0-9999: throttle
 2. 10000-19999: acceleration
 3. 20000-29999: erpm
@@ -122,11 +136,11 @@
 
 slip = (vRad - vAuto) / vRad
 
- <=> slip * vRad = vRad - vAuto
+<=> slip \* vRad = vRad - vAuto
 
- <=> vRad * slip - vRad = - vAuto
+<=> vRad \* slip - vRad = - vAuto
 
- <=> vRad = (- vAuto) / (slip - 1)
+<=> vRad = (- vAuto) / (slip - 1)
 
 ## Hold RPS
 
