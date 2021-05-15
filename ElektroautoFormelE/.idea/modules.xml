@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-449018117/Elektroauto.ElektroautoFormelE.iml" filepath="$PROJECT_DIR$/.idea/modules/-449018117/Elektroauto.ElektroautoFormelE.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1433495821/ElektroautoFormelE.app.iml" filepath="$PROJECT_DIR$/.idea/modules/1433495821/ElektroautoFormelE.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Elektroauto.ElektroautoFormelE.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Elektroauto.ElektroautoFormelE.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ElektroautoFormelE.iml" filepath="$PROJECT_DIR$/.idea/modules/ElektroautoFormelE.iml" />
     </modules>
   </component>
 </project>

@@ -1,7 +1,10 @@
-#Fri Feb 26 01:51:48 CET 2021
-base.0=/run/media/bastian/Daten/Dokumente/Projekte/Elektroauto/ElektroautoFormelE/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
-path.1=classes.dex
+#Sat May 15 18:00:03 CEST 2021
+base.2=D\:\\Dokumente\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\15\\classes.dex
+path.2=15/classes.dex
+base.1=D\:\\Dokumente\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+path.1=0/classes.dex
+base.0=D\:\\Dokumente\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+renamed.2=classes3.dex
 renamed.1=classes2.dex
-path.0=classes.dex
 renamed.0=classes.dex
-base.1=/run/media/bastian/Daten/Dokumente/Projekte/Elektroauto/ElektroautoFormelE/app/build/intermediates/dex/debug/mergeProjectDexDebug/classes.dex
+path.0=classes.dex
