@@ -10,7 +10,7 @@ extern bool armed;
 int targetERPM = 0, ctrlMode = 0, reqValue = 0, targetSlip = 0;
 uint16_t escValue = 0;
 extern double throttle;
-uint16_t cutoffVoltage = 500;
+uint16_t cutoffVoltage = 600;
 
 //raceMode
 uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];

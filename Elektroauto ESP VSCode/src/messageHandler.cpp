@@ -89,24 +89,28 @@ void dealWithMessage(String message, uint8_t from) {
   }
   else if (command == "CUTOFFVOLTAGE"){
     cutoffVoltage = message.substring(dividerPos + 1).toInt();
+    broadcastWSMessage(String("MESSAGE Cutoff voltage is now ") + String(cutoffVoltage), true);
   }
   else if (command == "ERRORCOUNT"){
-    String m = "MESSAGE Error-Count beträgt " + String(errorCount);
-    broadcastWSMessage(m, true);
+    broadcastWSMessage("MESSAGE Error-Count beträgt " + String(errorCount), true);
   }
   else if (command == "RPSA"){
     erpmA = message.substring(dividerPos + 1).toFloat();
+    broadcastWSMessage(String("MESSAGE rpsA is now ") + String(erpmA), true);
   }
   else if (command == "RPSB"){
     erpmB = message.substring(dividerPos + 1).toFloat();
+    broadcastWSMessage(String("MESSAGE rpsB is now ") + String(erpmB), true);
   }
   else if (command == "RPSC"){
     erpmC = message.substring(dividerPos + 1).toFloat();
+    broadcastWSMessage(String("MESSAGE rpsC is now ") + String(erpmC), true);
   }
   else if (command == "RECONNECT"){
     reconnect();
   }
   else if (command == "PIDMULTIPLIER"){
     pidMulti = message.substring(dividerPos + 1).toFloat();
+    broadcastWSMessage(String("MESSAGE Multiplier is now ") + String(pidMulti), true);
   }
 }

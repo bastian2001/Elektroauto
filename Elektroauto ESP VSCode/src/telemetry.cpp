@@ -39,7 +39,7 @@ void getTelemetry(){
         if (lastErrorOutput + 100 < millis()){
           String eMessage = "Error: ESC-Temperatur: " + String(telemetryTemp);
           eMessage += ", Spannung: " + String(telemetryVoltage / 100);
-          eMessage += "." + String(telemetryVoltage % 100);
+          eMessage += "." + (((telemetryVoltage % 100 < 10) ? "0":"" ) + String(telemetryVoltage % 100));
           eMessage += "V, ERPM: " + String(telemetryERPM);
           lastErrorOutput = millis();
           sPrintln(eMessage);
