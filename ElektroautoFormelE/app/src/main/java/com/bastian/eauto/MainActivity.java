@@ -1,22 +1,35 @@
 package com.bastian.eauto;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.Editable;
 import android.util.Log;
+import android.util.MonthDisplayHelper;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -27,10 +40,15 @@ import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.security.acl.Permission;
+import java.time.Year;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,18 +63,12 @@ import org.json.JSONObject;
 
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
-    // Constants
-    private final int REQUEST_UPDATE_MS = 40, LOG_FRAMES = 5000, PACKET_SIZE = 100, PING_AMOUNT = 20;
 
-    //SharedPrefs
+    private static int requestUpdateMS = 40;
+    private final int LOG_FRAMES = 5000, PACKET_SIZE = 100;
     SharedPreferences mPreferences;
     SharedPreferences.Editor mEditor;
-
-    //Websocket
     WebSocket ws;
-    private OkHttpClient client;
-
-    //View items
     private EditText editTextIP, editTextValue;
     private Button buttonArm, buttonDisarm, buttonSet, buttonSoftDisarm, buttonStartRace;
     private TextView textViewTelemetry;
@@ -64,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinnerMode;
     private SeekBar seekBarValue;
     private Switch switchRaceMode;
-
-    //main variables
     private int espMode = 0, modeBeforeSoftDisarm = 0;
     private int res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0, res_voltage = 0, res_temp = 0;
     private int[] throttle_log = new int[LOG_FRAMES], erpm_log = new int[LOG_FRAMES], voltage_log = new int[LOG_FRAMES], acceleration_log = new int[LOG_FRAMES], temp_log = new int[LOG_FRAMES];
@@ -73,8 +83,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean newSeekbarValueAvailable = false;
     private int newSeekbarValue = -1;
     private boolean rmUserChanged = true, modeUserChanged = true;
+    private OkHttpClient client;
     boolean seekbarTouch = false;
     private long pMillis = 0;
+    private static int PING_AMOUNT = 20;
     private int pingCounter = 0;
     private int[] pingArray = new int[PING_AMOUNT];
     private boolean firstStartup = true;
@@ -128,63 +140,92 @@ public class MainActivity extends AppCompatActivity {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mPreferences.edit();
 
-        editTextIP.setText(mPreferences.getString("IP", "192.168.0.54"));
+        editTextIP.setText(mPreferences.getString("IP", "192.168.0.111"));
 
         for (int i = 0; i < LOG_FRAMES; i+=PACKET_SIZE){
             throttle_log[i] = -1;
         }
 
-        buttonArm.setOnClickListener(_v -> sendArmed (true));//Arm
-        buttonDisarm.setOnClickListener(_v -> sendArmed(false));//Disarm
-        buttonSoftDisarm.setOnClickListener(_v -> sendSoftDisarm());//Soft disarm
-        buttonSet.setOnClickListener(_v -> onSetPressed());//Setzt die momentan eingetragene Dauer
-        ibReconnect.setOnClickListener(_v -> {
-            textViewTelemetry.setText("Verbindung wird aufgebaut...");
-            ws.close(1000, "Goodbye !");
-            wsStart();
-            mEditor.putString("IP", editTextIP.getText().toString());
-            mEditor.apply();
+        buttonArm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendArmed (true);
+            }
+        });//Arm
+        buttonDisarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendArmed(false);
+            }
+        });//Disarm
+        buttonSoftDisarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendSoftDisarm();
+            }
+        });//Soft disarm
+        buttonSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSetPressed();
+            }
+        });//Setzt die momentan eingetragene Dauer
+        ibReconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textViewTelemetry.setText("Verbindung wird aufgebaut...");
+                ws.close(1000, "Goodbye !");
+                wsStart();
+                mEditor.putString("IP", editTextIP.getText().toString());
+                mEditor.commit();
+            }
         }); //reconnect
-        ibPing.setOnClickListener(_v -> {
-            pMillis = System.currentTimeMillis();
-            pingCounter = 0;
-            wsSend("PING");
+        ibPing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pMillis = System.currentTimeMillis();
+                pingCounter = 0;
+                wsSend("PING");
+            }
         });//ping
 
-        editTextValue.setOnEditorActionListener((_v, _actionId, _event) -> {
-            onSetPressed();
-            return false;
+        editTextValue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                onSetPressed();
+                return false;
+            }
         });
 
         seekBarValue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onProgressChanged(SeekBar _sb, int i, boolean b) {
+            @Override public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b) {
                     newSeekbarValueAvailable = true;
                     newSeekbarValue = i;
                 }
             }
 
-            @Override public void onStartTrackingTouch(SeekBar _sb) {
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {
                 seekbarTouch = true;
             }
 
-            @Override public void onStopTrackingTouch(SeekBar _sb) {
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {
                 seekbarTouch = false;
             }
         });
 
         spinnerMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> _av, View _v, int i, long _l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (firstStartup)
                     return;
                 if (modeUserChanged) {
                     wsSend("MODE:" + i);
                 }
                 if (i == 0) {
-                    seekBarValue.setMax(2000);
+                    seekBarValue.setMax(350);
                 } else if (i == 1) {
-                    seekBarValue.setMax(1500);
+                    seekBarValue.setMax(90);
                 } else {
                     seekBarValue.setMax(20);
                 }
@@ -192,34 +233,55 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> _av) {
+            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
-        switchRaceMode.setOnCheckedChangeListener((_buttonView, isChecked) -> {
-            if (rmUserChanged){
-                // transmit rm change to arduino
-                changeRaceModeToggle(!isChecked);
-                sendRaceMode(isChecked);
-            } else {
-                buttonArm.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-                buttonStartRace.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        switchRaceMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (rmUserChanged){
+                    // transmit rm change to arduino
+                    changeRaceModeToggle(!isChecked);
+                    sendRaceMode(isChecked);
+                } else {
+                    buttonArm.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+                    buttonStartRace.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                }
             }
         });
 
-        buttonStartRace.setOnClickListener(_v -> wsSend("STARTRACE"));
+        buttonStartRace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wsSend("STARTRACE");
+            }
+        });
 
         wsStart();
 
-        autoSend = setInterval(this::sendRequest, REQUEST_UPDATE_MS);
+        autoSend = setInterval(new Runnable() {
+            @Override
+            public void run() {
+                sendRequest();
+            }
+        }, requestUpdateMS);
 
-        setTimeout(() -> firstStartup = false, 200);
+        setTimeout(new Runnable() {
+            @Override
+            public void run() {
+                firstStartup = false;
+            }
+        }, 200);
     }
 
     private void wsLog(final String txt) {
-        runOnUiThread(() -> {
-            Log.d("WSCommunication", txt);
-            textViewTelemetry.setText(txt);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("WSCommunication", txt);
+                textViewTelemetry.setText(txt);
+            }
         });
     }
 
@@ -240,198 +302,288 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onWSText(final String txt) {
-        runOnUiThread(() -> {
-            if (txt.startsWith("TELEMETRY")) {
-                String telemetryText = txt.substring(txt.indexOf(" ") + 1);
-                String[] response_separated = telemetryText.split("!");
-                boolean res_armed = false;
-                boolean editTextIsInFocus = editTextValue.hasFocus();
-                int mode = spinnerMode.getSelectedItemPosition();
-                for (String s : response_separated) {
-                    int val = 0;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                /*if (txt.startsWith("{")){
                     try {
-                        val = Integer.parseInt(s.substring(1));
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(MainActivity.this, "Da ist etwas mit der Antwort falsch! NFE", Toast.LENGTH_SHORT).show();
-                    }
-                    switch (s.charAt(0)) {
-                        case 'a':
-                            res_armed = val > 0;
-                            break;
-                        case 'u':
-                            res_voltage = val;
-                            break;
-                        case 't':
-                            res_throttle = val;
-                            if (mode == 0 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
-                                seekBarValue.setProgress(val);
+                        JSONObject root = new JSONObject(txt);
+                        final int firstPos = root.getInt("firstIndex");
+                        Log.d("random", "" + firstPos);
+                        JSONArray throttleArray = root.getJSONArray("throttle");
+                        JSONArray accelerationArray = root.getJSONArray("acceleration");
+                        JSONArray erpmArray = root.getJSONArray("erpm");
+                        JSONArray voltageArray = root.getJSONArray("voltage");
+                        JSONArray temperatureArray = root.getJSONArray("temperature");
+                        for (int pos = 0; pos < PACKET_SIZE; pos++){
+                            throttle_log[firstPos + pos] = throttleArray.getInt(pos);
+                            acceleration_log[firstPos + pos] = accelerationArray.getInt(pos);
+                            erpm_log[firstPos + pos] = erpmArray.getInt(pos);
+                            voltage_log[firstPos + pos] = voltageArray.getInt(pos);
+                            temp_log[firstPos + pos] = temperatureArray.getInt(pos);
+                        }
+                        boolean isFinished = true;
+                        for (int i = 0; i < LOG_FRAMES && isFinished; i+=PACKET_SIZE){
+                            if (throttle_log[i] == -1) isFinished = false;
+                        }
+                        if (isFinished){
+                            JSONObject output = new JSONObject();
+                            JSONArray finalThrottleArray = new JSONArray(throttle_log);
+                            JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
+                            JSONArray finalERPMArray = new JSONArray(erpm_log);
+                            JSONArray finalVoltageArray = new JSONArray(voltage_log);
+                            JSONArray finalTemperatureArray = new JSONArray(temp_log);
+                            output.put("throttle", finalThrottleArray);
+                            output.put("acceleration", finalAccelerationArray);
+                            output.put("erpm", finalERPMArray);
+                            output.put("voltage", finalVoltageArray);
+                            output.put("temperature", finalTemperatureArray);
+                            String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
+                                    + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
+                                    + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
+                                    + prefixZero(Calendar.getInstance().get(Calendar.SECOND), 2) + ".json";
+                            File folder;
+                            boolean permissionGranted = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                            if (permissionGranted){
+                                folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
+                            } else {
+                                folder = getExternalFilesDir("Formel-E-Logs");
                             }
-                            break;
-                        case 'r':
-                            res_rps = val;
-                            if (mode == 1 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
-                                seekBarValue.setProgress(val);
+                            if (!folder.exists()){
+                                folder.mkdir();
                             }
-                            break;
-                        case 's':
-                            res_slip = val;
-                            if (mode == 2 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
-                                seekBarValue.setProgress(val);
+                            File file = new File(folder, fileName);
+                            if (file.exists()){
+                                String p = file.getAbsolutePath();
+                                int i;
+                                for (i = 2; i < 100; i++){
+                                    if (!(new File(p + "_" + i).exists())) break;
+                                }
+                                if (i == 100){
+                                    file = null;
+                                } else {
+                                    file = new File(p + "_" + i);
+                                }
                             }
-                            break;
-                        case 'v':
-                            res_velocity1 = val;
-                            break;
-                        case 'w':
-                            res_velocity2 = val;
-                            break;
-                        case 'c':
-                            res_acceleration = val;
-                            break;
-                        case 'p':
-                            res_temp = val;
-                            break;
-                        case 'o':
-                            if (!editTextIsInFocus)
-                                editTextValue.setText("" + val);
-                            if (!seekbarTouch){
-                                seekBarValue.setProgress(val);
+                            if (file != null) {
+                                FileOutputStream fos = new FileOutputStream(file);
+                                OutputStreamWriter osw = new OutputStreamWriter(fos);
+                                BufferedWriter bufferedWriter = new BufferedWriter(osw);
+                                bufferedWriter.write(output.toString());
+                                bufferedWriter.close();
+                                Toast.makeText(MainActivity.this, permissionGranted ? "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert" : "Da die Berechtigung nicht erteilt wurde, wurde der Log unter " + file.getAbsolutePath() + " gespeichert.", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
                             }
-                            break;
-                        case 'q':
-                            if (!editTextIsInFocus){
-                                editTextValue.setText("" + val);
-                            }
-                            break;
-                        default:
-                            Toast.makeText(MainActivity.this, "Da stimmt was mit der Antwort nicht! Unbekanntes Attribut: " + s.charAt(0), Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                }
 
-                textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nSpannung: " + ((float) res_voltage / 100) + "V\nThrottle: " + res_throttle
-                        + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float) res_velocity1 / 1000.0) + "m/s\nGeschwindigkeit (Räder): "
-                        + ((float) res_velocity2 / 1000.0) + "m/s\nBeschleunigung: " + res_acceleration + " rel. Einheiten\nTemperatur: " + res_temp + "°C");
-            } else if (txt.startsWith("MESSAGE")){
-                Toast.makeText(getApplicationContext(), "Nachricht: " + txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_LONG).show();
-            } else if (txt.startsWith("SET")) {
-                String str = txt.toUpperCase();
-                String[] args = str.split(" ");
-                Log.d("random", "received: " + str);
-                try {
-                    int value = 0;
+                            throttle_log = new int[LOG_FRAMES];
+                            acceleration_log = new int[LOG_FRAMES];
+                            erpm_log = new int[LOG_FRAMES];
+                            voltage_log = new int[LOG_FRAMES];
+                            temp_log = new int[LOG_FRAMES];
+                            for (int i = 0; i < LOG_FRAMES; i+=PACKET_SIZE){
+                                throttle_log[i] = -1;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+                } else*/
+                if (txt.startsWith("TELEMETRY")) {
+                    String telemetryText = txt.substring(txt.indexOf(" ") + 1);
+                    String[] response_separated = telemetryText.split("!");
+                    boolean res_armed = false;
+                    boolean editTextIsInFocus = editTextValue.hasFocus();
+                    int mode = spinnerMode.getSelectedItemPosition();
+                    for (String s : response_separated) {
+                        int val = 0;
+                        try {
+                            val = Integer.parseInt(s.substring(1));
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(MainActivity.this, "Da ist etwas mit der Antwort falsch! NFE", Toast.LENGTH_SHORT).show();
+                        }
+                        switch (s.charAt(0)) {
+                            case 'a':
+                                res_armed = val > 0;
+                                break;
+                            case 'u':
+                                res_voltage = val;
+                                break;
+                            case 't':
+                                res_throttle = val;
+                                if (mode == 0 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
+                                    seekBarValue.setProgress(val);
+                                }
+                                break;
+                            case 'r':
+                                res_rps = val;
+                                if (mode == 1 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
+                                    seekBarValue.setProgress(val);
+                                }
+                                break;
+                            case 's':
+                                res_slip = val;
+                                if (mode == 2 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
+                                    seekBarValue.setProgress(val);
+                                }
+                                break;
+                            case 'v':
+                                res_velocity1 = val;
+                                break;
+                            case 'w':
+                                res_velocity2 = val;
+                                break;
+                            case 'c':
+                                res_acceleration = val;
+                                break;
+                            case 'p':
+                                res_temp = val;
+                                break;
+                            case 'o':
+                                if (!editTextIsInFocus)
+                                    editTextValue.setText("" + val);
+                                if (!seekbarTouch){
+                                    seekBarValue.setProgress(val);
+                                }
+                                break;
+                            case 'q':
+                                if (!editTextIsInFocus){
+                                    editTextValue.setText("" + val);
+                                }
+                                break;
+                            default:
+                                Toast.makeText(MainActivity.this, "Da stimmt was mit der Antwort nicht! Unbekanntes Attribut: " + s.charAt(0), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+
+                    textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nSpannung: " + ((float) res_voltage / 100) + "V\nThrottle: " + res_throttle
+                            + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float) res_velocity1 / 1000.0) + "m/s\nGeschwindigkeit (Räder): "
+                            + ((float) res_velocity2 / 1000.0) + "m/s\nBeschleunigung: " + res_acceleration + " rel. Einheiten\nTemperatur: " + res_temp + "°C");
+                } else if (txt.startsWith("MESSAGE")){
+                    Toast.makeText(getApplicationContext(), "Nachricht: " + txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_LONG).show();
+                } else if (txt.startsWith("SET")) {
+                    String str = txt.toUpperCase();
+                    String[] args = str.split(" ");
+                    Log.d("random", "received: " + str);
                     try {
-                        value = Integer.parseInt(args[2].replaceAll("[^0123456789]", ""));
-                    } catch (NumberFormatException ignored){}
-                    switch(args[2]){
-                        case "OFF":
-                        case "FALSE":
-                        case "THROTTLE":
-                            value = 0;
-                            break;
-                        case "ON":
-                        case "TRUE":
-                        case "RPS":
-                            value = 1;
-                            break;
-                        case "SLIP":
-                            value = 2;
+                        int value = 0;
+                        try {
+                            value = Integer.parseInt(args[2].replaceAll("[^0123456789]", ""));
+                        } catch (NumberFormatException ignored){}
+                        switch(args[2]){
+                            case "OFF":
+                            case "FALSE":
+                            case "THROTTLE":
+                                value = 0;
+                                break;
+                            case "ON":
+                            case "TRUE":
+                            case "RPS":
+                                value = 1;
+                                break;
+                            case "SLIP":
+                                value = 2;
+                        }
+                        switch (args[1]) {
+                            case "RACEMODE":
+                            case "RACEMODETOGGLE":
+                                changeRaceModeToggle(value > 0);
+                                switchRaceMode.setEnabled(true);
+                                break;
+                            case "MODE":
+                            case "MODESPINNER":
+                                int r = (int) (Math.random() * 1000);
+                                Log.d("random", "from WS: setting mode " + value + " mode was " + espMode + " before, " + r);
+                                espMode = value;
+                                changeModeSpinner(value);
+                                spinnerMode.setEnabled(true);
+                                break;
+                            case "VALUE":
+                                seekBarValue.setProgress(value);
+                                editTextValue.setText(value + "");
+                                seekBarValue.setEnabled(true);
+                                editTextValue.setEnabled(true);
+                                break;
+                            case "ARMED":
+                            default:
+                                break;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e){
+                        e.printStackTrace();
                     }
-                    switch (args[1]) {
-                        case "RACEMODE":
-                        case "RACEMODETOGGLE":
-                            changeRaceModeToggle(value > 0);
-                            switchRaceMode.setEnabled(true);
-                            break;
-                        case "MODE":
-                        case "MODESPINNER":
-                            int r = (int) (Math.random() * 1000);
-                            Log.d("random", "from WS: setting mode " + value + " mode was " + espMode + " before, " + r);
-                            espMode = value;
-                            changeModeSpinner(value);
-                            spinnerMode.setEnabled(true);
-                            break;
-                        case "VALUE":
-                            seekBarValue.setProgress(value);
-                            editTextValue.setText(value + "");
-                            seekBarValue.setEnabled(true);
-                            editTextValue.setEnabled(true);
-                            break;
-                        case "ARMED":
-                        default:
-                            break;
-                    }
-                } catch (ArrayIndexOutOfBoundsException e){
-                    e.printStackTrace();
-                }
-            } else if (txt.startsWith("BLOCK")){
-                String str = txt.toUpperCase();
-                String[] args = str.split(" ");
-                try {
-                    int value = 0;
+                } else if (txt.startsWith("BLOCK")){
+                    String str = txt.toUpperCase();
+                    String[] args = str.split(" ");
                     try {
-                        Integer.parseInt(args[2].replaceAll("[^0123456789]", ""));
-                    } catch (NumberFormatException ignored) {}
-                    switch (args[2]) {
-                        case "OFF":
-                            value = 0;
-                            break;
-                        case "ON":
-                            value = 1;
-                            break;
+                        int value = 0;
+                        try {
+                            Integer.parseInt(args[2].replaceAll("[^0123456789]", ""));
+                        } catch (NumberFormatException ignored) {}
+                        switch (args[2]) {
+                            case "OFF":
+                                value = 0;
+                                break;
+                            case "ON":
+                                value = 1;
+                                break;
+                        }
+                        switch (args[1]) {
+                            case "RACEMODE":
+                            case "RACEMODETOGGLE":
+                                changeRaceModeToggle(value > 0);
+                                switchRaceMode.setEnabled(false);
+                                break;
+                            case "VALUE":
+                                seekBarValue.setProgress(value);
+                                editTextValue.setText(value + "");
+                                seekBarValue.setEnabled(false);
+                                editTextValue.setEnabled(false);
+                                break;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e){
+                        e.printStackTrace();
                     }
-                    switch (args[1]) {
-                        case "RACEMODE":
-                        case "RACEMODETOGGLE":
-                            changeRaceModeToggle(value > 0);
-                            switchRaceMode.setEnabled(false);
-                            break;
-                        case "VALUE":
-                            seekBarValue.setProgress(value);
-                            editTextValue.setText(value + "");
-                            seekBarValue.setEnabled(false);
-                            editTextValue.setEnabled(false);
-                            break;
+                } else if (txt.startsWith("UNBLOCK")){
+                    String str = txt.toUpperCase();
+                    String[] args = str.split(" ");
+                    try {
+                        switch (args[1]) {
+                            case "RACEMODE":
+                            case "RACEMODETOGGLE":
+                                switchRaceMode.setEnabled(true);
+                                break;
+                            case "VALUE":
+                                seekBarValue.setEnabled(true);
+                                editTextValue.setEnabled(true);
+                                break;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e){
+                        e.printStackTrace();
                     }
-                } catch (ArrayIndexOutOfBoundsException e){
-                    e.printStackTrace();
-                }
-            } else if (txt.startsWith("UNBLOCK")){
-                String str = txt.toUpperCase();
-                String[] args = str.split(" ");
-                try {
-                    switch (args[1]) {
-                        case "RACEMODE":
-                        case "RACEMODETOGGLE":
-                            switchRaceMode.setEnabled(true);
-                            break;
-                        case "VALUE":
-                            seekBarValue.setEnabled(true);
-                            editTextValue.setEnabled(true);
-                            break;
+                } else if (txt.startsWith("PONG")){
+                    int ping = (int)(System.currentTimeMillis() - pMillis);
+                    pingArray[pingCounter] = ping;
+                    if (++pingCounter == PING_AMOUNT){
+                        int minPing = pingArray[0];
+                        int maxPing = pingArray[0];
+                        long totalPing = 0;
+                        for (int i = 1; i < PING_AMOUNT; i++) {
+                            if (pingArray[i] < minPing)
+                                minPing = pingArray[i];
+                            if (pingArray[i] > maxPing)
+                                maxPing = pingArray[i];
+                            totalPing += pingArray[i];
+                        }
+                        int avgPing = (int)(totalPing / PING_AMOUNT);
+                        Toast.makeText(getApplicationContext(), "Ping-Ergebnisse\nMenge: " + PING_AMOUNT + "\nDurchschnitt: " + avgPing + "\nMin: " + minPing + "\nMax: " + maxPing, Toast.LENGTH_LONG).show();
+                    } else {
+                        pMillis = System.currentTimeMillis();
+                        wsSend("PING");
                     }
-                } catch (ArrayIndexOutOfBoundsException e){
-                    e.printStackTrace();
-                }
-            } else if (txt.startsWith("PONG")){
-                int ping = (int)(System.currentTimeMillis() - pMillis);
-                pingArray[pingCounter] = ping;
-                if (++pingCounter == PING_AMOUNT){
-                    int minPing = pingArray[0];
-                    int maxPing = pingArray[0];
-                    long totalPing = 0;
-                    for (int i = 1; i < PING_AMOUNT; i++) {
-                        if (pingArray[i] < minPing)
-                            minPing = pingArray[i];
-                        if (pingArray[i] > maxPing)
-                            maxPing = pingArray[i];
-                        totalPing += pingArray[i];
-                    }
-                    int avgPing = (int)(totalPing / PING_AMOUNT);
-                    Toast.makeText(getApplicationContext(), "Ping-Ergebnisse\nMenge: " + PING_AMOUNT + "\nDurchschnitt: " + avgPing + "\nMin: " + minPing + "\nMax: " + maxPing, Toast.LENGTH_LONG).show();
-                } else {
-                    pMillis = System.currentTimeMillis();
-                    wsSend("PING");
                 }
             }
         });
@@ -508,10 +660,18 @@ public class MainActivity extends AppCompatActivity {
     public void sendSoftDisarm(){
         modeBeforeSoftDisarm = espMode;
         wsSend("MODE:RPS");
-        setTimeout(() -> wsSend("VALUE:0"), 2);
-        setTimeout(() -> {
-            sendArmed(false);
-            wsSend("MODE:" + modeBeforeSoftDisarm);
+        setTimeout(new Runnable() {
+            @Override
+            public void run() {
+                wsSend("VALUE:0");
+            }
+        }, 2);
+        setTimeout(new Runnable() {
+            @Override
+            public void run() {
+                sendArmed(false);
+                wsSend("MODE:" + modeBeforeSoftDisarm);
+            }
         }, 1000);
     }
 
@@ -533,22 +693,25 @@ public class MainActivity extends AppCompatActivity {
     private final class EchoWebSocketListener extends WebSocketListener {
         private static final int NORMAL_CLOSURE_STATUS = 1000;
         @Override
-        public void onOpen(WebSocket _ws, okhttp3.Response response) {
-            runOnUiThread(() -> {
-                wsSend("DEVICE:APP");
-                wsSend("TELEMETRY:ON");
-                switchRaceMode.setEnabled(true);
-                seekBarValue.setEnabled(true);
-                editTextValue.setEnabled(true);
-                changeRaceModeToggle(false);
+        public void onOpen(WebSocket webSocket, okhttp3.Response response) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    wsSend("DEVICE:APP");
+                    wsSend("TELEMETRY:ON");
+                    switchRaceMode.setEnabled(true);
+                    seekBarValue.setEnabled(true);
+                    editTextValue.setEnabled(true);
+                    changeRaceModeToggle(false);
+                }
             });
         }
         @Override
-        public void onMessage(WebSocket _ws, String text) {
+        public void onMessage(WebSocket webSocket, String text) {
             onWSText(text);
         }
         @Override
-        public void onMessage(WebSocket _ws, ByteString bytes) {
+        public void onMessage(WebSocket webSocket, ByteString bytes) {
             onWSBin(bytes);
         }
         @Override
@@ -557,86 +720,89 @@ public class MainActivity extends AppCompatActivity {
             wsLog("Closing: " + code + " / " + reason);
         }
         @Override
-        public void onFailure(WebSocket _ws, Throwable t, okhttp3.Response _response) {
+        public void onFailure(WebSocket webSocket, Throwable t, okhttp3.Response response) {
             t.printStackTrace();
             wsLog("Error: " + t.getMessage());
         }
     }
 
     void onWSBin(final ByteString bin) {
-        runOnUiThread(() -> {
-            byte[] bytes = bin.toByteArray();
-            for (int i = 0; i < LOG_FRAMES; i++){
-                throttle_log[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);
-                acceleration_log[i] = (((bytes[i * 2 + LOG_FRAMES * 2 + 1]) << 8) & 0xFF) | (bytes[i * 2 + LOG_FRAMES * 2] & 0xFF);
-                erpm_log[i] = (((bytes[i * 2 + LOG_FRAMES * 4 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 4] & 0xFF);
-                voltage_log[i] = (((bytes[i * 2 + LOG_FRAMES * 6 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 6] & 0xFF);
-                temp_log[i] = (bytes[i + LOG_FRAMES * 8] & 0xFF);
-            }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                byte[] bytes = bin.toByteArray();
+                for (int i = 0; i < LOG_FRAMES; i++){
+                    throttle_log[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);
+                    acceleration_log[i] = (((bytes[i * 2 + LOG_FRAMES * 2 + 1]) << 8) & 0xFF) | (bytes[i * 2 + LOG_FRAMES * 2] & 0xFF);
+                    erpm_log[i] = (((bytes[i * 2 + LOG_FRAMES * 4 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 4] & 0xFF);
+                    voltage_log[i] = (((bytes[i * 2 + LOG_FRAMES * 6 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 6] & 0xFF);
+                    temp_log[i] = (bytes[i + LOG_FRAMES * 8] & 0xFF);
+                }
 
-            try {
-                JSONObject output = new JSONObject();
-                JSONArray finalThrottleArray = new JSONArray(throttle_log);
-                JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
-                JSONArray finalERPMArray = new JSONArray(erpm_log);
-                JSONArray finalVoltageArray = new JSONArray(voltage_log);
-                JSONArray finalTemperatureArray = new JSONArray(temp_log);
-                output.put("throttle", finalThrottleArray);
-                output.put("acceleration", finalAccelerationArray);
-                output.put("erpm", finalERPMArray);
-                output.put("voltage", finalVoltageArray);
-                output.put("temperature", finalTemperatureArray);
-                String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
-                        + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
-                        + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
-                        + prefixZero(Calendar.getInstance().get(Calendar.SECOND), 2) + ".json";
-                File folder;
-                boolean permissionGranted = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-                if (permissionGranted) {
-                    folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
-                } else {
-                    folder = getExternalFilesDir("Formel-E-Logs");
-                }
-                if (!folder.exists()) {
-                    folder.mkdir();
-                }
-                File file = new File(folder, fileName);
-                if (file.exists()) {
-                    String p = file.getAbsolutePath();
-                    int i;
-                    for (i = 2; i < 100; i++) {
-                        if (!(new File(p + "_" + i).exists())) break;
-                    }
-                    if (i == 100) {
-                        file = null;
+                try {
+                    JSONObject output = new JSONObject();
+                    JSONArray finalThrottleArray = new JSONArray(throttle_log);
+                    JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
+                    JSONArray finalERPMArray = new JSONArray(erpm_log);
+                    JSONArray finalVoltageArray = new JSONArray(voltage_log);
+                    JSONArray finalTemperatureArray = new JSONArray(temp_log);
+                    output.put("throttle", finalThrottleArray);
+                    output.put("acceleration", finalAccelerationArray);
+                    output.put("erpm", finalERPMArray);
+                    output.put("voltage", finalVoltageArray);
+                    output.put("temperature", finalTemperatureArray);
+                    String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
+                            + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
+                            + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
+                            + prefixZero(Calendar.getInstance().get(Calendar.SECOND), 2) + ".json";
+                    File folder;
+                    boolean permissionGranted = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                    if (permissionGranted) {
+                        folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
                     } else {
-                        file = new File(p + "_" + i);
+                        folder = getExternalFilesDir("Formel-E-Logs");
                     }
-                }
-                if (file != null) {
-                    FileOutputStream fos = new FileOutputStream(file);
-                    OutputStreamWriter osw = new OutputStreamWriter(fos);
-                    BufferedWriter bufferedWriter = new BufferedWriter(osw);
-                    bufferedWriter.write(output.toString());
-                    bufferedWriter.close();
-                    Toast.makeText(MainActivity.this, permissionGranted ? "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert" : "Da die Berechtigung nicht erteilt wurde, wurde der Log unter " + file.getAbsolutePath() + " gespeichert.", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
-                }
+                    if (!folder.exists()) {
+                        folder.mkdir();
+                    }
+                    File file = new File(folder, fileName);
+                    if (file.exists()) {
+                        String p = file.getAbsolutePath();
+                        int i;
+                        for (i = 2; i < 100; i++) {
+                            if (!(new File(p + "_" + i).exists())) break;
+                        }
+                        if (i == 100) {
+                            file = null;
+                        } else {
+                            file = new File(p + "_" + i);
+                        }
+                    }
+                    if (file != null) {
+                        FileOutputStream fos = new FileOutputStream(file);
+                        OutputStreamWriter osw = new OutputStreamWriter(fos);
+                        BufferedWriter bufferedWriter = new BufferedWriter(osw);
+                        bufferedWriter.write(output.toString());
+                        bufferedWriter.close();
+                        Toast.makeText(MainActivity.this, permissionGranted ? "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert" : "Da die Berechtigung nicht erteilt wurde, wurde der Log unter " + file.getAbsolutePath() + " gespeichert.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
+                    }
 
-                throttle_log = new int[LOG_FRAMES];
-                acceleration_log = new int[LOG_FRAMES];
-                erpm_log = new int[LOG_FRAMES];
-                voltage_log = new int[LOG_FRAMES];
-                temp_log = new int[LOG_FRAMES];
-                for (int i = 0; i < LOG_FRAMES; i += PACKET_SIZE) {
-                    throttle_log[i] = -1;
+                    throttle_log = new int[LOG_FRAMES];
+                    acceleration_log = new int[LOG_FRAMES];
+                    erpm_log = new int[LOG_FRAMES];
+                    voltage_log = new int[LOG_FRAMES];
+                    temp_log = new int[LOG_FRAMES];
+                    for (int i = 0; i < LOG_FRAMES; i += PACKET_SIZE) {
+                        throttle_log[i] = -1;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
             }
         });
     }
