@@ -34,10 +34,10 @@ void getTelemetry(){
         escTelemetry[i] = 1;
       }
       if (telemetryVoltage == 257){
-        // setArmed(false);
+        setArmed(false);
       } else if (telemetryTemp > 80 || telemetryVoltage < cutoffVoltage || telemetryERPM > 8000){
         errorCount++;
-        // setArmed(false);
+        setArmed(false);
         if (lastErrorOutput + 100 < millis()){
           String eMessage = "Error: ESC-Temperatur: " + String(telemetryTemp);
           eMessage += ", Spannung: " + String(telemetryVoltage / 100);
@@ -82,7 +82,7 @@ void sendTelemetry() {
 }
 
 bool isTelemetryComplete(){
-  if (escTelemetry[3] != 0 || escTelemetry[4] != 0 || escTelemetry[5] != 0 || escTelemetry[6] != 0 || escTelemetry[0] == 1)
+  if (escTelemetry[3] != 0 || escTelemetry[4] != 0 || escTelemetry[5] != 0 || escTelemetry[6] != 0 || (escTelemetry[0] == 1 && escTelemetry[9] == 0))
     return false;
   uint8_t cs = get_crc8((uint8_t*)escTelemetry, 9);
   if(cs != escTelemetry[9]){
