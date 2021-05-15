@@ -24,8 +24,7 @@
         android:roundIcon="@mipmap/launcher_icon_round"
         android:supportsRtl="true"
         android:testOnly="true"
-        android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true" >
+        android:theme="@style/AppTheme" >
         <activity
             android:name="com.bastian.eauto.MainActivity"
             android:screenOrientation="sensorPortrait" >
