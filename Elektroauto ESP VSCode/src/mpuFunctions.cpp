@@ -8,7 +8,7 @@
 uint16_t distMPU = 0;
 double speedMPU = 0, acceleration = 0;
 int16_t raw_accel = 0;
-// // unsigned long lastMPUUpdate = 0;
+unsigned long lastMPUUpdate = 0;
 // MPU6050 mpu;
 bool mpuReady = false;
 // extern bool updatedValue;

@@ -26,13 +26,10 @@
 /*======================================================global variables==================================================*/
 
 //Core 0 variables
-TaskHandle_t Task1;
+TaskHandle_t core0Task;
 bool c1ready = false;
 
-//MPU
-float distMPU = 0, speedMPU = 5000, acceleration = 0;
-int counterMPU = 0, raw_accel = 0, MPUoffset = 0;
-unsigned long lastMPUUpdate = 0;
+hw_timer_t * timer = NULL;
 
 //webSocket
 WebSocketsServer webSocket = WebSocketsServer(80);
@@ -67,7 +64,7 @@ void loop() {
   evaluateThrottle();
 }
 
-void Task1code( void * parameter) {
+void core0Code( void * parameter) {
   Serial2.begin(115200);
   disableCore0WDT();
 
@@ -120,7 +117,7 @@ void setup() {
   timerAlarmEnable(timer);
 
   //2nd core setup
-  xTaskCreatePinnedToCore( Task1code, "Task1", 50000, NULL, 0, &Task1, 0);
+  xTaskCreatePinnedToCore( core0Code, "core0Task", 50000, NULL, 0, &core0Task, 0);
 
   //WebSockets init
   webSocket.begin();

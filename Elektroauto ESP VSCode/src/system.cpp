@@ -3,7 +3,7 @@
 #include "system.h"
 #include "messageHandler.h"
 
-double pidMulti = 1, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
+double pidMulti = 1, erpmA = 0.0000000008, erpmB = 0.00000006, erpmC = 0.001;
 int escOutputCounter2 = 0;
 bool raceMode = false;
 extern bool armed;

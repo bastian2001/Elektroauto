@@ -64,7 +64,7 @@ import org.json.JSONObject;
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
 
-    private static int requestUpdateMS = 10;
+    private static int requestUpdateMS = 20;
     private final int LOG_FRAMES = 5000, PACKET_SIZE = 100;
     SharedPreferences mPreferences;
     SharedPreferences.Editor mEditor;
@@ -223,9 +223,9 @@ public class MainActivity extends AppCompatActivity {
                     wsSend("MODE:" + i);
                 }
                 if (i == 0) {
-                    seekBarValue.setMax(350);
+                    seekBarValue.setMax(2000);
                 } else if (i == 1) {
-                    seekBarValue.setMax(90);
+                    seekBarValue.setMax(1500);
                 } else {
                     seekBarValue.setMax(20);
                 }

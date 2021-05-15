@@ -10,8 +10,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="/run/media/bastian/Daten/Dokumente/Projekte/Elektroauto/ElektroautoFormelE" />
+            <option value="/run/media/bastian/Daten/Dokumente/Projekte/Elektroauto/ElektroautoFormelE/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

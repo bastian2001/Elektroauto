@@ -78,8 +78,9 @@ extern double erpmC; //responsiveness: zu viel -> schnelles wackeln um den eigen
 //MPU variables
 //MPU6050 mpu;
 extern unsigned long lastMPUUpdate;
-extern int counterMPU, MPUoffset, raw_accel;
-extern float acceleration, speedMPU, distMPU;
+extern int16_t counterMPU, MPUoffset, raw_accel;
+extern uint16_t distMPU;
+extern double speedMPU, acceleration;
 
 //slip variables
 extern int targetSlip;
