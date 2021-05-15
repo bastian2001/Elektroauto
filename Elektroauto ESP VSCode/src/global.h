@@ -91,6 +91,7 @@ extern double throttle, nextThrottle;
 extern bool armed;
 extern int ctrlMode, reqValue;
 extern uint16_t escValue;
+extern uint16_t cutoffVoltage;
 
 //WiFi/WebSockets variables
 extern WebSocketsServer webSocket;
@@ -101,6 +102,7 @@ extern uint8_t telemetryClientsCounter;
 extern uint16_t telemetryERPM;
 extern uint8_t telemetryTemp;
 extern uint16_t telemetryVoltage;
+extern uint16_t errorCount;
 
 //race mode variables
 extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];

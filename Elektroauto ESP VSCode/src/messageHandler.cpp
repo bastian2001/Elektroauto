@@ -8,6 +8,7 @@ extern bool raceMode;
 extern uint8_t clients[MAX_WS_CONNECTIONS][2];
 extern bool armed;
 extern int ctrlMode, reqValue;
+extern uint16_t cutoffVoltage;
 
 uint8_t telemetryClientsCounter = 0;
 extern double pidMulti, erpmA, erpmB, erpmC;
@@ -86,9 +87,13 @@ void dealWithMessage(String message, uint8_t from) {
   else if (command == "STARTRACE"){
     startRace();
   }
-  // else if (command == "CUTOFFVOLTAGE"){
-  //   cutoffVoltage = message.substring(dividerPos + 1).toInt();
-  // }
+  else if (command == "CUTOFFVOLTAGE"){
+    cutoffVoltage = message.substring(dividerPos + 1).toInt();
+  }
+  else if (command == "ERRORCOUNT"){
+    String m = "MESSAGE Error-Count beträgt " + String(errorCount);
+    broadcastWSMessage(m, true);
+  }
   else if (command == "RPSA"){
     erpmA = message.substring(dividerPos + 1).toFloat();
   }

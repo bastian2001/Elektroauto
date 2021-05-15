@@ -14,6 +14,8 @@ extern int reqValue;
 extern double throttle;
 char escTelemetry[10];
 uint16_t speedWheel = 0;
+extern uint16_t cutoffVoltage;
+uint32_t lastErrorOutput = 0;
 
 void getTelemetry(){
   while(Serial2.available()){
@@ -31,10 +33,17 @@ void getTelemetry(){
       }
       if (telemetryVoltage == 257){
         setArmed(false);
-      }
-      if (telemetryTemp > 140 || telemetryVoltage > 2000 || telemetryVoltage < 500 || telemetryERPM > 8000){
+      } else if (telemetryTemp > 80 || telemetryVoltage > 2000 || telemetryVoltage < cutoffVoltage || telemetryERPM > 8000){
         errorCount++;
-        // Serial.println("error");
+        setArmed(false);
+        if (lastErrorOutput + 100 < millis()){
+          String eMessage = "Error: ESC-Temperatur: " + String(telemetryTemp);
+          eMessage += ", Spannung: " + String(telemetryVoltage / 100);
+          eMessage += "." + String(telemetryVoltage % 100);
+          eMessage += "V, ERPM: " + String(telemetryERPM);
+          lastErrorOutput = millis();
+          sPrintln(eMessage);
+        }
         break;
       }
       break;
