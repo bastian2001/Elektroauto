@@ -2,8 +2,9 @@
 #include "wifiStuff.h"
 #include "system.h"
 #include "messageHandler.h"
+#include "ArduinoJson.h"
 
-double pidMulti = 1, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
+double pidMulti = 1.5, erpmA = 0.00000008, erpmB = 0.000006, erpmC = 0.01;
 int escOutputCounter2 = 0;
 bool raceMode = false;
 extern bool armed;
@@ -43,6 +44,8 @@ void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> e
 
 uint16_t appendChecksum(uint16_t value, bool telemetryRequest) {
   value &= 0x7FF;
+  // escOutputCounter2 = (escOutputCounter2 == ESC_TELEMETRY_REQUEST) ? 0 : escOutputCounter2 + 1;
+  // bool telem = escOutputCounter2 == 0;
   value = (value << 1) | telemetryRequest;
   int csum = 0, csum_data = value;
   for (int i = 0; i < 3; i++) {
