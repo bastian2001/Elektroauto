@@ -50,6 +50,7 @@ void loop0() {
     sendRaceLog();
     logPosition = 0;
   }
+  checkVoltage();
   handleWiFi();
   receiveSerial();
   printSerial();

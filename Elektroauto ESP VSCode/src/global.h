@@ -68,7 +68,7 @@
 
 
 struct Action {
-    uint8_t action; //0 disarm, 1 arm, 2 measure voltage
+    uint8_t action; //0 empty, 1 disarm, 2 arm
     uint8_t payload;
     uint32_t millis;
 };
