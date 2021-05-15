@@ -35,10 +35,10 @@
 #define ERPM_TO_MM_PER_SECOND (RPS_CONVERSION_FACTOR * WHEEL_DIAMETER * PI)
 
 //WiFi and WebSockets settings
+#define ssid "Fritz!Boxgraben"
+#define password "WirBoxenEuchWeg"
 // #define ssid "bastian"
 // #define password "hallo123"
-#define ssid "Bloedfrauen und -maenner"
-#define password "CaputDraconis"
 #define TELEMETRY_UPDATE_MS 20
 #define TELEMETRY_UPDATE_ADD 20
 
