@@ -101,7 +101,7 @@ void addClient (int spot) {
 }
 
 void reconnect() {
-  detachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN));
+  // detachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN));
   Serial2.end();
   WiFi.disconnect();
   int counterWiFi = 0;
@@ -127,7 +127,7 @@ void reconnect() {
   #ifdef PRINT_SETUP
     Serial.println();
   #endif
-  attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
+  // attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
   Serial2.begin(115200);
 }
 

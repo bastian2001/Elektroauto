@@ -11,9 +11,6 @@
 
 #include <Arduino.h>
 #include "WiFi.h"
-// #include "Wire.h"
-//#include "I2Cdev.h"
-//#include "MPU6050.h"
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
 #include "math.h"
@@ -62,13 +59,16 @@ void loop0() {
 }
 
 void loop() {
+  // if (escirFinished){
+    // handleMPU();
+    // escirFinished = false;
+  // }
   getTelemetry();
   evaluateThrottle();
 }
 
 void Task1code( void * parameter) {
   Serial2.begin(115200);
-  attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
   disableCore0WDT();
 
   while (!c1ready) {
@@ -105,16 +105,19 @@ void setup() {
     Serial.println(WiFi.localIP());
   #endif
 
+  //MPU initialization
+  // initMPU();
+
   //ESC pins Setup
   pinMode(ESC_OUTPUT_PIN, OUTPUT);
-  pinMode(ESC_TRIGGER_PIN, OUTPUT);
   pinMode(TRANSMISSION, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(TRANSMISSION, HIGH);
   esc_init(0, ESC_OUTPUT_PIN);
-  ledcSetup(1, ESC_FREQ, 8);
-  ledcAttachPin(ESC_TRIGGER_PIN, 1);
-  ledcWrite(1, 127);
+  timer = timerBegin(0, 80, true);
+  timerAttachInterrupt(timer, &escir, true);
+  timerAlarmWrite(timer, ESC_FREQ, true);
+  timerAlarmEnable(timer);
 
   //2nd core setup
   xTaskCreatePinnedToCore( Task1code, "Task1", 50000, NULL, 0, &Task1, 0);
