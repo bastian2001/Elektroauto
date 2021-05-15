@@ -8,7 +8,7 @@ extern bool raceMode;
 extern uint8_t clients[MAX_WS_CONNECTIONS][2];
 extern bool armed;
 extern int ctrlMode, reqValue;
-extern uint16_t cutoffVoltage;
+extern uint16_t cutoffVoltage, voltageWarning;
 
 uint8_t telemetryClientsCounter = 0;
 extern double pidMulti, erpmA, erpmB, erpmC;
@@ -91,8 +91,14 @@ void dealWithMessage(String message, uint8_t from) {
     cutoffVoltage = message.substring(dividerPos + 1).toInt();
     broadcastWSMessage(String("MESSAGE Cutoff voltage is now ") + String(cutoffVoltage), true);
   }
+  else if (command == "VOLTAGEWARNING"){
+    voltageWarning = message.substring(dividerPos + 1).toInt();
+    broadcastWSMessage(String("MESSAGE Cutoff voltage is now ") + String(voltageWarning), true);
+  }
   else if (command == "ERRORCOUNT"){
-    broadcastWSMessage("MESSAGE Error-Count beträgt " + String(errorCount), true);
+    broadcastWSMessage("MESSAGE Error-Count beträgt " + String(errorCount), true, 0, true);
+    Serial.print("Error count: ");
+    Serial.println(errorCount);
   }
   else if (command == "RPSA"){
     erpmA = message.substring(dividerPos + 1).toFloat();

@@ -11,3 +11,4 @@ float erpmToRps(float erpm);
 void setNewTargetValue();
 void sendRaceLog();
 void evaluateThrottle();
+void checkVoltage();

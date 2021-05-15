@@ -17,6 +17,8 @@ uint16_t speedWheel = 0;
 extern uint16_t cutoffVoltage;
 uint32_t lastErrorOutput = 0;
 
+uint8_t get_crc8(uint8_t *Buf, uint8_t BufLen);
+
 void getTelemetry(){
   while(Serial2.available()){
     for (uint8_t i = 0; i < 9; i++){
@@ -29,13 +31,13 @@ void getTelemetry(){
       telemetryERPM = (escTelemetry[7] << 8) | escTelemetry[8];
       speedWheel = (float)telemetryERPM * ERPM_TO_MM_PER_SECOND;
       for (uint8_t i = 0; i < 9; i++){
-        escTelemetry[i] = B1;
+        escTelemetry[i] = 1;
       }
       if (telemetryVoltage == 257){
-        setArmed(false);
-      } else if (telemetryTemp > 80 || telemetryVoltage > 2000 || telemetryVoltage < cutoffVoltage || telemetryERPM > 8000){
+        // setArmed(false);
+      } else if (telemetryTemp > 80 || telemetryVoltage < cutoffVoltage || telemetryERPM > 8000){
         errorCount++;
-        setArmed(false);
+        // setArmed(false);
         if (lastErrorOutput + 100 < millis()){
           String eMessage = "Error: ESC-Temperatur: " + String(telemetryTemp);
           eMessage += ", Spannung: " + String(telemetryVoltage / 100);
@@ -80,5 +82,31 @@ void sendTelemetry() {
 }
 
 bool isTelemetryComplete(){
-  return escTelemetry[3] == 0 && escTelemetry[4] == 0 && escTelemetry[5] == 0 && escTelemetry[6] == 0;
+  if (escTelemetry[3] != 0 || escTelemetry[4] != 0 || escTelemetry[5] != 0 || escTelemetry[6] != 0 || escTelemetry[0] == 1)
+    return false;
+  uint8_t cs = get_crc8((uint8_t*)escTelemetry, 9);
+  if(cs != escTelemetry[9]){
+    for (int i = 0; i < 10; i++){
+      Serial.print((int)escTelemetry[i]);
+      Serial.print(" ");
+    }
+    Serial.println();
+  }
+  return cs == escTelemetry[9];
+}
+
+uint8_t update_crc8(uint8_t crc, uint8_t crc_seed){
+  uint8_t crc_u, i;
+  crc_u = crc;
+  crc_u ^= crc_seed;
+  for ( i=0; i<8; i++)
+    crc_u = ( crc_u & 0x80 ) ? 0x7 ^ ( crc_u << 1 ) : ( crc_u << 1 );
+  return (crc_u);
+}
+
+uint8_t get_crc8(uint8_t *Buf, uint8_t BufLen){
+  uint8_t crc = 0, i;
+  for( i=0; i<BufLen; i++)
+    crc = update_crc8(Buf[i], crc);
+  return (crc);
 }

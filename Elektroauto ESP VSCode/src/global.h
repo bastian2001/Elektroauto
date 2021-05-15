@@ -12,7 +12,7 @@
 #define LED_BUILTIN 22
 
 //ESC values
-#define ESC_FREQ 800
+#define ESC_FREQ 1000
 #define CLK_DIV 3 //DShot 150: 12, DShot 300: 6, DShot 600: 3
 #define TT 44 // total bit time
 #define T0H 17 // 0 bit high time
@@ -67,6 +67,12 @@
 
 
 
+struct Action {
+    uint8_t action; //0 disarm, 1 arm, 2 measure voltage
+    uint8_t payload;
+    uint32_t millis;
+};
+
 //rps control variables
 extern int targetERPM;
 extern int previousERPM[TREND_AMOUNT];
@@ -91,7 +97,7 @@ extern double throttle, nextThrottle;
 extern bool armed;
 extern int ctrlMode, reqValue;
 extern uint16_t escValue;
-extern uint16_t cutoffVoltage;
+extern uint16_t cutoffVoltage, voltageWarning;
 
 //WiFi/WebSockets variables
 extern WebSocketsServer webSocket;

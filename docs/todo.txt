@@ -1,0 +1,4 @@
+Alarm unter Spannung
+Verzögerte Aktionen
+Handy manuelle Eingabe
+Handy ESC-Codes eingeben
