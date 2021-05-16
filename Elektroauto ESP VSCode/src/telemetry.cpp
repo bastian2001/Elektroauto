@@ -39,12 +39,11 @@ void getTelemetry(){
         errorCount++;
         setArmed(false);
         if (lastErrorOutput + 100 < millis()){
-          String eMessage = "Error: ESC-Temperatur: " + String(telemetryTemp);
-          eMessage += ", Spannung: " + String(telemetryVoltage / 100);
-          eMessage += "." + (((telemetryVoltage % 100 < 10) ? "0":"" ) + String(telemetryVoltage % 100));
-          eMessage += "V, ERPM: " + String(telemetryERPM);
+          char errorMessage[60];
+          snprintf(errorMessage, 60, "Error: ESC-Temperatur: %d°C, Spannung: %4.2fV, ERPM: %d",
+            telemetryTemp, (double)telemetryVoltage / 100.0, telemetryERPM);
           lastErrorOutput = millis();
-          sPrintln(eMessage);
+          sPrintln(errorMessage);
         }
         break;
       }
@@ -59,26 +58,11 @@ void sendTelemetry() {
   if (speedWheel != 0) {
     slipPercent = (float)(speedWheel - speedMPU) / speedWheel * 100;
   }
-  //String telemetryData2 = "";
-  String telemetryData = armed ? "TELEMETRY a1!p" : "TELEMETRY a0!p";
-  telemetryData += telemetryTemp;
-  telemetryData += "!u";
-  telemetryData += telemetryVoltage;
-  telemetryData += "!t";
-  telemetryData += (int) throttle;
-  telemetryData += "!r";
-  telemetryData += (int) rps;
-  telemetryData += "!s";
-  telemetryData += slipPercent;
-  telemetryData += "!v";
-  telemetryData += (int) speedMPU;
-  telemetryData += "!w";
-  telemetryData += speedWheel;
-  telemetryData += "!c";
-  telemetryData += ((int)(acceleration * 1000 + .5));
-  telemetryData += (raceMode && !raceActive) ? "!o" : "!q";
-  telemetryData += reqValue;
-  broadcastWSMessage(telemetryData, true, 0, true);
+  char telData[66];
+  snprintf(telData, 66, "TELEMETRY a%d!p%d!u%d!t%d!r%d!s%d!v%d!w%d!c%d!%c%d", 
+    armed > 0, telemetryTemp, telemetryVoltage, (int) throttle, (int) rps, slipPercent, (int) speedMPU, speedWheel,
+    (int)(acceleration * 1000 + .5), (raceMode && !raceActive) ? 'o' : 'q', reqValue);
+  broadcastWSMessage(telData, true, 0, true);
 }
 
 bool isTelemetryComplete(){
