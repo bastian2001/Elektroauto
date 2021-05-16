@@ -139,6 +139,7 @@ void dealWithMessage(String message, uint8_t from) {
         }
         manualData[i/5] = data;
       }
+      manualDataAmount = length / 5 + 1;
     }
   }
 }
