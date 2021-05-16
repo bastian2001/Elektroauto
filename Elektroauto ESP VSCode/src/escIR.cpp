@@ -15,6 +15,8 @@ extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_
 extern int acceleration_log[LOG_FRAMES];
 extern uint8_t temp_log[LOG_FRAMES];
 double throttle = 0, nextThrottle = 0;
+uint8_t manualDataAmount = 0;
+uint16_t manualData[20];
 
 void escir() {
   //set Throttle to evaluated value
@@ -29,7 +31,16 @@ void escir() {
   #endif
 
   //send value to ESC
-  esc_send_value(escValue, false);
+  if (manualDataAmount == 0)
+    esc_send_value(escValue, false);
+  else {
+    esc_send_value(manualData[0], false);
+    manualDataAmount--;
+    for (int i = 0; i < 19; i++){
+      manualData[i] = manualData[i+1];
+    }
+    manualData[19] = 0;
+  }
   #ifdef SEND_TRANSMISSION_IND
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, HIGH);

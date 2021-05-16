@@ -119,4 +119,26 @@ void dealWithMessage(String message, uint8_t from) {
     pidMulti = message.substring(dividerPos + 1).toFloat();
     broadcastWSMessage(String("MESSAGE Multiplier is now ") + String(pidMulti), true);
   }
+  else if (command == "RAWDATA"){
+    message = message.substring(dividerPos + 1);
+    uint8_t length = message.length();
+    if (length % 5 != 4 || length > 99){
+      broadcastWSMessage("Invalide Länge der Rohdaten");
+    } else {
+      for (int i = 0; i < length; i+=5){
+        uint16_t data = 0;
+        for (int n = 0; n < 4; n++){
+          char c = message.charAt(i + n);
+          if (c >= 'A' && c <= 'F'){
+            data |= ((c - 55) << ((3-n) * 4));
+          } else if (c >= 'a' && c <= 'f'){
+            data |= ((c - 87) << ((3-n) * 4));
+          } else if (c >= '0' && c <= 'g'){
+            data |= ((c - '0') << ((3-n) * 4));
+          }
+        }
+        manualData[i/5] = data;
+      }
+    }
+  }
 }

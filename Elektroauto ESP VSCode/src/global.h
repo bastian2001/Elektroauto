@@ -109,6 +109,8 @@ extern uint16_t telemetryERPM;
 extern uint8_t telemetryTemp;
 extern uint16_t telemetryVoltage;
 extern uint16_t errorCount;
+extern uint8_t manualDataAmount;
+extern uint16_t manualData[20];
 
 //race mode variables
 extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
