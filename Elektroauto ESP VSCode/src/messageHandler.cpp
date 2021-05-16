@@ -89,11 +89,15 @@ void dealWithMessage(String message, uint8_t from) {
   }
   else if (command == "CUTOFFVOLTAGE"){
     cutoffVoltage = message.substring(dividerPos + 1).toInt();
-    broadcastWSMessage(String("MESSAGE Cutoff voltage is now ") + String(cutoffVoltage), true);
+    char bcMessage[50];
+    snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", cutoffVoltage);
+    broadcastWSMessage(bcMessage, true);
   }
   else if (command == "VOLTAGEWARNING"){
     voltageWarning = message.substring(dividerPos + 1).toInt();
-    broadcastWSMessage(String("MESSAGE Cutoff voltage is now ") + String(voltageWarning), true);
+    char bcMessage[50];
+    snprintf(bcMessage, 50, "MESSAGE Spannungswarnung erfolgt unter %4.2fV", voltageWarning);
+    broadcastWSMessage(bcMessage, true);
   }
   else if (command == "ERRORCOUNT"){
     broadcastWSMessage("MESSAGE Error-Count beträgt " + String(errorCount), true, 0, true);
@@ -102,22 +106,22 @@ void dealWithMessage(String message, uint8_t from) {
   }
   else if (command == "RPSA"){
     erpmA = message.substring(dividerPos + 1).toFloat();
-    broadcastWSMessage(String("MESSAGE rpsA is now ") + String(erpmA), true);
+    broadcastWSMessage(String("MESSAGE Tempomat 3. Potenz ist nun ") + String(erpmA), true);
   }
   else if (command == "RPSB"){
     erpmB = message.substring(dividerPos + 1).toFloat();
-    broadcastWSMessage(String("MESSAGE rpsB is now ") + String(erpmB), true);
+    broadcastWSMessage(String("MESSAGE Tempomat 2. Potenz ist nun ") + String(erpmB), true);
   }
   else if (command == "RPSC"){
     erpmC = message.substring(dividerPos + 1).toFloat();
-    broadcastWSMessage(String("MESSAGE rpsC is now ") + String(erpmC), true);
+    broadcastWSMessage(String("MESSAGE Tempomat 1. Potenz ist nun ") + String(erpmC), true);
   }
   else if (command == "RECONNECT"){
     reconnect();
   }
   else if (command == "PIDMULTIPLIER"){
     pidMulti = message.substring(dividerPos + 1).toFloat();
-    broadcastWSMessage(String("MESSAGE Multiplier is now ") + String(pidMulti), true);
+    broadcastWSMessage(String("MESSAGE Tempomat-Master ist nun ") + String(pidMulti), true);
   }
   else if (command == "RAWDATA"){
     message = message.substring(dividerPos + 1);
