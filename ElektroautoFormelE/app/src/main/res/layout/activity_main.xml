@@ -17,7 +17,7 @@
         tools:context=".MainActivity">
 
         <LinearLayout
-            android:id="@+id/linearLayout0"
+            android:id="@+id/llConnection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -84,7 +84,7 @@
             android:text="Race Mode" />
 
         <LinearLayout
-            android:id="@+id/linearLayout1"
+            android:id="@+id/llArming"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -94,7 +94,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout0">
+            app:layout_constraintTop_toBottomOf="@+id/llConnection">
 
             <Button
                 android:id="@+id/buttonStartRace"
@@ -163,10 +163,10 @@
             android:entries="@array/ctrlModeOptions"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout1" />
+            app:layout_constraintTop_toBottomOf="@+id/llArming" />
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/llValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
@@ -211,13 +211,29 @@
             android:minHeight="35dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+            app:layout_constraintTop_toBottomOf="@+id/llValue" />
+
+        <TextView
+            android:id="@+id/textViewTelemetry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Verbindung wird aufgebaut..."
+            android:textAlignment="textStart"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
 
         <LinearLayout
+            android:id="@+id/llCommand"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:layout_weight="1"
             android:orientation="horizontal">
@@ -244,20 +260,117 @@
                 android:text="Senden" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/textViewTelemetry"
+        <LinearLayout
+            android:id="@+id/llCommandPresets"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:text="Verbindung wird aufgebaut..."
-            android:textAlignment="textStart"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/ibForward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_weight="0"
+                android:background="?android:attr/selectableItemBackground"
+                android:baselineAlignBottom="false"
+                app:srcCompat="@drawable/ic_arrow_forward" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/ibBackward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_weight="0"
+                android:background="?android:attr/selectableItemBackground"
+                android:baselineAlignBottom="false"
+                app:srcCompat="@drawable/ic_arrow_backward" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/ibDirectionOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_weight="0"
+                android:background="?android:attr/selectableItemBackground"
+                android:baselineAlignBottom="false"
+                app:srcCompat="@drawable/ic_one" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/ibDirectionTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_weight="0"
+                android:background="?android:attr/selectableItemBackground"
+                android:baselineAlignBottom="false"
+                app:srcCompat="@drawable/ic_two" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/ibRed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_weight="0"
+                android:background="?android:attr/selectableItemBackground"
+                android:baselineAlignBottom="false"
+                app:srcCompat="@drawable/ic_red_off" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/ibGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_weight="0"
+                android:background="?android:attr/selectableItemBackground"
+                android:baselineAlignBottom="false"
+                app:srcCompat="@drawable/ic_green_off" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/ibBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_weight="0"
+                android:background="?android:attr/selectableItemBackground"
+                android:baselineAlignBottom="false"
+                app:srcCompat="@drawable/ic_blue_off" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

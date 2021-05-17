@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar seekBarValue;
     private Switch switchRaceMode;
     private Button buttonSend;
+    private ImageButton buttonForward, buttonBackward, buttonDirectionOne, buttonDirectionTwo, buttonRed, buttonGreen, buttonBlue;
 
     //main variables
     private int espMode = 0, modeBeforeSoftDisarm = 0;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean rmUserChanged = true, modeUserChanged = true;
     boolean seekbarTouch = false;
     private boolean firstStartup = true;
+    private boolean redLED = false, greenLED = false, blueLED = false;
 
     //ping
     private long pMillis = 0;
@@ -131,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
         switchRaceMode = findViewById(R.id.switchRaceMode);
         buttonSend = findViewById(R.id.buttonSend);
         editTextCommand = findViewById(R.id.editTextCommand);
+        buttonForward = findViewById(R.id.ibForward);
+        buttonBackward = findViewById(R.id.ibBackward);
+        buttonDirectionOne = findViewById(R.id.ibDirectionOne);
+        buttonDirectionTwo = findViewById(R.id.ibDirectionTwo);
+        buttonRed = findViewById(R.id.ibRed);
+        buttonGreen = findViewById(R.id.ibGreen);
+        buttonBlue = findViewById(R.id.ibBlue);
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mEditor = mPreferences.edit();
@@ -216,6 +225,35 @@ public class MainActivity extends AppCompatActivity {
             wsSend(editTextCommand.getText().toString());
         });
 
+        buttonForward.setOnClickListener(_v -> {sendRawData("00FF", 10);});
+        buttonBackward.setOnClickListener(_v -> {sendRawData("0110", 10);});
+        buttonDirectionOne.setOnClickListener(_v -> {sendRawData("029B", 10);});
+        buttonDirectionTwo.setOnClickListener(_v -> {sendRawData("02B9", 10);});
+        buttonRed.setOnClickListener(_v -> {
+            if(redLED)
+                sendRawData("0356", 1);
+            else
+                sendRawData("02DF", 1);
+            redLED = !redLED;
+            buttonRed.setImageResource(redLED ? R.drawable.ic_red_on : R.drawable.ic_red_off);
+        });//on: 02DF, off: 0356
+        buttonGreen.setOnClickListener(_v -> {
+            if(greenLED)
+                sendRawData("0374", 1);
+            else
+                sendRawData("02FD", 1);
+            greenLED = !greenLED;
+            buttonGreen.setImageResource(greenLED ? R.drawable.ic_green_on : R.drawable.ic_green_off);
+        });//on: 02FD, off: 0374
+        buttonBlue.setOnClickListener(_v -> {
+            if(blueLED)
+                sendRawData("039A", 1);
+            else
+                sendRawData("0312", 1);
+            blueLED = !blueLED;
+            buttonBlue.setImageResource(blueLED ? R.drawable.ic_blue_on : R.drawable.ic_blue_off);
+        });//on: 0312, off: 0399
+
         wsStart();
 
         autoSend = setInterval(this::sendRequest, REQUEST_UPDATE_MS);
@@ -237,6 +275,17 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(perm, 0);
         }
         super.onStart();
+    }
+
+    private void sendRawData(String s, int repeat){
+        String message = "RAWDATA:";
+        for (int i = 0; i < repeat; i++){
+            message += s;
+            if (i != repeat - 1){
+                message += " ";
+            }
+        }
+        wsSend(message);
     }
 
     private void changeModeSpinner(int position){
