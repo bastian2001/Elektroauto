@@ -90,13 +90,13 @@ void dealWithMessage(String message, uint8_t from) {
   else if (command == "CUTOFFVOLTAGE"){
     cutoffVoltage = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];
-    snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", cutoffVoltage);
+    snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", (double)cutoffVoltage/100.0);
     broadcastWSMessage(bcMessage, true);
   }
   else if (command == "VOLTAGEWARNING"){
     voltageWarning = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];
-    snprintf(bcMessage, 50, "MESSAGE Spannungswarnung erfolgt unter %4.2fV", voltageWarning);
+    snprintf(bcMessage, 50, "MESSAGE Spannungswarnung erfolgt unter %4.2fV", (double)voltageWarning/100);
     broadcastWSMessage(bcMessage, true);
   }
   else if (command == "ERRORCOUNT"){
