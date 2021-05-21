@@ -14,6 +14,7 @@
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
 #include "math.h"
+#include <esp_task_wdt.h>
 
 #include "global.h"
 #include "system.h"
@@ -42,7 +43,10 @@ uint8_t clients[MAX_WS_CONNECTIONS][2];
 
 void loop0() {
   if (WiFi.status() != WL_CONNECTED) {
+    disableCore0WDT();
     reconnect();
+    delay(1);
+    enableCore0WDT();
   }
   if (raceModeSendValues){
     raceMode = false;
@@ -51,9 +55,12 @@ void loop0() {
     logPosition = 0;
   }
   checkVoltage();
+
   handleWiFi();
   receiveSerial();
+
   printSerial();
+  delay(1);
 }
 
 void loop() {
@@ -67,7 +74,6 @@ void loop() {
 
 void core0Code( void * parameter) {
   Serial2.begin(115200);
-  disableCore0WDT();
 
   while (!c1ready) {
     yield();

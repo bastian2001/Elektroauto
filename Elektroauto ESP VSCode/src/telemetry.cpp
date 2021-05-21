@@ -30,14 +30,25 @@ void getTelemetry(){
       telemetryVoltage = (escTelemetry[1] << 8) | escTelemetry[2];
       telemetryERPM = (escTelemetry[7] << 8) | escTelemetry[8];
       speedWheel = (float)telemetryERPM * ERPM_TO_MM_PER_SECOND;
-      for (uint8_t i = 0; i < 9; i++){
+      for (uint8_t i = 0; i < 10; i++){
         escTelemetry[i] = 1;
       }
-      if (telemetryVoltage == 257){
-        setArmed(false);
-      } else if (telemetryTemp > 80 || telemetryVoltage < cutoffVoltage || telemetryERPM > 8000){
+      if (telemetryTemp > 80){
+        if (armed){
+          setArmed(false);
+          broadcastWSMessage("MESSAGE Wegen Überhitzung disarmed!");
+        }
+      } else if(telemetryVoltage < cutoffVoltage){
+        if (armed){
+          setArmed(false);
+          broadcastWSMessage("MESSAGE Cutoff-Spannung unterschritten!");
+        }
+      } else if (telemetryERPM > 8000){
         errorCount++;
-        setArmed(false);
+        if (armed){
+          setArmed(false);
+          broadcastWSMessage("MESSAGE Zu hohe Drehzahl");
+        }
         if (lastErrorOutput + 100 < millis()){
           char errorMessage[60];
           snprintf(errorMessage, 60, "Error: ESC-Temperatur: %d°C, Spannung: %4.2fV, ERPM: %d",
@@ -66,17 +77,17 @@ void sendTelemetry() {
 }
 
 bool isTelemetryComplete(){
-  if (escTelemetry[3] != 0 || escTelemetry[4] != 0 || escTelemetry[5] != 0 || escTelemetry[6] != 0 || (escTelemetry[0] == 1 && escTelemetry[9] == 0))
-    return false;
-  uint8_t cs = get_crc8((uint8_t*)escTelemetry, 9);
-  if(cs != escTelemetry[9]){
-    for (int i = 0; i < 10; i++){
-      Serial.print((int)escTelemetry[i]);
-      Serial.print(" ");
-    }
-    Serial.println();
-  }
-  return cs == escTelemetry[9];
+  if (escTelemetry[0] > 1
+    && get_crc8((uint8_t*)escTelemetry, 9) == escTelemetry[9]
+    && escTelemetry[3] == 0
+    && escTelemetry[4] == 0
+    && escTelemetry[5] == 0
+    && escTelemetry[6] == 0
+    && escTelemetry[0] < 100
+    && escTelemetry[1] < 8
+    )
+    return true;
+  return false;
 }
 
 uint8_t update_crc8(uint8_t crc, uint8_t crc_seed){
