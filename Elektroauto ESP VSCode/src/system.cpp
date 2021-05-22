@@ -10,6 +10,7 @@ extern bool armed;
 int targetERPM = 0, ctrlMode = 0, reqValue = 0, targetSlip = 0;
 uint16_t escValue = 0;
 extern double throttle;
+bool redLED, greenLED, blueLED;
 
 //voltage warning
 uint16_t cutoffVoltage = 600, voltageWarning = 720;

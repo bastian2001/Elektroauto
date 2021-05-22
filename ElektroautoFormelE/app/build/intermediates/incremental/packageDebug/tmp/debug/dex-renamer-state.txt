@@ -1,4 +1,4 @@
-#Tue May 18 01:03:53 CEST 2021
+#Sat May 22 02:02:59 CEST 2021
 base.2=C\:\\Users\\bascs\\Documents\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\15\\classes.dex
 path.2=15/classes.dex
 base.1=C\:\\Users\\bascs\\Documents\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex

@@ -16,6 +16,7 @@ char escTelemetry[10];
 uint16_t speedWheel = 0;
 extern uint16_t cutoffVoltage;
 uint32_t lastErrorOutput = 0;
+bool firstTelemetry = true;
 
 uint8_t get_crc8(uint8_t *Buf, uint8_t BufLen);
 
@@ -56,7 +57,12 @@ void getTelemetry(){
           lastErrorOutput = millis();
           sPrintln(errorMessage);
         }
-        break;
+      }
+      if(firstTelemetry){
+        firstTelemetry = false;
+        manualData[17] = 0x0356;
+        manualData[18] = 0x02FD;
+        manualData[19] = 0x039A;
       }
       break;
     }

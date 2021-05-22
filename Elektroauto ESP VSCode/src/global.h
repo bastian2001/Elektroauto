@@ -100,6 +100,8 @@ extern bool armed;
 extern int ctrlMode, reqValue;
 extern uint16_t escValue;
 extern uint16_t cutoffVoltage, voltageWarning;
+extern bool redLED, greenLED, blueLED;
+extern uint8_t newRedLED, newGreenLED, newBlueLED;
 
 //WiFi/WebSockets variables
 extern WebSocketsServer webSocket;

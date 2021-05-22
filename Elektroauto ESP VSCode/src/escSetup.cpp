@@ -1,6 +1,8 @@
 #include "driver/rmt.h"
 #include "global.h"
 
+uint8_t newRedLED, newBlueLED, newGreenLED;
+
 rmt_item32_t escDataBuffer[ESC_BUFFER_ITEMS];
 
 void esc_init(uint8_t channel, uint8_t pin) {
@@ -31,4 +33,27 @@ void setup_rmt_data_buffer(uint16_t value) {
 void esc_send_value(uint16_t value, bool wait) {
   setup_rmt_data_buffer(value);
   ESP_ERROR_CHECK(rmt_write_items((rmt_channel_t) 0, escDataBuffer, ESC_BUFFER_ITEMS, wait));
+
+  switch(value){
+    case 0x0356:
+      newRedLED = 1;
+      break;
+    case 0x02DF:
+      newRedLED = 2;
+      break;
+    case 0x0374:
+      newGreenLED = 1;
+      break;
+    case 0x02FD:
+      newGreenLED = 2;
+      break;
+    case 0x039A:
+      newBlueLED = 1;
+      break;
+    case 0x0312:
+      newBlueLED = 2;
+      break;
+    default:
+      break;
+  }
 }

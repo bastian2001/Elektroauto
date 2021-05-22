@@ -84,6 +84,9 @@ void addClient (int spot) {
     } else if (raceMode){
       webSocket.sendTXT(spot, "SET RACEMODE ON");
     }
+    webSocket.sendTXT(spot, "SET REDLED " + String(redLED));
+    webSocket.sendTXT(spot, "SET BLUELED " + String(blueLED));
+    webSocket.sendTXT(spot, "SET GREENLED " + String(greenLED));
     String modeText = "SET MODESPINNER ";
     modeText += ctrlMode;
     webSocket.sendTXT(spot, modeText);
@@ -131,8 +134,27 @@ void reconnect() {
   Serial2.begin(115200);
 }
 
+void checkLEDs(){
+  if (newRedLED){
+    redLED = newRedLED - 1;
+    broadcastWSMessage("SET REDLED " + String(redLED));
+    newRedLED = 0;
+  }
+  if (newGreenLED){
+    greenLED = newGreenLED - 1;
+    broadcastWSMessage("SET GREENLED " + String(greenLED));
+    newGreenLED = 0;
+  }
+  if (newBlueLED){
+    blueLED = newBlueLED - 1;
+    broadcastWSMessage("SET BLUELED " + String(blueLED));
+    newBlueLED = 0;
+  }
+}
+
 void handleWiFi() {
   webSocket.loop();
+  checkLEDs();
   if (millis() > lastTelemetry + TELEMETRY_UPDATE_MS + TELEMETRY_UPDATE_ADD * telemetryClientsCounter) {
     lastTelemetry = millis();
     sendTelemetry();

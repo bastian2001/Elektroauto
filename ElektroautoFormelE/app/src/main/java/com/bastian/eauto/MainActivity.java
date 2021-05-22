@@ -234,8 +234,6 @@ public class MainActivity extends AppCompatActivity {
                 sendRawData("0356", 1);
             else
                 sendRawData("02DF", 1);
-            redLED = !redLED;
-            buttonRed.setImageResource(redLED ? R.drawable.ic_red_on : R.drawable.ic_red_off);
         });//on: 02DF, off: 0356
         buttonGreen.setOnClickListener(_v -> {
             if(greenLED)
@@ -243,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
             else
                 sendRawData("02FD", 1);
             greenLED = !greenLED;
-            buttonGreen.setImageResource(greenLED ? R.drawable.ic_green_on : R.drawable.ic_green_off);
         });//on: 02FD, off: 0374
         buttonBlue.setOnClickListener(_v -> {
             if(blueLED)
@@ -251,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
             else
                 sendRawData("0312", 1);
             blueLED = !blueLED;
-            buttonBlue.setImageResource(blueLED ? R.drawable.ic_blue_on : R.drawable.ic_blue_off);
         });//on: 0312, off: 0399
 
         wsStart();
@@ -412,6 +408,18 @@ public class MainActivity extends AppCompatActivity {
                             editTextValue.setText(value + "");
                             seekBarValue.setEnabled(true);
                             editTextValue.setEnabled(true);
+                            break;
+                        case "REDLED":
+                            redLED = value > 0;
+                            buttonRed.setImageResource(redLED ? R.drawable.ic_red_on : R.drawable.ic_red_off);
+                            break;
+                        case "GREENLED":
+                            greenLED = value > 0;
+                            buttonGreen.setImageResource(greenLED ? R.drawable.ic_green_on : R.drawable.ic_green_off);
+                            break;
+                        case "BLUELED":
+                            blueLED = value > 0;
+                            buttonBlue.setImageResource(blueLED ? R.drawable.ic_blue_on : R.drawable.ic_blue_off);
                             break;
                         case "ARMED":
                         default:
