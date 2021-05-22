@@ -8,7 +8,7 @@ int escOutputCounter2 = 0;
 bool raceMode = false;
 extern bool armed;
 int targetERPM = 0, ctrlMode = 0, reqValue = 0, targetSlip = 0;
-uint16_t escValue = 0;
+uint16_t escValue = 0x0011;
 extern double throttle;
 bool redLED, greenLED, blueLED;
 

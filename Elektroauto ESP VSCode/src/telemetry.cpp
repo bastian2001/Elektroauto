@@ -63,6 +63,7 @@ void getTelemetry(){
         manualData[17] = 0x0356;
         manualData[18] = 0x02FD;
         manualData[19] = 0x039A;
+        manualDataAmount = 20;
       }
       break;
     }
