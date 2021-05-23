@@ -33,7 +33,7 @@ void dealWithMessage(String message, uint8_t from) {
     setArmed(value > 0, from);
   }
   else if (command == "PING") {
-    webSocket.sendTXT(from, "PONG");
+    sendWSMessage(from, "PONG");
   }
   else if (command == "MODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
@@ -86,43 +86,41 @@ void dealWithMessage(String message, uint8_t from) {
     cutoffVoltage = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];
     snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", (double)cutoffVoltage/100.0);
-    broadcastWSMessage(bcMessage, true);
+    sendWSMessage(from, bcMessage);
   }
   else if (command == "VOLTAGEWARNING"){
     voltageWarning = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];
     snprintf(bcMessage, 50, "MESSAGE Spannungswarnung erfolgt unter %4.2fV", (double)voltageWarning/100);
-    broadcastWSMessage(bcMessage, true);
+    sendWSMessage(from, bcMessage);
   }
   else if (command == "ERRORCOUNT"){
-    broadcastWSMessage("MESSAGE Error-Count beträgt " + String(errorCount), true, 0, true);
-    Serial.print("Error count: ");
-    Serial.println(errorCount);
+    sendWSMessage(from, "MESSAGE Error-Count beträgt " + String(errorCount));
   }
   else if (command == "RPSA"){
     erpmA = message.substring(dividerPos + 1).toFloat();
-    broadcastWSMessage(String("MESSAGE Tempomat 3. Potenz ist nun ") + String(erpmA), true);
+    sendWSMessage(from, String("MESSAGE Tempomat 3. Potenz ist nun ") + String(erpmA));
   }
   else if (command == "RPSB"){
     erpmB = message.substring(dividerPos + 1).toFloat();
-    broadcastWSMessage(String("MESSAGE Tempomat 2. Potenz ist nun ") + String(erpmB), true);
+    sendWSMessage(from, String("MESSAGE Tempomat 2. Potenz ist nun ") + String(erpmB));
   }
   else if (command == "RPSC"){
     erpmC = message.substring(dividerPos + 1).toFloat();
-    broadcastWSMessage(String("MESSAGE Tempomat 1. Potenz ist nun ") + String(erpmC), true);
+    sendWSMessage(from, String("MESSAGE Tempomat 1. Potenz ist nun ") + String(erpmC));
   }
   else if (command == "RECONNECT"){
     reconnect();
   }
   else if (command == "PIDMULTIPLIER"){
     pidMulti = message.substring(dividerPos + 1).toFloat();
-    broadcastWSMessage(String("MESSAGE Tempomat-Master ist nun ") + String(pidMulti), true);
+    sendWSMessage(from, String("MESSAGE Tempomat-Master ist nun ") + String(pidMulti));
   }
   else if (command == "RAWDATA"){
     message = message.substring(dividerPos + 1);
     uint8_t length = message.length();
     if (length % 5 != 4 || length > 99){
-      broadcastWSMessage("Invalide Länge der Rohdaten");
+      sendWSMessage(from, F("MESSAGE Invalide Länge der Rohdaten!"));
     } else {
       for (int i = 0; i < length; i+=5){
         uint16_t data = 0;

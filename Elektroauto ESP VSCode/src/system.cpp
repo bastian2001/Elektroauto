@@ -33,8 +33,8 @@ void setArmed (bool arm, uint8_t spot){
     armed = arm;
     setThrottle(0);
     nextThrottle = 0;
-  } else if (spot != 255){
-    webSocket.sendTXT(spot, arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
+  } else {
+    sendWSMessage(spot, arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
   }
 }
 
@@ -168,7 +168,7 @@ void checkVoltage(){
     if (telemetryVoltage < voltageWarning && telemetryVoltage != 0 && telemetryVoltage != 257){
       voltageWarningCount++;
       if (voltageWarningCount % 5 == 3){
-        broadcastWSMessage("MESSAGE Warnung! Spannung niedrig!", true, 0);
+        broadcastWSMessage(F("MESSAGE Warnung! Spannung niedrig!"));
       }
     } else {
       voltageWarningCount = 0;

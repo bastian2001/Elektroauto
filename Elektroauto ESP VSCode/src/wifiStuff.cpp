@@ -103,6 +103,14 @@ void addClient (int spot) {
   }
 }
 
+void sendWSMessage(uint8_t spot, String text){
+  if (spot != 255){
+    webSocket.sendTXT(spot, text);
+  } else {
+    sPrintln(text);
+  }
+}
+
 void reconnect() {
   // detachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN));
   Serial2.end();
