@@ -12,18 +12,24 @@ uint16_t escValue = 0x0011;
 extern double throttle;
 bool redLED, greenLED, blueLED;
 
-//voltage warning
+//! voltage warning
 uint16_t cutoffVoltage = 600, voltageWarning = 720;
 uint32_t nextCheck = 0;
 uint8_t voltageWarningCount = 0;
 
-//raceMode
+//! race mode
 uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
 int acceleration_log[LOG_FRAMES];
 uint8_t temp_log[LOG_FRAMES];
 bool raceModeSendValues = false;
 
-void setArmed (bool arm, uint8_t spot){
+/**
+ * @brief arms or disarms the car
+ * 
+ * always use this function as it also sets the throttle to a safe 0 if the race is inactive
+ * @param arm whether to arm or disarm the car
+ */
+void setArmed (bool arm){
   if (arm != armed){
     if (!raceActive){
       reqValue = 0;
@@ -33,12 +39,16 @@ void setArmed (bool arm, uint8_t spot){
     armed = arm;
     setThrottle(0);
     nextThrottle = 0;
-  } else {
-    sendWSMessage(spot, arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
   }
 }
 
-void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
+/**
+ * @brief Sets the ESC value with the appended checksum
+ * 
+ * WARNING: There are no further armed checks between this function and the sending of the value, alter the "nextThrottle" variable instead. The offset for the settings is automatically applied
+ * @param newThrottle the new throttle between 0 and 2000, value is floored
+ */
+void setThrottle(double newThrottle) {
   newThrottle = (newThrottle > 2000) ? 2000 : newThrottle;
   newThrottle = (newThrottle < 0) ? 0 : newThrottle;
   newThrottle = (newThrottle > MAX_THROTTLE) ? MAX_THROTTLE : newThrottle;
@@ -47,6 +57,13 @@ void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> e
   escValue = appendChecksum(newThrottle);
 }
 
+/**
+ * @brief appends the checksum and the telemtry request bit
+ * 
+ * @param value the first 11 bits from 0 to 2047
+ * @param telemetryRequest default: true, whether or not to set the telemetry request bit
+ * @return the full escValue packet
+ */
 uint16_t appendChecksum(uint16_t value, bool telemetryRequest) {
   value &= 0x7FF;
   value = (value << 1) | telemetryRequest;
@@ -60,6 +77,7 @@ uint16_t appendChecksum(uint16_t value, bool telemetryRequest) {
   return value;
 }
 
+//! @brief starts the race
 void startRace(){
   if (!raceActive && raceMode){
     broadcastWSMessage("BLOCK RACEMODETOGGLE ON");
@@ -71,7 +89,15 @@ void startRace(){
   }
 }
 
-double calcThrottle(int target, int was[], double additionalMultiplier) {
+/**
+ * @brief calculates the next throttle value in speed control mode
+ * 
+ * @param target the target hERPM value
+ * @param was array of previous hERPM value
+ * @param masterMultiplier default: 1, another GP multiplier for quick adjustments
+ * @return the next throttle value (NOT set automatically)
+ */
+double calcThrottle(int target, int was[], double masterMultiplier) {
   double was_avg = 0;
   int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
   for (int i = 0; i < TREND_AMOUNT; i++) {
@@ -88,11 +114,12 @@ double calcThrottle(int target, int was[], double additionalMultiplier) {
   if (prediction < 0) prediction = 0;
   double deltaERPM = target - prediction;
   double delta_throttle = erpmA * pow(deltaERPM, 3) + erpmB * pow(deltaERPM, 2) + erpmC * deltaERPM;
-  delta_throttle *= pidMulti * additionalMultiplier;
+  delta_throttle *= pidMulti * masterMultiplier;
 
   return throttle + delta_throttle;
 }
 
+/// @brief reads the Serial0 port and processes the message using dealWithMessage
 void receiveSerial() {
   if (Serial.available()) {
     String readout = Serial.readStringUntil('\n');
@@ -100,13 +127,30 @@ void receiveSerial() {
   }
 }
 
+/**
+ * @brief converts RPS to hERPM
+ * 
+ * @param rps the speed in RPS
+ * @return the speed in hERPM
+ */
 float rpsToErpm(float rps){
   return (rps / RPS_CONVERSION_FACTOR + .5f);
 }
+/**
+ * @brief converts hERPM to RPS
+ * 
+ * @param erpm the speed in hERPM
+ * @return the speed in RPS
+ */
 float erpmToRps(float erpm){
   return (erpm * RPS_CONVERSION_FACTOR + .5f);
 }
 
+/**
+ * @brief Set the new target value based on reqValue
+ * 
+ * This is not the throttle routine. It merely sets the target value based on the current mode and reqValue
+ */
 void setNewTargetValue(){
   switch (ctrlMode) {
     case 0:
@@ -127,6 +171,7 @@ void setNewTargetValue(){
   }
 }
 
+//! @brief sends the race log to all connected phones
 void sendRaceLog(){
   raceModeSendValues = false;
   uint8_t logData[LOG_FRAMES * 9];
@@ -137,10 +182,15 @@ void sendRaceLog(){
   memcpy(logData + LOG_FRAMES * 8, temp_log, LOG_FRAMES);
   delay(2);
   broadcastWSBin(logData, LOG_FRAMES * 9, true, 20);
-  Serial2.begin(115200);
 }
 
-void evaluateThrottle(){
+/**
+ * @brief throttle routine
+ * 
+ * calculates the nextThrottle if neccessary (if in mode 1 or 2), automatically executed as often as possible
+ * the variable throttle is not mutated, thus the frequency this method is eqecuted is almost irrelevant
+ */
+void throttleRoutine(){
   if (armed) {
     switch (ctrlMode) {
       int addToTargetERPM;
@@ -162,6 +212,7 @@ void evaluateThrottle(){
   } 
 }
 
+//! @brief checks every 10s if the voltage is two low, initiates warning via broadcast if neccessary
 void checkVoltage(){
   if (millis() > nextCheck){
     nextCheck += 10000;

@@ -13,6 +13,14 @@ extern uint8_t clients[MAX_WS_CONNECTIONS][2];
 extern bool armed;
 extern int ctrlMode;
 
+
+/*! @brief broadcast a message to all connected WebSocket clients
+ * 
+ * @param text the text to trasmit
+ * @param justActive default: false, whether to just send it to active clients (in the app)
+ * @param del default: 0, delay between individual messages
+ * @param noPrint default: false, whether to avoid printnig the message to Serial
+*/
 void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
   #ifdef PRINT_BROADCASTS
     uint8_t noOfDevices = 0;
@@ -39,6 +47,13 @@ void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
   #endif
 }
 
+/*! @brief broadcasting binary data to multiple devices
+ * 
+ * @param data pointer to a region in memory to send
+ * @param length number of bytes to send
+ * @param justActive whether to just send it to active (aka non-standby) devices
+ * @param del delay in ms between individual messages
+*/
 void broadcastWSBin(uint8_t* data, size_t length, bool justActive, int del){
   for (int i = 0; i < MAX_WS_CONNECTIONS; i++) {
     if (clients[i][0] == 1 && (!justActive || clients[i][1] == 1)) {
@@ -66,6 +81,10 @@ void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t * payload, size_t
   }
 }
 
+/*! @brief clearing data after a client disconnects
+ * 
+ * @param spot the client that disconnected
+*/
 void removeClient (int spot) {
   #ifdef PRINT_WEBSOCKET_CONNECTIONS
     Serial.printf("[%u] Disconnected!\n", spot);
@@ -76,6 +95,11 @@ void removeClient (int spot) {
   clientsCounter--;
 }
 
+/*! @brief routing after a client connects
+ * 
+ * sends current status to the client, LEDs, blocked UI elements and so on
+ * @param spot the spot to send current status to
+*/
 void addClient (int spot) {
   if (spot < MAX_WS_CONNECTIONS && !raceActive) {
     clientsCounter++;
@@ -103,6 +127,11 @@ void addClient (int spot) {
   }
 }
 
+/*! @brief send a message to a WebSocket client
+ * 
+ * @param spot the spot to send the message to, 255 for Serial
+ * @param text the text to send
+*/
 void sendWSMessage(uint8_t spot, String text){
   if (spot != 255){
     webSocket.sendTXT(spot, text);
@@ -111,8 +140,11 @@ void sendWSMessage(uint8_t spot, String text){
   }
 }
 
+/*! @brief reconnect to wifi
+ * 
+ * disables ESC telemtry while reconnecting
+*/
 void reconnect() {
-  // detachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN));
   Serial2.end();
   WiFi.disconnect();
   int counterWiFi = 0;
@@ -138,10 +170,13 @@ void reconnect() {
   #ifdef PRINT_SETUP
     Serial.println();
   #endif
-  // attachInterrupt(digitalPinToInterrupt(ESC_TRIGGER_PIN), escir, RISING);
   Serial2.begin(115200);
 }
 
+/*! @brief checks the LED status
+ *
+ * transmits new LED status to connected clients if neccessary
+*/
 void checkLEDs(){
   if (newRedLED){
     redLED = newRedLED - 1;
@@ -160,6 +195,10 @@ void checkLEDs(){
   }
 }
 
+/*! @brief handles the wifi loop
+ * 
+ * runs WebSocket loop, checks LEDs and regularly sends telemtry to connected devices
+*/
 void handleWiFi() {
   webSocket.loop();
   checkLEDs();

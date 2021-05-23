@@ -41,6 +41,17 @@ uint8_t clients[MAX_WS_CONNECTIONS][2];
 
 /*======================================================system methods====================================================*/
 
+/**
+ * @brief loop on core 0
+ * 
+ * the not so time-sensitive stuff
+ * initiates:
+ * - wifi reconnection if neccessary
+ * - race mode values sending
+ * - low voltage checking
+ * - wifi and serial message handling
+ * - Serial string printing
+ */
 void loop0() {
   if (WiFi.status() != WL_CONNECTED) {
     disableCore0WDT();
@@ -63,15 +74,25 @@ void loop0() {
   delay(1);
 }
 
+/**
+ * @brief loop on core 1
+ * 
+ * time sensitive stuff
+ * initiates:
+ * - (MPU checking)
+ * - telemetry acquisition and processing
+ * - throttle routine
+ */
 void loop() {
   // if (escirFinished){
     // handleMPU();
     // escirFinished = false;
   // }
   getTelemetry();
-  evaluateThrottle();
+  throttleRoutine();
 }
 
+//! @brief Task for core 0, creates loop0
 void core0Code( void * parameter) {
   Serial2.begin(115200);
 
@@ -84,6 +105,15 @@ void core0Code( void * parameter) {
   }
 }
 
+/**
+ * @brief setup function
+ * 
+ * enables Serial communication
+ * connects to wifi
+ * sets up pins and timer for escir
+ * creates task on core 0
+ * initates websocket server
+ */
 void setup() {
   //Serial setup
   Serial.begin(500000);
