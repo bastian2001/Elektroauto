@@ -23,7 +23,7 @@ int acceleration_log[LOG_FRAMES];
 uint8_t temp_log[LOG_FRAMES];
 bool raceModeSendValues = false;
 
-void setArmed (bool arm, bool sendNoChangeBroadcast){
+void setArmed (bool arm, uint8_t spot){
   if (arm != armed){
     if (!raceActive){
       reqValue = 0;
@@ -33,8 +33,8 @@ void setArmed (bool arm, bool sendNoChangeBroadcast){
     armed = arm;
     setThrottle(0);
     nextThrottle = 0;
-  } else if (sendNoChangeBroadcast){
-    broadcastWSMessage(arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
+  } else if (spot != 255){
+    webSocket.sendTXT(spot, arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
   }
 }
 

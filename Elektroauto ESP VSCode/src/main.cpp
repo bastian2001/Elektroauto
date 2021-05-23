@@ -87,7 +87,6 @@ void core0Code( void * parameter) {
 void setup() {
   //Serial setup
   Serial.begin(500000);
-  Serial.println(RPS_CONVERSION_FACTOR);
 
   //WiFi Setup
   WiFi.enableSTA(true);

@@ -30,7 +30,7 @@ void dealWithMessage(String message, uint8_t from) {
     valueStr.toUpperCase();
     int value = valueStr.toInt();
     if (valueStr == "YES" || valueStr == "TRUE") value = 1;
-    setArmed(value > 0, true);
+    setArmed(value > 0, from);
   }
   else if (command == "PING") {
     webSocket.sendTXT(from, "PONG");
@@ -58,11 +58,6 @@ void dealWithMessage(String message, uint8_t from) {
     if (clients[from][1] > 0 && value == 0) telemetryClientsCounter--;
     if (clients[from][1] == 0 && value > 0) telemetryClientsCounter++;
     clients[from][1] = value;
-    #ifdef PRINT_MEANINGS
-      Serial.print("Setting telemetry of spot ");
-      Serial.print(from);
-      Serial.println(value > 0 ? " ON" : " OFF");
-    #endif
   }
   else if (command == "DEVICE" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);

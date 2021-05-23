@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-void setArmed(bool arm, bool sendNoChangeBroadcast = false);
+void setArmed(bool arm, uint8_t spot = 255);
 void setThrottle(double newThrottle);
 uint16_t appendChecksum(uint16_t value, bool telemetryRequest = true);
 void startRace();
