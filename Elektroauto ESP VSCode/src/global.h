@@ -29,7 +29,6 @@
 #define MAX_THROTTLE 2000
 #define MAX_TARGET_RPS 1500
 #define MAX_TARGET_SLIP 20
-// #define SEND_TRANSMISSION_IND
 #define ESC_BUFFER_ITEMS 16
 #define MOTOR_POLE_COUNT 12.0f
 #define WHEEL_DIAMETER 30.0f
@@ -56,8 +55,6 @@
 #define PRINT_WEBSOCKET_CONNECTIONS
 #define PRINT_INCOMING_MESSAGES
 #define PRINT_BROADCASTS
-// #define PRINT_SINGLE_OUTGOING_MESSAGES
-// #define PRINT_RACE_MODE_JSON
 
 //PID loop settings
 #define TREND_AMOUNT 5 //nur ungerade!!
@@ -99,6 +96,8 @@ extern bool armed;
 extern int ctrlMode, reqValue;
 extern uint16_t escValue;
 extern uint16_t cutoffVoltage, voltageWarning;
+
+//LED variables
 extern bool redLED, greenLED, blueLED;
 extern uint8_t newRedLED, newGreenLED, newBlueLED;
 
