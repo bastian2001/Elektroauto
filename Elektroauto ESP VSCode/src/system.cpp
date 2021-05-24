@@ -3,7 +3,7 @@
 #include "system.h"
 #include "messageHandler.h"
 
-double pidMulti = 1, erpmA = 0.0000000008, erpmB = 0.00000006, erpmC = 0.001;
+double pidMulti = 1, erpmA = 0.000000008, erpmB = 0.0000006, erpmC = 0.01;
 int escOutputCounter2 = 0;
 bool raceMode = false;
 extern bool armed;
@@ -13,7 +13,7 @@ extern double throttle;
 bool redLED, greenLED, blueLED;
 
 //! voltage warning
-uint16_t cutoffVoltage = 600, voltageWarning = 720;
+uint16_t cutoffVoltage = 640, voltageWarning = 740;
 uint32_t nextCheck = 0;
 uint8_t voltageWarningCount = 0;
 
@@ -220,6 +220,8 @@ void checkVoltage(){
       voltageWarningCount++;
       if (voltageWarningCount % 5 == 3){
         broadcastWSMessage(F("MESSAGEBEEP Warnung! Spannung niedrig!"));
+        manualData[0] = 0xbb;
+        manualDataAmount = 1;
       }
     } else {
       voltageWarningCount = 0;
