@@ -30,11 +30,11 @@ void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
   }
   #ifdef PRINT_BROADCASTS
     if (noOfDevices > 0 && !noPrint){
-      Serial.print("Broadcasted ");
-      Serial.print(text);
-      Serial.print(" to a total of ");
-      Serial.print(noOfDevices);
-      Serial.println(" devices.");
+      sPrint("Broadcasted ");
+      sPrint(text);
+      sPrint(" to a total of ");
+      sPrint(String(noOfDevices));
+      sPrintln(" devices.");
     }
   #endif
 }

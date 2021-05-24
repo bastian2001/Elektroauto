@@ -37,7 +37,7 @@
 
 //WiFi and WebSockets settings
 #define MAX_WS_CONNECTIONS 5
-#define ssid "Bloedfrauen und -maenner"
+#define ssid "Test"
 #define password "CaputDraconis"
 // #define ssid "POCO X3 NFC"
 // #define password "055fb39a4cc4"
