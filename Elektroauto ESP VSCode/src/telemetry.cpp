@@ -45,18 +45,18 @@ void getTelemetry(){
       if (telemetryTemp > 80){
         if (armed){
           setArmed(false);
-          broadcastWSMessage("MESSAGE Wegen Überhitzung disarmed!");
+          broadcastWSMessage("MESSAGEBEEP Wegen Überhitzung disarmed!");
         }
       } else if(telemetryVoltage < cutoffVoltage){
         if (armed){
           setArmed(false);
-          broadcastWSMessage("MESSAGE Cutoff-Spannung unterschritten!");
+          broadcastWSMessage("MESSAGEBEEP Cutoff-Spannung unterschritten!");
         }
       } else if (telemetryERPM > 8000){
         errorCount++;
         if (armed){
           setArmed(false);
-          broadcastWSMessage("MESSAGE Zu hohe Drehzahl");
+          broadcastWSMessage("MESSAGEBEEP Zu hohe Drehzahl");
         }
         if (lastErrorOutput + 100 < millis()){
           char errorMessage[60];

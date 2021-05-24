@@ -219,7 +219,7 @@ void checkVoltage(){
     if (telemetryVoltage < voltageWarning && telemetryVoltage != 0 && telemetryVoltage != 257){
       voltageWarningCount++;
       if (voltageWarningCount % 5 == 3){
-        broadcastWSMessage(F("MESSAGE Warnung! Spannung niedrig!"));
+        broadcastWSMessage(F("MESSAGEBEEP Warnung! Spannung niedrig!"));
       }
     } else {
       voltageWarningCount = 0;

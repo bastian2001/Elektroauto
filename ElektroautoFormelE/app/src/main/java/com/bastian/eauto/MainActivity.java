@@ -9,10 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -364,8 +366,12 @@ public class MainActivity extends AppCompatActivity {
                 textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nSpannung: " + ((float) res_voltage / 100) + "V\nThrottle: " + res_throttle
                         + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float) res_velocity1 / 1000.0) + "m/s\nGeschwindigkeit (Räder): "
                         + ((float) res_velocity2 / 1000.0) + "m/s\nBeschleunigung: " + res_acceleration + " rel. Einheiten\nTemperatur: " + res_temp + "°C");
-            } else if (txt.startsWith("MESSAGE")){
-                Toast.makeText(getApplicationContext(), "Nachricht: " + txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_LONG).show();
+            } else if (txt.startsWith("MESSAGE ")) {
+                Toast.makeText(getApplicationContext(), txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_SHORT).show();
+            } else if (txt.startsWith("MESSAGEBEEP")){
+                Toast.makeText(getApplicationContext(), txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_SHORT).show();
+                final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
+                mp.start();
             } else if (txt.startsWith("SET")) {
                 String str = txt.toUpperCase();
                 String[] args = str.split(" ");
