@@ -38,10 +38,10 @@
 
 //WiFi and WebSockets settings
 #define MAX_WS_CONNECTIONS 5
-// #define ssid "Bloedfrauen und -maenner"
-// #define password "CaputDraconis"
-#define ssid "POCO X3 NFC"
-#define password "055fb39a4cc4"
+#define ssid "Bloedfrauen und -maenner"
+#define password "CaputDraconis"
+// #define ssid "POCO X3 NFC"
+// #define password "055fb39a4cc4"
 // #define ssid "springernet"
 // #define password "CL7B1L609235"
 #define TELEMETRY_UPDATE_MS 20
