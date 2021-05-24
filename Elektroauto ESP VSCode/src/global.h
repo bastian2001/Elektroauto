@@ -121,7 +121,11 @@ extern uint8_t temp_log[LOG_FRAMES];
 extern uint16_t logPosition;
 extern bool raceModeSendValues, raceMode, raceActive;
 
-
+//! @brief add anything to the Serial string
 void sPrint(String s);
+
+//! @brief add a line to the Serial string
 void sPrintln(String s);
+
+//! @brief prints out the Serial string to Serial buffer
 void printSerial();

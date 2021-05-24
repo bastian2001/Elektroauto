@@ -13,12 +13,6 @@ extern uint16_t cutoffVoltage, voltageWarning;
 uint8_t telemetryClientsCounter = 0;
 extern double pidMulti, erpmA, erpmB, erpmC;
 
-/*! @brief processes Serial- and WebSocket messages
- * 
- * Message more precisely documented in docs.md
- * @param message The message
- * @param from The origin of the message, 255 for Serial, other values for WebSocket spots
-*/
 void dealWithMessage(String message, uint8_t from) {
   #ifdef PRINT_INCOMING_MESSAGES
     Serial.print(F("Received: \""));
@@ -82,7 +76,7 @@ void dealWithMessage(String message, uint8_t from) {
     broadcastWSMessage(modeText);
   }
 
-  // TELEMETRY command for setting telemtry of the origin on or off
+  // TELEMETRY command for setting telemetry of the origin on or off
   else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();

@@ -5,12 +5,6 @@ uint8_t newRedLED, newBlueLED, newGreenLED;
 
 rmt_item32_t escDataBuffer[ESC_BUFFER_ITEMS];
 
-/**
- * @brief initializes the rmt peripheral for DShot data transmittion
- * 
- * @param channel the channel to use
- * @param pin output GPIO pin
- */
 void esc_init(uint8_t channel, uint8_t pin) {
   rmt_config_t config;
   config.rmt_mode = RMT_MODE_TX;
@@ -27,11 +21,6 @@ void esc_init(uint8_t channel, uint8_t pin) {
   ESP_ERROR_CHECK(rmt_driver_install(config.channel, 0, 0));
 }
 
-/**
- * @brief sets up the rmt data buffer
- * 
- * @param value the transmitted DShot-packet
- */
 void setup_rmt_data_buffer(uint16_t value) {
   uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
   for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
@@ -41,13 +30,6 @@ void setup_rmt_data_buffer(uint16_t value) {
   }
 }
 
-/**
- * @brief prepares the DShot-packet and sends it
- * 
- * also checks for LED-changes
- * @param value the escValue to transmit, incl. checksum
- * @param wait whether to wait until the transmission is done
- */
 void esc_send_value(uint16_t value, bool wait) {
   setup_rmt_data_buffer(value);
   ESP_ERROR_CHECK(rmt_write_items((rmt_channel_t) 0, escDataBuffer, ESC_BUFFER_ITEMS, wait));

@@ -18,16 +18,6 @@ double throttle = 0, nextThrottle = 0;
 uint8_t manualDataAmount = 0;
 uint16_t manualData[20];
 
-/**
- * @brief the ESC interrupt routine
- * 
- * please do not manually run it, the timer interrupt runs it at the frequency specified in ESC_FREQ
- * runs setThrottle if car is armed, thus applies the checksum
- * if available, it takes the manualData inplace of the escValue and sends the respective value to the esc
- * then, if neccessary, it pushes the manualData array one to the front
- * same thing goes for telemetryERPM history
- * if the race is active, it also logs the data
- */
 void escir() {
   //set Throttle
   if (armed){
