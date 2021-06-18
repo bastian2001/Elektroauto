@@ -1,7 +1,8 @@
 # Elektroauto
 
-Ich weiß, der Code ist unaufgeräumt, wird noch besser :)
+Ich weiß, der Code ist unaufgeräumt, wird noch besser 😃
 
+- Im beta-Channel ist ein bisschen mehr los 😅
 - Dokumentation ist/wird im Ordner `docs` zu finden (sein, sobald sie mal übersichtlich wird)
 - Der Code für die App ist unter `ElektroautoFormelE` - benötigt Android Studio
 - Der Code für den Microcontroller (ESP32) ist unter `Elektroauto ESP VSCode` - benötigt Visual Studio Code und die Erweiterung PlatformIO
