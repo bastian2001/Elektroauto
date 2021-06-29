@@ -363,9 +363,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nSpannung: " + ((float) res_voltage / 100) + "V\nThrottle: " + res_throttle
-                        + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float) res_velocity1 / 1000.0) + "m/s\nGeschwindigkeit (Räder): "
-                        + ((float) res_velocity2 / 1000.0) + "m/s\nBeschleunigung: " + res_acceleration + " rel. Einheiten\nTemperatur: " + res_temp + "°C");
+                textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nSpannung: " + ((float) res_voltage / 100) + " V\nThrottle: " + res_throttle
+                        + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float) res_velocity1 / 1000.0) + " m/s\nGeschwindigkeit (Räder): "
+                        + ((float) res_velocity2 / 1000.0) + " m/s\nBeschleunigung: " + res_acceleration/1000.0 + " m/s²\nTemperatur: " + res_temp + "°C");
             } else if (txt.startsWith("MESSAGE ")) {
                 Toast.makeText(getApplicationContext(), txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_SHORT).show();
             } else if (txt.startsWith("MESSAGEBEEP")){
