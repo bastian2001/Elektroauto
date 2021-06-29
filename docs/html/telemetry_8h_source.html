@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Elektroauto Formel E, ESP: src/telemetry.h Source File</title>
+<title>Elektroauto Formel E, ESP: Elektroauto ESP VSCode/src/telemetry.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -71,21 +71,16 @@ $(function() {
 <div class="title">telemetry.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="telemetry_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keywordtype">void</span> <a class="code" href="telemetry_8h.html#abac415163094f4a8fd57bad0e861a0a5">getTelemetry</a>();</div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keywordtype">void</span> getTelemetry();</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keywordtype">void</span> <a class="code" href="telemetry_8h.html#a8f9fa76a93541264f22c8f23f3fc1631">sendTelemetry</a>();</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keywordtype">void</span> sendTelemetry();</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="telemetry_8h.html#aab83386233fdb944673a4b1c1a530a0a">isTelemetryComplete</a>();</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keywordtype">bool</span> isTelemetryComplete();</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;uint8_t <a class="code" href="telemetry_8h.html#ac9a396906eca73208a9ad8ef4f371f6b">update_crc8</a>(uint8_t crc, uint8_t crc_seed);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;uint8_t update_crc8(uint8_t crc, uint8_t crc_seed);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;uint8_t <a class="code" href="telemetry_8h.html#a0dbd49837c9aa5899b69d30a3820f3e3">get_crc8</a>(uint8_t *Buf, uint8_t BufLen);</div>
-<div class="ttc" id="atelemetry_8h_html_a0dbd49837c9aa5899b69d30a3820f3e3"><div class="ttname"><a href="telemetry_8h.html#a0dbd49837c9aa5899b69d30a3820f3e3">get_crc8</a></div><div class="ttdeci">uint8_t get_crc8(uint8_t *Buf, uint8_t BufLen)</div><div class="ttdoc">Get the crc checksum of given data.</div><div class="ttdef"><b>Definition:</b> telemetry.cpp:113</div></div>
-<div class="ttc" id="atelemetry_8h_html_a8f9fa76a93541264f22c8f23f3fc1631"><div class="ttname"><a href="telemetry_8h.html#a8f9fa76a93541264f22c8f23f3fc1631">sendTelemetry</a></div><div class="ttdeci">void sendTelemetry()</div><div class="ttdoc">sends the telemetry to all connected phones</div><div class="ttdef"><b>Definition:</b> telemetry.cpp:77</div></div>
-<div class="ttc" id="atelemetry_8h_html_aab83386233fdb944673a4b1c1a530a0a"><div class="ttname"><a href="telemetry_8h.html#aab83386233fdb944673a4b1c1a530a0a">isTelemetryComplete</a></div><div class="ttdeci">bool isTelemetryComplete()</div><div class="ttdoc">checks if telemetry is ready to be processed</div><div class="ttdef"><b>Definition:</b> telemetry.cpp:90</div></div>
-<div class="ttc" id="atelemetry_8h_html_abac415163094f4a8fd57bad0e861a0a5"><div class="ttname"><a href="telemetry_8h.html#abac415163094f4a8fd57bad0e861a0a5">getTelemetry</a></div><div class="ttdeci">void getTelemetry()</div><div class="ttdoc">acquires telemetry data</div><div class="ttdef"><b>Definition:</b> telemetry.cpp:21</div></div>
-<div class="ttc" id="atelemetry_8h_html_ac9a396906eca73208a9ad8ef4f371f6b"><div class="ttname"><a href="telemetry_8h.html#ac9a396906eca73208a9ad8ef4f371f6b">update_crc8</a></div><div class="ttdeci">uint8_t update_crc8(uint8_t crc, uint8_t crc_seed)</div><div class="ttdoc">updates the crc checksum</div><div class="ttdef"><b>Definition:</b> telemetry.cpp:104</div></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;uint8_t get_crc8(uint8_t *Buf, uint8_t BufLen);</div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

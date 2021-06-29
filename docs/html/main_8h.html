@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Elektroauto Formel E, ESP: src/main.h File Reference</title>
+<title>Elektroauto Formel E, ESP: Elektroauto ESP VSCode/src/main.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -74,43 +74,26 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>the entry point for the project  
+<a href="#details">More...</a></p>
+
 <p><a href="main_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a26b30696e54f6ba948e549b2e1704f75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8h.html#a26b30696e54f6ba948e549b2e1704f75">loop0</a> ()</td></tr>
-<tr class="memdesc:a26b30696e54f6ba948e549b2e1704f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">loop on core 0  <a href="main_8h.html#a26b30696e54f6ba948e549b2e1704f75">More...</a><br /></td></tr>
+<tr class="memdesc:a26b30696e54f6ba948e549b2e1704f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">the loop on core 0 (the not so time-sensitive stuff)  <a href="main_8h.html#a26b30696e54f6ba948e549b2e1704f75">More...</a><br /></td></tr>
 <tr class="separator:a26b30696e54f6ba948e549b2e1704f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe461d27b9c48d5921c00d521181f12f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8h.html#afe461d27b9c48d5921c00d521181f12f">loop</a> ()</td></tr>
-<tr class="memdesc:afe461d27b9c48d5921c00d521181f12f"><td class="mdescLeft">&#160;</td><td class="mdescRight">loop on core 1  <a href="main_8h.html#afe461d27b9c48d5921c00d521181f12f">More...</a><br /></td></tr>
+<tr class="memdesc:afe461d27b9c48d5921c00d521181f12f"><td class="mdescLeft">&#160;</td><td class="mdescRight">the loop on core 1 (time-sensitive stuff)  <a href="main_8h.html#afe461d27b9c48d5921c00d521181f12f">More...</a><br /></td></tr>
 <tr class="separator:afe461d27b9c48d5921c00d521181f12f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a6d4ceb6c6ed9bdbb5d11c4d3cd2b45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8h.html#a8a6d4ceb6c6ed9bdbb5d11c4d3cd2b45">core0Code</a> ()</td></tr>
-<tr class="memdesc:a8a6d4ceb6c6ed9bdbb5d11c4d3cd2b45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task for core 0, creates loop0.  <a href="main_8h.html#a8a6d4ceb6c6ed9bdbb5d11c4d3cd2b45">More...</a><br /></td></tr>
-<tr class="separator:a8a6d4ceb6c6ed9bdbb5d11c4d3cd2b45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fc01d736fe50cf5b977f755b675f11d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8h.html#a4fc01d736fe50cf5b977f755b675f11d">setup</a> ()</td></tr>
-<tr class="memdesc:a4fc01d736fe50cf5b977f755b675f11d"><td class="mdescLeft">&#160;</td><td class="mdescRight">setup function  <a href="main_8h.html#a4fc01d736fe50cf5b977f755b675f11d">More...</a><br /></td></tr>
+<tr class="memdesc:a4fc01d736fe50cf5b977f755b675f11d"><td class="mdescLeft">&#160;</td><td class="mdescRight">the setup function (runs at start)  <a href="main_8h.html#a4fc01d736fe50cf5b977f755b675f11d">More...</a><br /></td></tr>
 <tr class="separator:a4fc01d736fe50cf5b977f755b675f11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a8a6d4ceb6c6ed9bdbb5d11c4d3cd2b45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a6d4ceb6c6ed9bdbb5d11c4d3cd2b45">&#9670;&nbsp;</a></span>core0Code()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void core0Code </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Task for core 0, creates loop0. </p>
-
-</div>
-</div>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>the entry point for the project </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="afe461d27b9c48d5921c00d521181f12f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afe461d27b9c48d5921c00d521181f12f">&#9670;&nbsp;</a></span>loop()</h2>
 
@@ -126,7 +109,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>loop on core 1 </p>
+<p>the loop on core 1 (time-sensitive stuff) </p>
+<p>the loop on core 1 (time-sensitive stuff)</p>
 <p>time sensitive stuff initiates:</p><ul>
 <li>(MPU checking)</li>
 <li>telemetry acquisition and processing</li>
@@ -150,7 +134,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>loop on core 0 </p>
+<p>the loop on core 0 (the not so time-sensitive stuff) </p>
+<p>the loop on core 0 (the not so time-sensitive stuff)</p>
 <p>the not so time-sensitive stuff initiates:</p><ul>
 <li>wifi reconnection if neccessary</li>
 <li>race mode values sending</li>
@@ -176,7 +161,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>setup function </p>
+<p>the setup function (runs at start) </p>
+<p>the setup function (runs at start)</p>
 <p>enables Serial communication connects to wifi sets up pins and timer for escir creates task on core 0 initates websocket server </p>
 
 </div>

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['dealwithmessage_22',['dealWithMessage',['../message_handler_8cpp.html#a6dd6ba2c147506b810c66ec063006df9',1,'dealWithMessage(String message, uint8_t from):&#160;messageHandler.cpp'],['../message_handler_8h.html#a6dd6ba2c147506b810c66ec063006df9',1,'dealWithMessage(String message, uint8_t from):&#160;messageHandler.cpp']]],
-  ['distmpu_23',['distMPU',['../global_8h.html#a374b9f2d3302510d0f5ba1ea09aed9ec',1,'distMPU():&#160;mpuFunctions.cpp'],['../mpu_functions_8cpp.html#a374b9f2d3302510d0f5ba1ea09aed9ec',1,'distMPU():&#160;mpuFunctions.cpp']]]
+  ['loop_9',['loop',['../main_8cpp.html#afe461d27b9c48d5921c00d521181f12f',1,'loop():&#160;main.cpp'],['../main_8h.html#afe461d27b9c48d5921c00d521181f12f',1,'loop():&#160;main.cpp']]],
+  ['loop0_10',['loop0',['../main_8cpp.html#a26b30696e54f6ba948e549b2e1704f75',1,'loop0():&#160;main.cpp'],['../main_8h.html#a26b30696e54f6ba948e549b2e1704f75',1,'loop0():&#160;main.cpp']]]
 ];

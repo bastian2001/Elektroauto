@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Elektroauto Formel E, ESP: src/messageHandler.h File Reference</title>
+<title>Elektroauto Formel E, ESP: Elektroauto ESP VSCode/src/messageHandler.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -73,25 +73,30 @@ $(function() {
 <div class="title">messageHandler.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>function for message handling  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;Arduino.h&gt;</code><br />
 </div>
 <p><a href="message_handler_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6dd6ba2c147506b810c66ec063006df9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="message_handler_8h.html#a6dd6ba2c147506b810c66ec063006df9">dealWithMessage</a> (String message, uint8_t from)</td></tr>
-<tr class="memdesc:a6dd6ba2c147506b810c66ec063006df9"><td class="mdescLeft">&#160;</td><td class="mdescRight">processes Serial- and WebSocket messages  <a href="message_handler_8h.html#a6dd6ba2c147506b810c66ec063006df9">More...</a><br /></td></tr>
-<tr class="separator:a6dd6ba2c147506b810c66ec063006df9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d8008ef843e298d609bd4d10907fa25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="message_handler_8h.html#a4d8008ef843e298d609bd4d10907fa25">processMessage</a> (String message, uint8_t from)</td></tr>
+<tr class="memdesc:a4d8008ef843e298d609bd4d10907fa25"><td class="mdescLeft">&#160;</td><td class="mdescRight">processes Serial- and WebSocket messages  <a href="message_handler_8h.html#a4d8008ef843e298d609bd4d10907fa25">More...</a><br /></td></tr>
+<tr class="separator:a4d8008ef843e298d609bd4d10907fa25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a6dd6ba2c147506b810c66ec063006df9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6dd6ba2c147506b810c66ec063006df9">&#9670;&nbsp;</a></span>dealWithMessage()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>function for message handling </p>
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a4d8008ef843e298d609bd4d10907fa25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d8008ef843e298d609bd4d10907fa25">&#9670;&nbsp;</a></span>processMessage()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void dealWithMessage </td>
+          <td class="memname">void processMessage </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>message</em>, </td>
@@ -111,13 +116,34 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>processes Serial- and WebSocket messages </p>
-<p>Message more precisely documented in docs.md </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Message more precisely documented in docs.md or <a class="el" href="message_handler_8cpp.html" title="function for message handling">messageHandler.cpp</a> documentation </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>The message </td></tr>
+    <tr><td class="paramname">from</td><td>The origin of the message, 255 for Serial, other values for WebSocket spots</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Message more precisely documented in docs.md</p><ul>
+<li>VALUE command for requesting a value</li>
+<li>ARMED command for arming the car</li>
+<li>PING command for replying with PONG / pinging the connection</li>
+<li>MODE command for setting the driving mode</li>
+<li>TELEMETRY command for setting telemetry of the origin on or off</li>
+<li>DEVICE command for setting the device type</li>
+<li>RACEMODE command for enabling or disabling race mode</li>
+<li>STARTRACE command for starting the race</li>
+<li>CUTOFFVOLTAGE, VOLTAGEWARNING, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters</li>
+<li>ERRORCOUNT for requesting the error count</li>
+<li>RECONNECT for reconnecting to WiFi</li>
+<li>RAWDATA for sending raw data to the ESC <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">message</td><td>The message </td></tr>
     <tr><td class="paramname">from</td><td>The origin of the message, 255 for Serial, other values for WebSocket spots </td></tr>
   </table>
   </dd>
 </dl>
+</li>
+</ul>
 
 </div>
 </div>

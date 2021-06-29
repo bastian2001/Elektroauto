@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Elektroauto Formel E, ESP: src/main.cpp File Reference</title>
+<title>Elektroauto Formel E, ESP: Elektroauto ESP VSCode/src/main.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -74,6 +74,9 @@ $(function() {
 <div class="title">main.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>the entry point for the project  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;Arduino.h&gt;</code><br />
 <code>#include &quot;WiFi.h&quot;</code><br />
 <code>#include &lt;WebSocketsServer.h&gt;</code><br />
@@ -81,11 +84,10 @@ $(function() {
 <code>#include &quot;math.h&quot;</code><br />
 <code>#include &lt;esp_task_wdt.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="global_8h_source.html">global.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="system_8h_source.html">system.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="esc_setup_8h_source.html">escSetup.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="wifi_stuff_8h_source.html">wifiStuff.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="esc_i_r_8h_source.html">escIR.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="telemetry_8h_source.html">telemetry.h</a>&quot;</code><br />
+<code>#include &quot;system.h&quot;</code><br />
+<code>#include &quot;wifiStuff.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="esc_functions_8h_source.html">escFunctions.h</a>&quot;</code><br />
+<code>#include &quot;telemetry.h&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -95,7 +97,9 @@ Functions</h2></td></tr>
 <tr class="memitem:afe461d27b9c48d5921c00d521181f12f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#afe461d27b9c48d5921c00d521181f12f">loop</a> ()</td></tr>
 <tr class="memdesc:afe461d27b9c48d5921c00d521181f12f"><td class="mdescLeft">&#160;</td><td class="mdescRight">loop on core 1  <a href="main_8cpp.html#afe461d27b9c48d5921c00d521181f12f">More...</a><br /></td></tr>
 <tr class="separator:afe461d27b9c48d5921c00d521181f12f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e8b229951668e0c142eebb17c7a8a9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a9e8b229951668e0c142eebb17c7a8a9a">core0Code</a> (void *parameter)</td></tr>
+<tr class="memitem:a9e8b229951668e0c142eebb17c7a8a9a"><td class="memItemLeft" align="right" valign="top"><a id="a9e8b229951668e0c142eebb17c7a8a9a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a9e8b229951668e0c142eebb17c7a8a9a">core0Code</a> (void *parameter)</td></tr>
+<tr class="memdesc:a9e8b229951668e0c142eebb17c7a8a9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task for core 0, creates loop0. <br /></td></tr>
 <tr class="separator:a9e8b229951668e0c142eebb17c7a8a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fc01d736fe50cf5b977f755b675f11d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d">setup</a> ()</td></tr>
 <tr class="memdesc:a4fc01d736fe50cf5b977f755b675f11d"><td class="mdescLeft">&#160;</td><td class="mdescRight">setup function  <a href="main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d">More...</a><br /></td></tr>
@@ -103,36 +107,25 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a39c4d65a96901b675f1722113e536237"><td class="memItemLeft" align="right" valign="top">TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a39c4d65a96901b675f1722113e536237">core0Task</a></td></tr>
+<tr class="memitem:a39c4d65a96901b675f1722113e536237"><td class="memItemLeft" align="right" valign="top"><a id="a39c4d65a96901b675f1722113e536237"></a>
+TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><b>core0Task</b></td></tr>
 <tr class="separator:a39c4d65a96901b675f1722113e536237"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ca4b5135917e120e72f4a8a146ffab9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a7ca4b5135917e120e72f4a8a146ffab9">c1ready</a> = false</td></tr>
+<tr class="memitem:a7ca4b5135917e120e72f4a8a146ffab9"><td class="memItemLeft" align="right" valign="top"><a id="a7ca4b5135917e120e72f4a8a146ffab9"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>c1ready</b> = false</td></tr>
 <tr class="separator:a7ca4b5135917e120e72f4a8a146ffab9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97222eeccb5b18e1fc532806c1efcb34"><td class="memItemLeft" align="right" valign="top">hw_timer_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a97222eeccb5b18e1fc532806c1efcb34">timer</a> = NULL</td></tr>
+<tr class="memitem:a97222eeccb5b18e1fc532806c1efcb34"><td class="memItemLeft" align="right" valign="top"><a id="a97222eeccb5b18e1fc532806c1efcb34"></a>
+hw_timer_t *&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b> = NULL</td></tr>
 <tr class="separator:a97222eeccb5b18e1fc532806c1efcb34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memItemLeft" align="right" valign="top">WebSocketsServer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a5a9d65f1a8d9a12255db818887b5bcd3">webSocket</a> = WebSocketsServer(80)</td></tr>
+<tr class="memitem:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memItemLeft" align="right" valign="top"><a id="a5a9d65f1a8d9a12255db818887b5bcd3"></a>
+WebSocketsServer&#160;</td><td class="memItemRight" valign="bottom"><b>webSocket</b> = WebSocketsServer(80)</td></tr>
 <tr class="separator:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f8aca73a018ae41759a9fd065036b91"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a1f8aca73a018ae41759a9fd065036b91">clients</a> [<a class="el" href="global_8h.html#a96e73aba01abd5e449ffc21fb3ca36f8">MAX_WS_CONNECTIONS</a>][2]</td></tr>
+<tr class="memitem:a1f8aca73a018ae41759a9fd065036b91"><td class="memItemLeft" align="right" valign="top"><a id="a1f8aca73a018ae41759a9fd065036b91"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [MAX_WS_CONNECTIONS][2]</td></tr>
 <tr class="separator:a1f8aca73a018ae41759a9fd065036b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a9e8b229951668e0c142eebb17c7a8a9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e8b229951668e0c142eebb17c7a8a9a">&#9670;&nbsp;</a></span>core0Code()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void core0Code </td>
-          <td>(</td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>parameter</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>the entry point for the project </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="afe461d27b9c48d5921c00d521181f12f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afe461d27b9c48d5921c00d521181f12f">&#9670;&nbsp;</a></span>loop()</h2>
 
@@ -149,6 +142,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>loop on core 1 </p>
+<p>the loop on core 1 (time-sensitive stuff)</p>
 <p>time sensitive stuff initiates:</p><ul>
 <li>(MPU checking)</li>
 <li>telemetry acquisition and processing</li>
@@ -173,6 +167,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>loop on core 0 </p>
+<p>the loop on core 0 (the not so time-sensitive stuff)</p>
 <p>the not so time-sensitive stuff initiates:</p><ul>
 <li>wifi reconnection if neccessary</li>
 <li>race mode values sending</li>
@@ -199,78 +194,8 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>setup function </p>
+<p>the setup function (runs at start)</p>
 <p>enables Serial communication connects to wifi sets up pins and timer for escir creates task on core 0 initates websocket server </p>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a7ca4b5135917e120e72f4a8a146ffab9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ca4b5135917e120e72f4a8a146ffab9">&#9670;&nbsp;</a></span>c1ready</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool c1ready = false</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1f8aca73a018ae41759a9fd065036b91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f8aca73a018ae41759a9fd065036b91">&#9670;&nbsp;</a></span>clients</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t clients[<a class="el" href="global_8h.html#a96e73aba01abd5e449ffc21fb3ca36f8">MAX_WS_CONNECTIONS</a>][2]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a39c4d65a96901b675f1722113e536237"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39c4d65a96901b675f1722113e536237">&#9670;&nbsp;</a></span>core0Task</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">TaskHandle_t core0Task</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a97222eeccb5b18e1fc532806c1efcb34"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97222eeccb5b18e1fc532806c1efcb34">&#9670;&nbsp;</a></span>timer</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">hw_timer_t* timer = NULL</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5a9d65f1a8d9a12255db818887b5bcd3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a9d65f1a8d9a12255db818887b5bcd3">&#9670;&nbsp;</a></span>webSocket</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">WebSocketsServer webSocket = WebSocketsServer(80)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 
 </div>
 </div>

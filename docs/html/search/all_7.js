@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['handlewifi_54',['handleWiFi',['../wifi_stuff_8cpp.html#aef11d16b4d8e760671e3487b2106b6b2',1,'handleWiFi():&#160;wifiStuff.cpp'],['../wifi_stuff_8h.html#aef11d16b4d8e760671e3487b2106b6b2',1,'handleWiFi():&#160;wifiStuff.cpp']]]
+  ['throttle_5flog_20',['throttle_log',['../esc_functions_8cpp.html#a9cbf3d03c61375388c4e2ad6dbb743da',1,'throttle_log():&#160;system.cpp'],['../global_8h.html#a9cbf3d03c61375388c4e2ad6dbb743da',1,'throttle_log():&#160;system.cpp']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['blueled_216',['blueLED',['../global_8h.html#aa4ce072d581b4ef2c21e520c6c3158cb',1,'blueLED():&#160;global.h'],['../system_8cpp.html#aa4ce072d581b4ef2c21e520c6c3158cb',1,'blueLED():&#160;system.cpp']]]
+  ['throttle_5flog_41',['throttle_log',['../esc_functions_8cpp.html#a9cbf3d03c61375388c4e2ad6dbb743da',1,'throttle_log():&#160;system.cpp'],['../global_8h.html#a9cbf3d03c61375388c4e2ad6dbb743da',1,'throttle_log():&#160;system.cpp']]]
 ];

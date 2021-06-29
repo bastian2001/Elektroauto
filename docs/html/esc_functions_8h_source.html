@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Elektroauto Formel E, ESP: src/escIR.h File Reference</title>
+<title>Elektroauto Formel E, ESP: Elektroauto ESP VSCode/src/escFunctions.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,47 +63,26 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">escIR.h File Reference</div>  </div>
+<div class="title">escFunctions.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p><a href="esc_i_r_8h_source.html">Go to the source code of this file.</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a30040a9120b9078086ac04d2d15a208e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_i_r_8h.html#a30040a9120b9078086ac04d2d15a208e">escir</a> ()</td></tr>
-<tr class="memdesc:a30040a9120b9078086ac04d2d15a208e"><td class="mdescLeft">&#160;</td><td class="mdescRight">the ESC interrupt routine  <a href="esc_i_r_8h.html#a30040a9120b9078086ac04d2d15a208e">More...</a><br /></td></tr>
-<tr class="separator:a30040a9120b9078086ac04d2d15a208e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a30040a9120b9078086ac04d2d15a208e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30040a9120b9078086ac04d2d15a208e">&#9670;&nbsp;</a></span>escir()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void escir </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>the ESC interrupt routine </p>
-<p>please do not manually run it, the timer interrupt runs it at the frequency specified in ESC_FREQ runs setThrottle if car is armed, thus applies the checksum if available, it takes the manualData inplace of the escValue and sends the respective value to the esc then, if neccessary, it pushes the manualData array one to the front same thing goes for telemetryERPM history if the race is active, it also logs the data </p>
-
-</div>
-</div>
-</div><!-- contents -->
+<a href="esc_functions_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;Arduino.h&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keywordtype">void</span> <a class="code" href="esc_functions_8h.html#ac43cd4d3e336d8b5187c435970c4e98d">esc_init</a>(uint8_t channel, uint8_t pin);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keywordtype">void</span> <a class="code" href="esc_functions_8h.html#a1335384f9847cb1067a6b522d388acc8">esc_send_value</a>(uint16_t value, <span class="keywordtype">bool</span> wait);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keywordtype">void</span> <a class="code" href="esc_functions_8h.html#af34dde1971825c0524be244a348ac85a">escIR</a>();</div>
+<div class="ttc" id="aesc_functions_8h_html_a1335384f9847cb1067a6b522d388acc8"><div class="ttname"><a href="esc_functions_8h.html#a1335384f9847cb1067a6b522d388acc8">esc_send_value</a></div><div class="ttdeci">void esc_send_value(uint16_t value, bool wait)</div><div class="ttdoc">prepares the DShot-packet and sends it</div><div class="ttdef"><b>Definition:</b> escFunctions.cpp:66</div></div>
+<div class="ttc" id="aesc_functions_8h_html_ac43cd4d3e336d8b5187c435970c4e98d"><div class="ttname"><a href="esc_functions_8h.html#ac43cd4d3e336d8b5187c435970c4e98d">esc_init</a></div><div class="ttdeci">void esc_init(uint8_t channel, uint8_t pin)</div><div class="ttdoc">initializes the RMT peripheral for DShot data transmittion</div><div class="ttdef"><b>Definition:</b> escFunctions.cpp:33</div></div>
+<div class="ttc" id="aesc_functions_8h_html_af34dde1971825c0524be244a348ac85a"><div class="ttname"><a href="esc_functions_8h.html#af34dde1971825c0524be244a348ac85a">escIR</a></div><div class="ttdeci">void escIR()</div><div class="ttdoc">the ESC interrupt routine</div><div class="ttdef"><b>Definition:</b> escFunctions.cpp:104</div></div>
+</div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
