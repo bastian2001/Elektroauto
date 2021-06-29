@@ -38,7 +38,7 @@ void startRace();
  */
 double calcThrottle(int target, int was[], double masterMultiplier = 1);
 
-//! @brief reads the Serial0 port and processes the message using dealWithMessage
+//! @brief reads the Serial0 port and processes the message using processMessage
 void receiveSerial();
 
 /**

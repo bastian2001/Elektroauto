@@ -94,7 +94,7 @@ double calcThrottle(int target, int was[], double masterMultiplier) {
 void receiveSerial() {
   if (Serial.available()) {
     String readout = Serial.readStringUntil('\n');
-    dealWithMessage(readout, 255);
+    processMessage(readout, 255);
   }
 }
 

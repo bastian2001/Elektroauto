@@ -1,3 +1,5 @@
+//! @file global.h global functions and parameters
+
 #include <Arduino.h>
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
@@ -65,12 +67,6 @@
 
 
 
-struct Action {
-    uint8_t action; //0 empty, 1 disarm, 2 arm
-    uint8_t payload;
-    uint32_t millis;
-};
-
 //rps control variables
 extern int targetERPM;
 extern int previousERPM[TREND_AMOUNT];
@@ -121,11 +117,16 @@ extern uint8_t temp_log[LOG_FRAMES];
 extern uint16_t logPosition;
 extern bool raceModeSendValues, raceMode, raceActive;
 
-//! @brief add anything to the Serial string
+/** 
+ * @brief add anything to the Serial string
+ * @param s the String to print
+ */
 void sPrint(String s);
 
-//! @brief add a line to the Serial string
+/** 
+ * @brief add a line to the Serial string
+ * @param s the String to print
+ */
 void sPrintln(String s);
 
-//! @brief prints out the Serial string to Serial buffer
 void printSerial();

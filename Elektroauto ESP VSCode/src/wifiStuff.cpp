@@ -2,7 +2,6 @@
 #include "wifiStuff.h"
 #include "telemetry.h"
 #include "messageHandler.h"
-#include "escIR.h"
 
 unsigned long lastTelemetry = 0;
 extern uint8_t telemetryClientsCounter;
@@ -59,7 +58,7 @@ void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t * payload, size_t
       addClient(clientNo);
       break;
     case WStype_TEXT:
-      dealWithMessage((char*)payload, clientNo);
+      processMessage((char*)payload, clientNo);
       break;
     default:
       break;

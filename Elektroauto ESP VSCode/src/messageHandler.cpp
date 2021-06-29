@@ -1,3 +1,5 @@
+//! @file messageHandler.cpp function for message handling
+
 #include "global.h"
 #include "messageHandler.h"
 #include "wifiStuff.h"
@@ -13,7 +15,25 @@ extern uint16_t cutoffVoltage, voltageWarning;
 uint8_t telemetryClientsCounter = 0;
 extern double pidMulti, erpmA, erpmB, erpmC;
 
-void dealWithMessage(String message, uint8_t from) {
+/*! @brief processes Serial- and WebSocket messages
+ * 
+ * Message more precisely documented in docs.md
+ * - VALUE command for requesting a value
+ * - ARMED command for arming the car
+ * - PING command for replying with PONG / pinging the connection
+ * - MODE command for setting the driving mode
+ * - TELEMETRY command for setting telemetry of the origin on or off
+ * - DEVICE command for setting the device type
+ * - RACEMODE command for enabling or disabling race mode
+ * - STARTRACE command for starting the race
+ * - CUTOFFVOLTAGE, VOLTAGEWARNING, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters 
+ * - ERRORCOUNT for requesting the error count
+ * - RECONNECT for reconnecting to WiFi
+ * - RAWDATA for sending raw data to the ESC
+ * @param message The message
+ * @param from The origin of the message, 255 for Serial, other values for WebSocket spots
+*/
+void processMessage(String message, uint8_t from) {
   #ifdef PRINT_INCOMING_MESSAGES
     Serial.print(F("Received: \""));
     Serial.print(message);
@@ -24,13 +44,11 @@ void dealWithMessage(String message, uint8_t from) {
   int dividerPos = message.indexOf(":");
   String command = dividerPos == -1 ? message : message.substring(0, dividerPos);
   
-  // VALUE command for requested value
   if (command == "VALUE" && dividerPos != -1){
     reqValue = message.substring(dividerPos + 1).toInt();
     setNewTargetValue();
   }
 
-  // ARMED command for arming the car
   else if (command == "ARMED" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -39,12 +57,10 @@ void dealWithMessage(String message, uint8_t from) {
     setArmed(value > 0);
   }
 
-  // PING command for replying with PONG / pinging the connection
   else if (command == "PING") {
     sendWSMessage(from, "PONG");
   }
 
-  // MODE command for setting the driving mode
   else if (command == "MODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -76,7 +92,6 @@ void dealWithMessage(String message, uint8_t from) {
     broadcastWSMessage(modeText);
   }
 
-  // TELEMETRY command for setting telemetry of the origin on or off
   else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
@@ -87,7 +102,6 @@ void dealWithMessage(String message, uint8_t from) {
     clients[from][1] = value;
   }
 
-  // DEVICE command for setting the device type
   else if (command == "DEVICE" && dividerPos != -1 && from != 255){
     String valueStr = message.substring(dividerPos + 1);
     int value = valueStr.toInt();
@@ -95,7 +109,6 @@ void dealWithMessage(String message, uint8_t from) {
     clients[from][0] = value;
   }
 
-  // RACEMODE command for enabling or disabling race mode
   else if (command == "RACEMODE" && dividerPos != -1){
     String valueStr = message.substring(dividerPos + 1);
     bool raceModeOn = valueStr.toInt() > 0;
@@ -111,12 +124,10 @@ void dealWithMessage(String message, uint8_t from) {
     raceMode = raceModeOn;
   }
 
-  // STARTRACE command for starting the race
   else if (command == "STARTRACE"){
     startRace();
   }
 
-  // CUTOFFVOLTAGE, VOLTAGEWARNING, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters 
   else if (command == "CUTOFFVOLTAGE"){
     cutoffVoltage = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];
@@ -146,17 +157,14 @@ void dealWithMessage(String message, uint8_t from) {
     sendWSMessage(from, String("MESSAGE Tempomat-Master ist nun ") + String(pidMulti));
   }
 
-  // ERRORCOUNT for requesting the error count
   else if (command == "ERRORCOUNT"){
     sendWSMessage(from, "MESSAGE Error-Count beträgt " + String(errorCount));
   }
 
-  // RECONNECT for reconnecting to WiFi
   else if (command == "RECONNECT"){
     reconnect();
   }
 
-  //RAWDATA for sending raw data to the ESC
   else if (command == "RAWDATA"){
     message = message.substring(dividerPos + 1);
     uint8_t length = message.length();

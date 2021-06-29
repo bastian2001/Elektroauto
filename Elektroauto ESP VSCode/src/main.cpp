@@ -1,10 +1,4 @@
-/*TODO:
-   (Durchschnitt der bisherigen Gaswerte)
-   anpassen, wobei das erst später geht
-   (Online-Interface)
-   Schlupf in Code implementieren
-   Logging
-*/
+/// @file main.cpp the entry point for the project
 
 
 /*======================================================includes======================================================*/
@@ -18,9 +12,8 @@
 
 #include "global.h"
 #include "system.h"
-#include "escSetup.h"
 #include "wifiStuff.h"
-#include "escIR.h"
+#include "escFunctions.h"
 #include "telemetry.h"
 
 
@@ -41,6 +34,17 @@ uint8_t clients[MAX_WS_CONNECTIONS][2];
 
 /*======================================================system methods====================================================*/
 
+/**
+ * @brief loop on core 0
+ * 
+ * the not so time-sensitive stuff
+ * initiates:
+ * - wifi reconnection if neccessary
+ * - race mode values sending
+ * - low voltage checking
+ * - wifi and serial message handling
+ * - Serial string printing
+ */
 void loop0() {
   if (WiFi.status() != WL_CONNECTED) {
     disableCore0WDT();
@@ -63,6 +67,15 @@ void loop0() {
   delay(1);
 }
 
+/**
+ * @brief loop on core 1
+ * 
+ * time sensitive stuff
+ * initiates:
+ * - (MPU checking)
+ * - telemetry acquisition and processing
+ * - throttle routine
+ */
 void loop() {
   // if (escirFinished){
     // handleMPU();
@@ -72,6 +85,7 @@ void loop() {
   throttleRoutine();
 }
 
+//! @brief Task for core 0, creates loop0
 void core0Code( void * parameter) {
   Serial2.begin(115200);
 
@@ -84,6 +98,15 @@ void core0Code( void * parameter) {
   }
 }
 
+/**
+ * @brief setup function
+ * 
+ * enables Serial communication
+ * connects to wifi
+ * sets up pins and timer for escir
+ * creates task on core 0
+ * initates websocket server
+ */
 void setup() {
   //Serial setup
   Serial.begin(500000);
@@ -118,7 +141,7 @@ void setup() {
   digitalWrite(TRANSMISSION, HIGH);
   esc_init(0, ESC_OUTPUT_PIN);
   timer = timerBegin(0, 80, true);
-  timerAttachInterrupt(timer, &escir, true);
+  timerAttachInterrupt(timer, &escIR, true);
   timerAlarmWrite(timer, ESC_FREQ, true);
   timerAlarmEnable(timer);
 
