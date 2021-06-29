@@ -4,17 +4,7 @@
 #include "wifiStuff.h"
 #include "system.h"
 
-uint16_t errorCount = 0;
-extern bool raceMode, raceActive;
-extern int previousERPM[TREND_AMOUNT];
-uint16_t telemetryERPM = 0, telemetryVoltage = 0;
-uint8_t telemetryTemp = 0;
-extern bool armed;
-extern int reqValue;
-extern double throttle;
 char escTelemetry[10];
-uint16_t speedWheel = 0;
-extern uint16_t cutoffVoltage;
 uint32_t lastErrorOutput = 0;
 bool firstTelemetry = true;
 
@@ -62,7 +52,7 @@ void getTelemetry(){
           sPrintln(errorMessage);
         }
       }
-      if(firstTelemetry){
+      if(firstTelemetry){ //setup after connection is ready
         firstTelemetry = false;
         manualData[17] = 0x0356;
         manualData[18] = 0x02FD;
@@ -72,19 +62,6 @@ void getTelemetry(){
       break;
     }
   }
-}
-
-void sendTelemetry() {
-  float rps = erpmToRps (telemetryERPM);
-  int slipPercent = 0;
-  if (speedWheel != 0) {
-    slipPercent = (float)(speedWheel - speedMPU) / speedWheel * 100;
-  }
-  char telData[66];
-  snprintf(telData, 66, "TELEMETRY a%d!p%d!u%d!t%d!r%d!s%d!v%d!w%d!c%d!%c%d", 
-    armed > 0, telemetryTemp, telemetryVoltage, (int) throttle, (int) rps, slipPercent, (int) speedMPU, speedWheel,
-    (int)(acceleration * 1000 + .5), (raceMode && !raceActive) ? 'o' : 'q', reqValue);
-  broadcastWSMessage(telData, true, 0, true);
 }
 
 bool isTelemetryComplete(){

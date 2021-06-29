@@ -2,28 +2,13 @@
 
 #include "driver/rmt.h"
 #include "global.h"
-#include "global.h"
 #include "system.h"
+#include "accelerometerFunctions.h"
 #include <Arduino.h>
-
-uint8_t newRedLED, newBlueLED, newGreenLED;
 
 rmt_item32_t escDataBuffer[ESC_BUFFER_ITEMS];
 
 int escOutputCounter = 0, escOutputCounter3 = 0;
-int previousERPM[TREND_AMOUNT];
-extern uint16_t telemetryERPM, telemetryVoltage;
-extern uint8_t telemetryTemp;
-extern bool raceModeSendValues;
-bool armed = false, raceActive = false;
-extern uint16_t escValue;
-uint16_t logPosition = 0;
-extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
-extern int acceleration_log[LOG_FRAMES];
-extern uint8_t temp_log[LOG_FRAMES];
-double throttle = 0, nextThrottle = 0;
-uint8_t manualDataAmount = 0;
-uint16_t manualData[20];
 
 /**
  * @brief initializes the RMT peripheral for DShot data transmittion
@@ -134,6 +119,9 @@ void escIR() {
     previousERPM[i] = previousERPM[i + 1];
   }
   previousERPM[TREND_AMOUNT - 1] = telemetryERPM;
+
+  // handle BMI routine
+  readBMI();
 
   // print debug telemetry over Serial
   escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG) ? 0 : escOutputCounter3 + 1;

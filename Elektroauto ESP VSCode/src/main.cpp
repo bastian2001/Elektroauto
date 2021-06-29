@@ -15,6 +15,7 @@
 #include "wifiStuff.h"
 #include "escFunctions.h"
 #include "telemetry.h"
+#include "accelerometerFunctions.h"
 
 
 /*======================================================global variables==================================================*/
@@ -25,9 +26,6 @@ bool c1ready = false;
 
 hw_timer_t * timer = NULL;
 
-//webSocket
-WebSocketsServer webSocket = WebSocketsServer(80);
-uint8_t clients[MAX_WS_CONNECTIONS][2];
 
 
 
@@ -72,15 +70,11 @@ void loop0() {
  * 
  * time sensitive stuff
  * initiates:
- * - (MPU checking)
+ * - (BMI checking)
  * - telemetry acquisition and processing
  * - throttle routine
  */
 void loop() {
-  // if (escirFinished){
-    // handleMPU();
-    // escirFinished = false;
-  // }
   getTelemetry();
   throttleRoutine();
 }
@@ -131,8 +125,18 @@ void setup() {
     Serial.println(WiFi.localIP());
   #endif
 
-  //MPU initialization
-  // initMPU();
+  //BMI initialization
+  initBMI();
+
+  //logData initialization
+  logData = (uint16_t *)malloc(LOG_FRAMES * 11);
+  throttle_log = logData + 0 * LOG_FRAMES;
+  acceleration_log = (int16_t *)logData + 2 * LOG_FRAMES;
+  erpm_log = logData + 4 * LOG_FRAMES;
+  voltage_log = logData + 6 * LOG_FRAMES;
+  temp_log = (uint8_t*)logData + 8 * LOG_FRAMES;
+  // temp2_log = logData + 9 * LOG_FRAMES;
+
 
   //ESC pins Setup
   pinMode(ESC_OUTPUT_PIN, OUTPUT);
@@ -146,7 +150,7 @@ void setup() {
   timerAlarmEnable(timer);
 
   //2nd core setup
-  xTaskCreatePinnedToCore( core0Code, "core0Task", 50000, NULL, 0, &core0Task, 0);
+  xTaskCreatePinnedToCore( core0Code, "core0Task", 60000, NULL, 0, &core0Task, 0);
 
   //WebSockets init
   webSocket.begin();
@@ -177,5 +181,4 @@ void setup() {
     Serial.println();
   #endif
   c1ready = true;
-  lastMPUUpdate = millis();
 }

@@ -5,16 +5,6 @@
 #include "wifiStuff.h"
 #include "system.h"
 
-extern WebSocketsServer webSocket;
-extern bool raceMode;
-extern uint8_t clients[MAX_WS_CONNECTIONS][2];
-extern bool armed;
-extern int ctrlMode, reqValue;
-extern uint16_t cutoffVoltage, voltageWarning;
-
-uint8_t telemetryClientsCounter = 0;
-extern double pidMulti, erpmA, erpmB, erpmC;
-
 /*! @brief processes Serial- and WebSocket messages
  * 
  * Message more precisely documented in docs.md
@@ -26,7 +16,7 @@ extern double pidMulti, erpmA, erpmB, erpmC;
  * - DEVICE command for setting the device type
  * - RACEMODE command for enabling or disabling race mode
  * - STARTRACE command for starting the race
- * - CUTOFFVOLTAGE, VOLTAGEWARNING, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters 
+ * - CUTOFFVOLTAGE, WARNINGVOLTAGE, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters 
  * - ERRORCOUNT for requesting the error count
  * - RECONNECT for reconnecting to WiFi
  * - RAWDATA for sending raw data to the ESC
@@ -134,10 +124,10 @@ void processMessage(String message, uint8_t from) {
     snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", (double)cutoffVoltage/100.0);
     sendWSMessage(from, bcMessage);
   }
-  else if (command == "VOLTAGEWARNING"){
-    voltageWarning = message.substring(dividerPos + 1).toInt();
+  else if (command == "WARNINGVOLTAGE"){
+    warningVoltage = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];
-    snprintf(bcMessage, 50, "MESSAGE Spannungswarnung erfolgt unter %4.2fV", (double)voltageWarning/100);
+    snprintf(bcMessage, 50, "MESSAGE Spannungswarnung erfolgt unter %4.2fV", (double)warningVoltage/100);
     sendWSMessage(from, bcMessage);
   }
   else if (command == "RPSA"){

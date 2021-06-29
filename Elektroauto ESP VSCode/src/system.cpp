@@ -3,25 +3,9 @@
 #include "system.h"
 #include "messageHandler.h"
 
-double pidMulti = 1, erpmA = 0.000000008, erpmB = 0.0000006, erpmC = 0.01;
-int escOutputCounter2 = 0;
-bool raceMode = false;
-extern bool armed;
-int targetERPM = 0, ctrlMode = 0, reqValue = 0, targetSlip = 0;
-uint16_t escValue = 0x0011;
-extern double throttle;
-bool redLED, greenLED, blueLED;
-
 //! voltage warning
-uint16_t cutoffVoltage = 640, voltageWarning = 740;
 uint32_t nextCheck = 0;
-uint8_t voltageWarningCount = 0;
-
-//! race mode
-uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
-int acceleration_log[LOG_FRAMES];
-uint8_t temp_log[LOG_FRAMES];
-bool raceModeSendValues = false;
+uint8_t warningVoltageCount = 0;
 
 void setArmed (bool arm){
   if (arm != armed){
@@ -128,14 +112,8 @@ void setNewTargetValue(){
 
 void sendRaceLog(){
   raceModeSendValues = false;
-  uint8_t logData[LOG_FRAMES * 9];
-  memcpy(logData, throttle_log, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 2, acceleration_log, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 4, erpm_log, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 6, voltage_log, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 8, temp_log, LOG_FRAMES);
   delay(2);
-  broadcastWSBin(logData, LOG_FRAMES * 9, true, 20);
+  broadcastWSBin((uint8_t*)logData, LOG_FRAMES * 9, true, 20);
 }
 
 void throttleRoutine(){
@@ -151,7 +129,7 @@ void throttleRoutine(){
         addToTargetERPM = 40 - (throttle * .2);
         if (addToTargetERPM < 0)
           addToTargetERPM = 0;
-        targetERPM = ((0.0f - speedMPU) / ((float) targetSlip * .01f - 1)) / ERPM_TO_MM_PER_SECOND + addToTargetERPM;
+        targetERPM = ((0.0f - speedBMI) / ((float) targetSlip * .01f - 1)) / ERPM_TO_MM_PER_SECOND + addToTargetERPM;
         nextThrottle = calcThrottle(targetERPM, previousERPM, .1);
         break;
       default:
@@ -163,15 +141,15 @@ void throttleRoutine(){
 void checkVoltage(){
   if (millis() > nextCheck){
     nextCheck += 10000;
-    if (telemetryVoltage < voltageWarning && telemetryVoltage != 0 && telemetryVoltage != 257){
-      voltageWarningCount++;
-      if (voltageWarningCount % 5 == 3){
+    if (telemetryVoltage < warningVoltage && telemetryVoltage != 0 && telemetryVoltage != 257){
+      warningVoltageCount++;
+      if (warningVoltageCount % 5 == 3){
         broadcastWSMessage(F("MESSAGEBEEP Warnung! Spannung niedrig!"));
         manualData[0] = 0xbb;
         manualDataAmount = 1;
       }
     } else {
-      voltageWarningCount = 0;
+      warningVoltageCount = 0;
     }
   }
 }

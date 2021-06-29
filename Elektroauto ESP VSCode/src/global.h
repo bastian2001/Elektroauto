@@ -60,7 +60,7 @@
 
 //PID loop settings
 #define TREND_AMOUNT 5 //nur ungerade!!
-#define TA_DIV_2 2 //mit anpassen!!
+#define TA_DIV_2 (TREND_AMOUNT / 2) //mit anpassen!!
 
 //logging settings
 #define LOG_FRAMES 5000
@@ -75,23 +75,25 @@ extern double erpmA; //große Änderungen: zu viel -> overshooting bei großen A
 extern double erpmB;
 extern double erpmC; //responsiveness: zu viel -> schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -> langsames Anpassen bei kleinen Änderungen
 
-//MPU variables
-//MPU6050 mpu;
-extern unsigned long lastMPUUpdate;
-extern int16_t counterMPU, MPUoffset, raw_accel;
-extern int16_t distMPU;
-extern double speedMPU, acceleration;
+//BMI variables
+extern int16_t rawAccel;
+extern int16_t distBMI;
+extern double speedBMI, acceleration;
 
 //slip variables
 extern int targetSlip;
-extern uint16_t speedWheel;
 
 //system variables
 extern double throttle, nextThrottle;
 extern bool armed;
 extern int ctrlMode, reqValue;
 extern uint16_t escValue;
-extern uint16_t cutoffVoltage, voltageWarning;
+extern uint16_t cutoffVoltage, warningVoltage;
+
+// telemetry
+extern uint16_t telemetryERPM, telemetryVoltage;
+extern uint8_t telemetryTemp;
+extern uint16_t speedWheel;
 
 //LED variables
 extern bool redLED, greenLED, blueLED;
@@ -111,9 +113,10 @@ extern uint8_t manualDataAmount;
 extern uint16_t manualData[20];
 
 //race mode variables
-extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
-extern int acceleration_log[LOG_FRAMES];
-extern uint8_t temp_log[LOG_FRAMES];
+extern uint16_t *logData;
+extern uint16_t *throttle_log, *erpm_log, *voltage_log;
+extern int16_t *acceleration_log;
+extern uint8_t *temp_log;
 extern uint16_t logPosition;
 extern bool raceModeSendValues, raceMode, raceActive;
 

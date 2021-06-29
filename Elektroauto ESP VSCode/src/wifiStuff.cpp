@@ -2,15 +2,9 @@
 #include "wifiStuff.h"
 #include "telemetry.h"
 #include "messageHandler.h"
+#include "system.h"
 
 unsigned long lastTelemetry = 0;
-extern uint8_t telemetryClientsCounter;
-uint8_t clientsCounter = 0;
-extern WebSocketsServer webSocket;
-extern bool raceMode, raceActive;
-extern uint8_t clients[MAX_WS_CONNECTIONS][2];
-extern bool armed;
-extern int ctrlMode;
 
 void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
   #ifdef PRINT_BROADCASTS
@@ -72,12 +66,10 @@ void removeClient (int spot) {
   if (clients[spot][1] == 1) telemetryClientsCounter--;
   clients[spot][0] = 0;
   clients[spot][1] = 0;
-  clientsCounter--;
 }
 
 void addClient (int spot) {
   if (spot < MAX_WS_CONNECTIONS && !raceActive) {
-    clientsCounter++;
     if (!armed && !raceMode){
       webSocket.sendTXT(spot, "BLOCK VALUE 0");
     } else if (raceMode){
@@ -155,6 +147,19 @@ void checkLEDs(){
     broadcastWSMessage("SET BLUELED " + String(blueLED));
     newBlueLED = 0;
   }
+}
+
+void sendTelemetry() {
+  float rps = erpmToRps (telemetryERPM);
+  int slipPercent = 0;
+  if (speedWheel != 0) {
+    slipPercent = (float)(speedWheel - speedBMI) / speedWheel * 100;
+  }
+  char telData[66];
+  snprintf(telData, 66, "TELEMETRY a%d!p%d!u%d!t%d!r%d!s%d!v%d!w%d!c%d!%c%d", 
+    armed > 0, telemetryTemp, telemetryVoltage, (int) throttle, (int) rps, slipPercent, (int) speedBMI, speedWheel,
+    (int)(acceleration + .5), (raceMode && !raceActive) ? 'o' : 'q', reqValue);
+  broadcastWSMessage(telData, true, 0, true);
 }
 
 void handleWiFi() {
