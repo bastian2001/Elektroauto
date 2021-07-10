@@ -77,3 +77,5 @@ void throttleRoutine();
 
 //! @brief checks every 10s if the voltage is too low, initiates warning via broadcast if neccessary
 void checkVoltage();
+
+uint16_t getMaxValue (int mode);

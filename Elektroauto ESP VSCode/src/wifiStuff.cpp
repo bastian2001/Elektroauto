@@ -81,6 +81,7 @@ void addClient (int spot) {
     String modeText = "SET MODESPINNER ";
     modeText += ctrlMode;
     webSocket.sendTXT(spot, modeText);
+    webSocket.sendTXT(spot, String("MAXVALUE ") + String(getMaxValue(ctrlMode)));
     #ifdef PRINT_WEBSOCKET_CONNECTIONS
       IPAddress ip = webSocket.remoteIP(spot);
       Serial.printf("[%u] Connection from ", spot);
@@ -103,7 +104,7 @@ void sendWSMessage(uint8_t spot, String text){
 }
 
 void reconnect() {
-  Serial2.end();
+  Serial1.end();
   WiFi.disconnect();
   int counterWiFi = 0;
   while (WiFi.status() == WL_CONNECTED) {
@@ -128,7 +129,7 @@ void reconnect() {
   #ifdef PRINT_SETUP
     Serial.println();
   #endif
-  Serial2.begin(115200);
+  Serial1.begin(115200);
 }
 
 void checkLEDs(){

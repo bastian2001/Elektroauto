@@ -3,69 +3,77 @@
 #include <Arduino.h>
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
+#include <EEPROM.h>
+#include "WiFi.h"
+#include <esp_task_wdt.h>
+#include "BMI160Gen.h"
 
 
 /*======================================================definitions======================================================*/
 
 //Pin numbers
-#define ESC_OUTPUT_PIN 25
-#define ESC_TRIGGER_PIN 33
-#define TRANSMISSION 23
-#define LED_BUILTIN 22
+#define ESC1_OUTPUT_PIN 25 // pin used for output to ESC1
+#define ESC1_INPUT_PIN 21 // pin used for input from ESC1
+#define ESC2_OUTPUT_PIN 27 // pin used for output to ESC2
+#define ESC2_INPUT_PIN 16 // pin used for input from ESC1
+#define TRANSMISSION_PIN 33 // pin used for the transmission indicator
+#define LED_BUILTIN 22 // pin of the built-in LED
+#define SPI_MISO 19 // pin used for MISO of the SPI driver
+#define SPI_MOSI 23 // pin used for MOSI of the SPI driver
+#define SPI_CS 5 // pin used for CS/SS of the SPI driver
+#define SPI_SCL 18 // pin used for SCL/SCK of the SPI driver
 
 //ESC values
-#define ESC_FREQ 1000
-#define CLK_DIV 3 //DShot 150: 12, DShot 300: 6, DShot 600: 3
+#define ESC_FREQ 800 //frequency of basically everything
+#define CLK_DIV 3 //DShot 150: 12, DShot 300: 6, DShot 600: 3, change value accordingly for the desired DShot speed
 #define TT 44 // total bit time
 #define T0H 17 // 0 bit high time
 #define T1H 33 // 1 bit high time
 #define T0L (TT - T0H) // 0 bit low time
 #define T1L (TT - T1H) // 1 bit low time
 #define T_RESET 21 // reset length in multiples of bit time
-#define TRANSMISSION_IND 1000
-// #define SEND_TRANSMISSION_IND //whether to enable or disable the transmission indicator overall
-#define ESC_BUFFER_ITEMS 16
+#define ESC_BUFFER_ITEMS 16 // number of bits sent out via DShot
 
-//motor and wheel properties
-#define TELEMETRY_DEBUG 3
-#define MAX_THROTTLE 2000
-#define MAX_TARGET_RPS 1500
-#define MAX_TARGET_SLIP 20
-#define ESC_BUFFER_ITEMS 16
-#define MOTOR_POLE_COUNT 12.0f
-#define WHEEL_DIAMETER 30.0f
-#define RPS_CONVERSION_FACTOR (1.6667f / (MOTOR_POLE_COUNT / 2.0f))
-#define ERPM_TO_MM_PER_SECOND (RPS_CONVERSION_FACTOR * WHEEL_DIAMETER * PI)
 
-//WiFi and WebSockets settings
-#define MAX_WS_CONNECTIONS 5
-#define ssid "Test"
-#define password "CaputDraconis"
-// #define ssid "POCO X3 NFC"
-// #define password "055fb39a4cc4"
-// #define ssid "springernet"
-// #define password "CL7B1L609235"
-#define TELEMETRY_UPDATE_MS 20
-#define TELEMETRY_UPDATE_ADD 20
-
-//debugging settings
-#define PRINT_SETUP
+//ESC/DShot debugging settings
+#define TRANSMISSION_IND 0 // transmission indicator every ... frames; 0 for disabled (recommended for final/semi-stable build)
+#define TELEMETRY_DEBUG 0 // Print telemetry from ESC out to Serial every ... frames; 0 for disabled (recommended for final/semi-stable build); use lower values with care
 // #define PRINT_TELEMETRY_THROTTLE
 // #define PRINT_TELEMETRY_TEMP
 // #define PRINT_TELEMETRY_ERPM
 // #define PRINT_TELEMETRY_VOLTAGE
-#define PRINT_WEBSOCKET_CONNECTIONS
-#define PRINT_INCOMING_MESSAGES
-#define PRINT_BROADCASTS
+
+//WiFi and WebSockets settings
+#define MAX_WS_CONNECTIONS 5 // Maximum number of concurrent WebSocket connections
+#define TELEMETRY_UPDATE_MS 20 // send out telemetry to clients every ... ms
+#define TELEMETRY_UPDATE_ADD 20 // add ... ms to telemetry frequency for every connected client (1 client: Telemetry every TELEMETRY_UPDATE_MS + TELEMETRY_UPDATE_ADD milliseconds)
+#define ssid "Test" // The SSID
+#define password "CaputDraconis" // The password for wifi
+// #define ssid "POCO X3 NFC" // The SSID
+// #define password "055fb39a4cc4" // The password for wifi
+// #define ssid "springernet" // The SSID
+// #define password "CL7B1L609235" // The password for wifi
+
+//debugging settings
+#define PRINT_SETUP // print setup info (e.g. IP-Address)
+#define PRINT_WEBSOCKET_CONNECTIONS // print info about WebSocket connections, e.g. new connections
+#define PRINT_INCOMING_MESSAGES // print incoming messages from WebSocket clients
+#define PRINT_BROADCASTS // print broadcasts into the Serial connection
 
 //PID loop settings
-#define TREND_AMOUNT 5 //nur ungerade!!
-#define TA_DIV_2 (TREND_AMOUNT / 2) //mit anpassen!!
+#define TREND_AMOUNT 5 //nur ungerade!! // number of frames for RPS calculation, to be tested
+#define TA_DIV_2 (TREND_AMOUNT / 2)
 
 //logging settings
-#define LOG_FRAMES 5000
+#define LOG_FRAMES 5000 // number of frames that are logged in race mode
+#define BYTES_PER_LOG_FRAME 9
+#define LOG_SIZE (LOG_FRAMES * BYTES_PER_LOG_FRAME) // bytes reserved for logging
 
-
+enum Modes {
+    MODE_THROTTLE = 0,
+    MODE_RPS,
+    MODE_SLIP
+};
 
 //rps control variables
 extern int targetERPM;
@@ -75,10 +83,11 @@ extern double erpmA; //große Änderungen: zu viel -> overshooting bei großen A
 extern double erpmB;
 extern double erpmC; //responsiveness: zu viel -> schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -> langsames Anpassen bei kleinen Änderungen
 
+extern bool commitFlag;
+
 //BMI variables
 extern int16_t rawAccel;
-extern int16_t distBMI;
-extern double speedBMI, acceleration;
+extern double distBMI, speedBMI, acceleration;
 
 //slip variables
 extern int targetSlip;
@@ -89,6 +98,13 @@ extern bool armed;
 extern int ctrlMode, reqValue;
 extern uint16_t escValue;
 extern uint16_t cutoffVoltage, warningVoltage;
+
+//motor and wheel settings
+extern uint16_t maxThrottle, maxTargetRPS;
+extern uint8_t maxTargetSlip, motorPoleCount, wheelDiameter;
+extern float rpsConversionFactor, erpmToMMPerSecond;
+extern uint16_t zeroERPMOffset;
+extern uint16_t zeroOffsetAtThrottle;
 
 // telemetry
 extern uint16_t telemetryERPM, telemetryVoltage;

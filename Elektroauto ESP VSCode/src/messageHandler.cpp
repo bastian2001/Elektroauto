@@ -3,6 +3,7 @@
 #include "global.h"
 #include "messageHandler.h"
 #include "wifiStuff.h"
+#include "settings.h"
 #include "system.h"
 
 /*! @brief processes Serial- and WebSocket messages
@@ -56,30 +57,31 @@ void processMessage(String message, uint8_t from) {
     valueStr.toUpperCase();
     int value = valueStr.toInt();
     if (valueStr == "RPS"){
-        value = 1;
+        value = MODE_RPS;
     } else if (valueStr == "SLIP"){
-        value = 2;
+        value = MODE_SLIP;
     }
     ctrlMode = value;
     String modeText = "SET MODESPINNER ";
     modeText += ctrlMode;
     switch(ctrlMode){
-      case 0:
+      case MODE_THROTTLE:
         reqValue = nextThrottle; // stationary
         break;
-      case 1:
-        if (erpmToRps(telemetryERPM) > MAX_TARGET_RPS)
-          reqValue = MAX_TARGET_RPS;
+      case MODE_RPS:
+        if (erpmToRps(telemetryERPM) > maxTargetRPS)
+          reqValue = maxTargetRPS;
         reqValue = erpmToRps(telemetryERPM);
         targetERPM = rpsToErpm(reqValue);
         break;
-      case 2:
-        if (reqValue > MAX_TARGET_SLIP)
-          reqValue = MAX_TARGET_SLIP;
+      case MODE_SLIP:
+        if (reqValue > maxTargetSlip)
+          reqValue = maxTargetSlip;
         targetSlip = reqValue;
         break;
     }
     broadcastWSMessage(modeText);
+    broadcastWSMessage(String("MAXVALUE ") + String(getMaxValue(ctrlMode)));
   }
 
   else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){
@@ -122,29 +124,35 @@ void processMessage(String message, uint8_t from) {
     cutoffVoltage = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];
     snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", (double)cutoffVoltage/100.0);
-    sendWSMessage(from, bcMessage);
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, bcMessage);
   }
   else if (command == "WARNINGVOLTAGE"){
     warningVoltage = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];
     snprintf(bcMessage, 50, "MESSAGE Spannungswarnung erfolgt unter %4.2fV", (double)warningVoltage/100);
-    sendWSMessage(from, bcMessage);
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, bcMessage);
   }
   else if (command == "RPSA"){
     erpmA = message.substring(dividerPos + 1).toFloat();
-    sendWSMessage(from, String("MESSAGE Tempomat 3. Potenz ist nun ") + String(erpmA));
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Tempomat 3. Potenz ist nun ") + String(erpmA));
   }
   else if (command == "RPSB"){
     erpmB = message.substring(dividerPos + 1).toFloat();
-    sendWSMessage(from, String("MESSAGE Tempomat 2. Potenz ist nun ") + String(erpmB));
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Tempomat 2. Potenz ist nun ") + String(erpmB));
   }
   else if (command == "RPSC"){
     erpmC = message.substring(dividerPos + 1).toFloat();
-    sendWSMessage(from, String("MESSAGE Tempomat 1. Potenz ist nun ") + String(erpmC));
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Tempomat 1. Potenz ist nun ") + String(erpmC));
   }
   else if (command == "PIDMULTIPLIER"){
     pidMulti = message.substring(dividerPos + 1).toFloat();
-    sendWSMessage(from, String("MESSAGE Tempomat-Master ist nun ") + String(pidMulti));
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Tempomat-Master ist nun ") + String(pidMulti));
   }
 
   else if (command == "ERRORCOUNT"){
@@ -177,5 +185,57 @@ void processMessage(String message, uint8_t from) {
       }
       manualDataAmount = length / 5 + 1;
     }
+  }
+
+  else if (command == "SAVESETTINGS" || command == "SAVE"){
+    writeEEPROM();
+    sendWSMessage(from, "MESSAGE Einstellungen gespeichert");
+  }
+  else if (command == "READSETTINGS" || command == "READ"){
+    readEEPROM();
+    sendWSMessage(from, "MESSAGE Einstellungen gelesen");
+  }
+  else if (command == "RESTORE" || command == "RESTOREDEFAULTS"){
+    clearEEPROM();
+    sendWSMessage(from, "MESSAGE Einstellungen zurückgesetzt. Neustart wird durchgeführt.");
+    delay(200);
+    ESP.restart();
+  }
+  else if (command == "SENDSETTINGS" || command == "SETTINGS") {
+    sendSettings(from);
+  }
+  else if (command == "MAXT" || command == "MAXTHROTTLE"){
+    maxThrottle = message.substring(dividerPos + 1).toInt();
+    if (ctrlMode == MODE_THROTTLE)
+      broadcastWSMessage(String("MAXVALUE ") + String(maxThrottle));
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Max. Gaswert ist nun ") + String(maxThrottle));
+  }
+  else if (command == "MAXR" || command == "MAXRPS"){
+    maxTargetRPS = message.substring(dividerPos + 1).toInt();
+    if (ctrlMode == MODE_RPS)
+      broadcastWSMessage(String("MAXVALUE ") + String(maxTargetRPS));
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Max. Ziel-RPS ist nun ") + String(maxTargetRPS));
+  }
+  else if (command == "MAXS" || command == "MAXSLIP"){
+    maxTargetSlip = message.substring(dividerPos + 1).toInt();
+    if (ctrlMode == MODE_SLIP)
+      broadcastWSMessage(String("MAXVALUE ") + String(maxTargetSlip));
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Max. Ziel-Schlupf ist nun ") + String(maxTargetSlip));
+  }
+  else if (command == "MOTORPOLE"){
+    motorPoleCount = message.substring(dividerPos + 1).toInt();
+    rpsConversionFactor = (1.6667f / ((float)motorPoleCount / 2.0f));
+    erpmToMMPerSecond = (rpsConversionFactor * (float)wheelDiameter * PI);
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Anzahl Motorpole ist nun ") + String(motorPoleCount));
+  }
+  else if (command == "WHEELDIA" || command == "WHEELDIAMETER"){
+    wheelDiameter = message.substring(dividerPos + 1).toInt();
+    erpmToMMPerSecond = (rpsConversionFactor * (float)wheelDiameter * PI);
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Raddurchmesser beträgt nun ") + String(pidMulti) + String(" mm"));
   }
 }

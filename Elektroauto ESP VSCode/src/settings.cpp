@@ -1,0 +1,49 @@
+//!@file settings.cpp provides functions to read and write settings
+
+#include "global.h"
+#include "wifiStuff.h"
+
+bool firstStartup(){
+  return !(EEPROM.readBool(0));
+}
+
+void clearEEPROM(){
+  EEPROM.writeBool(0, false);
+  commitFlag = true;
+}
+
+void writeEEPROM(){
+  EEPROM.writeBool(0, true);
+  EEPROM.writeDouble(1, pidMulti);
+  EEPROM.writeDouble(9, erpmA);
+  EEPROM.writeDouble(17, erpmB);
+  EEPROM.writeDouble(25, erpmC);
+  EEPROM.writeUShort(33, maxThrottle);
+  EEPROM.writeUShort(35, maxTargetRPS);
+  EEPROM.writeUChar(37, maxTargetSlip);
+  EEPROM.writeUChar(38, motorPoleCount);
+  EEPROM.writeUChar(39, wheelDiameter);
+  EEPROM.writeUShort(40, cutoffVoltage);
+  EEPROM.writeUShort(42, warningVoltage);
+  commitFlag = true;
+}
+
+void readEEPROM(){
+  pidMulti = EEPROM.readDouble(1);
+  erpmA = EEPROM.readDouble(9);
+  erpmB = EEPROM.readDouble(17);
+  erpmC = EEPROM.readDouble(25);
+  maxThrottle = EEPROM.readUShort(33);
+  maxTargetRPS = EEPROM.readUShort(35);
+  maxTargetSlip = EEPROM.readUChar(37);
+  motorPoleCount = EEPROM.readUChar(38);
+  wheelDiameter = EEPROM.readUChar(39);
+  cutoffVoltage = EEPROM.readUShort(40);
+  warningVoltage = EEPROM.readUShort(42);
+}
+
+void sendSettings(uint8_t to){
+    char settingsString[550];
+    snprintf(settingsString, 550, "SETTINGS\nfloat_PIDMULTIPLIER_RPS Multiplikator_0_3_%3.2f\nfloat_RPSA_Dritte Potenz RPS_0_0.00000002_%11.10f\nfloat_RPSB_Zweite Potenz RPS_0_0.000001_%10.9f\nfloat_RPSC_Linearfaktor RPS_0_0.02_%5.4f\nint_MAXT_Max. Gaswert_0_2000_%d\nint_MAXR_Max. U/sek_0_2000_%d\nint_MAXS_Max. Schlupf_0_30_%d\nint_MOTORPOLE_Anzahl Motorpole_0_20_%d\nint_WHEELDIA_Raddurchmesser (mm)_0_50_%d\nint_CUTOFFVOLTAGE_Cutoffspannung (cV)_0_2000_%d\nint_WARNINGVOLTAGE_Warnungsspannung (cV)_0_2000_%d", pidMulti, erpmA, erpmB, erpmC, maxThrottle, maxTargetRPS, maxTargetSlip, motorPoleCount, wheelDiameter, cutoffVoltage, warningVoltage);
+    sendWSMessage(to, String(settingsString));
+}

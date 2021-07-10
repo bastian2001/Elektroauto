@@ -1,10 +1,8 @@
 //! @file escFunctions.cpp all the neccessary ESC functions
 
-#include "driver/rmt.h"
 #include "global.h"
 #include "system.h"
 #include "accelerometerFunctions.h"
-#include <Arduino.h>
 
 rmt_item32_t escDataBuffer[ESC_BUFFER_ITEMS];
 
@@ -15,23 +13,23 @@ int escOutputCounter = 0, escOutputCounter3 = 0;
  * 
  * automatically run at startup
  */
-void esc_init(uint8_t channel, uint8_t pin) {
+void esc_init(rmt_channel_t channel, uint8_t pin) {
   rmt_config_t config;
   config.rmt_mode = RMT_MODE_TX;
-  config.channel = ((rmt_channel_t) channel);
-  config.gpio_num = ((gpio_num_t) pin);
-  config.mem_block_num = 3;
+  config.channel = channel;
+  config.gpio_num = (gpio_num_t) pin;
+  config.mem_block_num = 1;
   config.tx_config.loop_en = false;
   config.tx_config.carrier_en = false;
   config.tx_config.idle_output_en = true;
-  config.tx_config.idle_level = ((rmt_idle_level_t) 0);
-  config.clk_div = 6; // target: DShot 300 (300kbps)
+  config.tx_config.idle_level = RMT_IDLE_LEVEL_LOW;
+  config.clk_div = CLK_DIV;
 
   ESP_ERROR_CHECK(rmt_config(&config));
   ESP_ERROR_CHECK(rmt_driver_install(config.channel, 0, 0));
 }
 
-void setup_rmt_data_buffer(uint16_t value) {
+void IRAM_ATTR setup_rmt_data_buffer(uint16_t value) {
   uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
   for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
     uint16_t bit_is_set = value & mask;
@@ -48,9 +46,9 @@ void setup_rmt_data_buffer(uint16_t value) {
  * @param value the full packet to transmit
  * @param wait whether to wait until the transmission is done
  */
-void esc_send_value(uint16_t value, bool wait) {
+void IRAM_ATTR esc_send_value(uint16_t value, bool wait, rmt_channel_t channel) {
   setup_rmt_data_buffer(value);
-  ESP_ERROR_CHECK(rmt_write_items((rmt_channel_t) 0, escDataBuffer, ESC_BUFFER_ITEMS, wait));
+  ESP_ERROR_CHECK(rmt_write_items(channel, escDataBuffer, ESC_BUFFER_ITEMS, wait));
 
   switch(value){
     case 0x0356:
@@ -86,32 +84,35 @@ void esc_send_value(uint16_t value, bool wait) {
  * - same thing goes for telemetryERPM history
  * - if the race is active, it also logs the data
  */
-void escIR() {
+void IRAM_ATTR escIR() {
   //set Throttle
   if (armed){
     setThrottle(nextThrottle);
   }
-  #ifdef SEND_TRANSMISSION_IND
-  escOutputCounter = (escOutputCounter == TRANSMISSION_IND) ? 0 : escOutputCounter + 1;
+  #if TRANSMISSION_IND != 0
+  escOutputCounter = (escOutputCounter == TRANSMISSION_IND - 1) ? 0 : escOutputCounter + 1;
   if (escOutputCounter == 0)
-    digitalWrite(TRANSMISSION, LOW);
+    digitalWrite(TRANSMISSION_PIN, LOW);
   delayMicroseconds(20);
   #endif
 
   //send value to ESC
-  if (manualDataAmount == 0)
-    esc_send_value(escValue, false);
+  if (manualDataAmount == 0){
+    esc_send_value(escValue, false, RMT_CHANNEL_0);
+    esc_send_value(escValue, false, RMT_CHANNEL_1);
+  }
   else {
-    esc_send_value(manualData[0], false);
+    esc_send_value(manualData[0], false, RMT_CHANNEL_0);
+    esc_send_value(manualData[0], false, RMT_CHANNEL_1);
     manualDataAmount--;
     for (int i = 0; i < 19; i++){
       manualData[i] = manualData[i+1];
     }
     manualData[19] = 0;
   }
-  #ifdef SEND_TRANSMISSION_IND
+  #if TRANSMISSION_IND != 0
   if (escOutputCounter == 0)
-    digitalWrite(TRANSMISSION, HIGH);
+    digitalWrite(TRANSMISSION_PIN, HIGH);
   #endif
 
   // record new previousERPM value
@@ -124,7 +125,8 @@ void escIR() {
   readBMI();
 
   // print debug telemetry over Serial
-  escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG) ? 0 : escOutputCounter3 + 1;
+  #if TELEMETRY_DEBUG != 0
+  escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG - 1) ? 0 : escOutputCounter3 + 1;
   if (escOutputCounter3 == 0){ 
     #ifdef PRINT_TELEMETRY_THROTTLE
       sPrint((String)((int)throttle));
@@ -146,6 +148,7 @@ void escIR() {
       sPrintln("");
     #endif
   }
+  #endif
 
   // logging, if race is active
   if (raceActive){

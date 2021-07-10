@@ -3,17 +3,11 @@
 
 /*======================================================includes======================================================*/
 
-#include <Arduino.h>
-#include "WiFi.h"
-#include <WebSocketsServer.h>
-#include "driver/rmt.h"
-#include "math.h"
-#include <esp_task_wdt.h>
-
 #include "global.h"
 #include "system.h"
 #include "wifiStuff.h"
 #include "escFunctions.h"
+#include "settings.h"
 #include "telemetry.h"
 #include "accelerometerFunctions.h"
 
@@ -70,17 +64,23 @@ void loop0() {
  * 
  * time sensitive stuff
  * initiates:
- * - (BMI checking)
  * - telemetry acquisition and processing
  * - throttle routine
  */
 void loop() {
   getTelemetry();
   throttleRoutine();
+  if (commitFlag){
+    timerAlarmDisable(timer);
+    commitFlag = false;
+    EEPROM.commit();
+    timerAlarmEnable(timer);
+  }
 }
 
 //! @brief Task for core 0, creates loop0
 void core0Code( void * parameter) {
+  Serial1.begin(115200, SERIAL_8N1, ESC1_INPUT_PIN);
   Serial2.begin(115200);
 
   while (!c1ready) {
@@ -102,6 +102,22 @@ void core0Code( void * parameter) {
  * initates websocket server
  */
 void setup() {
+  //reading settings from EEPROM or writing them
+  EEPROM.begin(44);
+  if (firstStartup())
+    writeEEPROM();
+  else
+    readEEPROM();
+
+  //logData initialization
+  logData = (uint16_t *)malloc(LOG_FRAMES * 11);
+  throttle_log = logData + 0 * LOG_FRAMES;
+  acceleration_log = (int16_t *)logData + 2 * LOG_FRAMES;
+  erpm_log = logData + 4 * LOG_FRAMES;
+  voltage_log = logData + 6 * LOG_FRAMES;
+  temp_log = (uint8_t*)logData + 8 * LOG_FRAMES;
+  // temp2_log = logData + 9 * LOG_FRAMES;
+
   //Serial setup
   Serial.begin(500000);
 
@@ -128,22 +144,16 @@ void setup() {
   //BMI initialization
   initBMI();
 
-  //logData initialization
-  logData = (uint16_t *)malloc(LOG_FRAMES * 11);
-  throttle_log = logData + 0 * LOG_FRAMES;
-  acceleration_log = (int16_t *)logData + 2 * LOG_FRAMES;
-  erpm_log = logData + 4 * LOG_FRAMES;
-  voltage_log = logData + 6 * LOG_FRAMES;
-  temp_log = (uint8_t*)logData + 8 * LOG_FRAMES;
-  // temp2_log = logData + 9 * LOG_FRAMES;
-
 
   //ESC pins Setup
-  pinMode(ESC_OUTPUT_PIN, OUTPUT);
-  pinMode(TRANSMISSION, OUTPUT);
+  pinMode(ESC1_OUTPUT_PIN, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(TRANSMISSION, HIGH);
-  esc_init(0, ESC_OUTPUT_PIN);
+  #if TRANSMISSION_IND != 0
+  pinMode(TRANSMISSION_PIN, OUTPUT);
+  digitalWrite(TRANSMISSION_PIN, HIGH);
+  #endif
+  esc_init(RMT_CHANNEL_0, ESC1_OUTPUT_PIN);
+  esc_init(RMT_CHANNEL_1, ESC2_OUTPUT_PIN);
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &escIR, true);
   timerAlarmWrite(timer, ESC_FREQ, true);

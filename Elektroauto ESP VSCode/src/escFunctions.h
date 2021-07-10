@@ -7,7 +7,7 @@
  * 
  * automatically run at startup
  */
-void esc_init(uint8_t channel, uint8_t pin);
+void esc_init(rmt_channel_t channel, uint8_t pin);
 
 /**
  * @brief prepares the DShot-packet and sends it
@@ -16,7 +16,7 @@ void esc_init(uint8_t channel, uint8_t pin);
  * @param value the full packet to transmit
  * @param wait whether to wait until the transmission is done
  */
-void esc_send_value(uint16_t value, bool wait);
+void esc_send_value(uint16_t value, bool wait, rmt_channel_t channel);
 
 /**
  * @brief the ESC interrupt routine

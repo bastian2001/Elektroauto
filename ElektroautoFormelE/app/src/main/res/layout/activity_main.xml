@@ -54,7 +54,7 @@
                 android:layout_weight="0"
                 android:background="?android:attr/selectableItemBackground"
                 android:baselineAlignBottom="false"
-                app:srcCompat="@drawable/reconnect" />
+                app:srcCompat="@drawable/ic_reconnect" />
 
             <Space
                 android:layout_width="wrap_content"
@@ -69,11 +69,26 @@
                 android:layout_weight="0"
                 android:background="?android:attr/selectableItemBackground"
                 android:baselineAlignBottom="false"
-                app:srcCompat="@drawable/ping" />
+                app:srcCompat="@drawable/ic_ping" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/ibSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_horizontal|center_vertical"
+                android:layout_weight="0"
+                android:background="?android:attr/selectableItemBackground"
+                android:baselineAlignBottom="false"
+                app:srcCompat="@drawable/ic_settings" />
 
         </LinearLayout>
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchRaceMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

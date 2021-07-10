@@ -1,6 +1,8 @@
 package com.bastian.eauto;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -14,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -24,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,15 +61,16 @@ public class MainActivity extends AppCompatActivity {
     //WebSockets
     WebSocket ws;
     private OkHttpClient client;
+    private boolean gotTelemetry = false;
 
     //views
     private EditText editTextIP, editTextValue, editTextCommand;
     private Button buttonArm, buttonDisarm, buttonSet, buttonSoftDisarm, buttonStartRace;
     private TextView textViewTelemetry;
-    private ImageButton ibReconnect, ibPing;
+    private ImageButton ibReconnect, ibPing, ibSettings;
     private Spinner spinnerMode;
     private SeekBar seekBarValue;
-    private Switch switchRaceMode;
+    private SwitchCompat switchRaceMode;
     private Button buttonSend;
     private ImageButton buttonForward, buttonBackward, buttonDirectionOne, buttonDirectionTwo, buttonRed, buttonGreen, buttonBlue;
 
@@ -130,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         spinnerMode = findViewById(R.id.spinnerMode);
         ibReconnect = findViewById(R.id.ibReconnect);
         ibPing = findViewById(R.id.ibPing);
+        ibSettings = findViewById(R.id.ibSettings);
         editTextIP = findViewById(R.id.editTextIP);
         buttonStartRace = findViewById(R.id.buttonStartRace);
         switchRaceMode = findViewById(R.id.switchRaceMode);
@@ -168,6 +170,9 @@ public class MainActivity extends AppCompatActivity {
             pingCounter = 0;
             wsSend("PING");
         });//ping
+        ibSettings.setOnClickListener(_v -> {
+            wsSend("SETTINGS");
+        });
 
         editTextValue.setOnEditorActionListener((_v, _actionId, _event) -> {
             onSetPressed();
@@ -194,13 +199,6 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 if (modeUserChanged) {
                     wsSend("MODE:" + i);
-                }
-                if (i == 0) {
-                    seekBarValue.setMax(2000);
-                } else if (i == 1) {
-                    seekBarValue.setMax(1500);
-                } else {
-                    seekBarValue.setMax(20);
                 }
                 modeUserChanged = true;
             }
@@ -294,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onWSText(final String txt) {
+        gotTelemetry = true;
         runOnUiThread(() -> {
             if (txt.startsWith("TELEMETRY")) {
                 String telemetryText = txt.substring(txt.indexOf(" ") + 1);
@@ -366,13 +365,15 @@ public class MainActivity extends AppCompatActivity {
                 textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nSpannung: " + ((float) res_voltage / 100) + " V\nThrottle: " + res_throttle
                         + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float) res_velocity1 / 1000.0) + " m/s\nGeschwindigkeit (Räder): "
                         + ((float) res_velocity2 / 1000.0) + " m/s\nBeschleunigung: " + res_acceleration/1000.0 + " m/s²\nTemperatur: " + res_temp + "°C");
-            } else if (txt.startsWith("MESSAGE ")) {
+            }
+            else if (txt.startsWith("MESSAGE ")) {
                 Toast.makeText(getApplicationContext(), txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_SHORT).show();
             } else if (txt.startsWith("MESSAGEBEEP")){
                 Toast.makeText(getApplicationContext(), txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_SHORT).show();
                 final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
                 mp.start();
-            } else if (txt.startsWith("SET")) {
+            }
+            else if (txt.startsWith("SET ")) {
                 String str = txt.toUpperCase();
                 String[] args = str.split(" ");
                 Log.d("random", "received: " + str);
@@ -434,7 +435,8 @@ public class MainActivity extends AppCompatActivity {
                 } catch (ArrayIndexOutOfBoundsException e){
                     e.printStackTrace();
                 }
-            } else if (txt.startsWith("BLOCK")){
+            }
+            else if (txt.startsWith("BLOCK")){
                 String str = txt.toUpperCase();
                 String[] args = str.split(" ");
                 try {
@@ -466,7 +468,8 @@ public class MainActivity extends AppCompatActivity {
                 } catch (ArrayIndexOutOfBoundsException e){
                     e.printStackTrace();
                 }
-            } else if (txt.startsWith("UNBLOCK")){
+            }
+            else if (txt.startsWith("UNBLOCK")){
                 String str = txt.toUpperCase();
                 String[] args = str.split(" ");
                 try {
@@ -483,7 +486,8 @@ public class MainActivity extends AppCompatActivity {
                 } catch (ArrayIndexOutOfBoundsException e){
                     e.printStackTrace();
                 }
-            } else if (txt.startsWith("PONG")){
+            }
+            else if (txt.startsWith("PONG")){
                 int ping = (int)(System.currentTimeMillis() - pMillis);
                 pingArray[pingCounter] = ping;
                 if (++pingCounter == PING_AMOUNT){
@@ -504,7 +508,45 @@ public class MainActivity extends AppCompatActivity {
                     wsSend("PING");
                 }
             }
+            else if (txt.startsWith("MAXVALUE")) {
+                int value = 0;
+                try {
+                    value = Integer.parseInt(txt.replaceAll("[^0123456789]", ""));
+                } catch (NumberFormatException ignored){}
+                seekBarValue.setMax(value);
+            }
+            else if (txt.startsWith("SETTINGS")) {
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                settingsIntent.putExtra("settings", txt.substring(txt.indexOf('\n') + 1));
+                startActivityForResult(settingsIntent, 0);
+            }
+
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == 0 && requestCode == 0 && data != null){
+            for (String command : data.getStringArrayExtra("commands")){
+                if (command != null) wsSend(command);
+            }
+            wsSend("SAVE");
+            setTimeout(() -> {
+                gotTelemetry = false;
+            }, 500);
+            setTimeout(() -> {
+                if (!gotTelemetry)
+                    wsStart();
+            }, 1000);
+        }
+        if (requestCode == 0 && resultCode == 1){
+            wsSend("RESTORE");
+            setTimeout(() -> {
+                ws.close(1000, "goodbye");
+                wsStart();
+            }, 1000);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private String prefixZero(int num, int minLength){
@@ -623,8 +665,6 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onClosing(WebSocket webSocket, int code, String reason) {
-            webSocket.close(NORMAL_CLOSURE_STATUS, null);
-            wsLog("Closing: " + code + " / " + reason);
         }
         @Override
         public void onFailure(WebSocket webSocket, Throwable t, okhttp3.Response response) {

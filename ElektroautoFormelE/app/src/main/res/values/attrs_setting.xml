@@ -1,0 +1,4 @@
+<resources>
+    <declare-styleable name="SettingInt">
+    </declare-styleable>
+</resources>

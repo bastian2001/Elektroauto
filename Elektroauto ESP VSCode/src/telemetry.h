@@ -1,7 +1,7 @@
 /**
  * @brief acquires telemetry data
  * 
- * reads telemetry data from Serial2 buffer
+ * reads telemetry data from Serial1 buffer
  * converts the values to a readable format
  * checks for overheating/cutoffvoltage/too high rpm
  * sets LEDs to green only after bootup

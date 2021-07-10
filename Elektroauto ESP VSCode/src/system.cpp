@@ -20,16 +20,16 @@ void setArmed (bool arm){
   }
 }
 
-void setThrottle(double newThrottle) {
+void IRAM_ATTR setThrottle(double newThrottle) {
   newThrottle = (newThrottle > 2000) ? 2000 : newThrottle;
   newThrottle = (newThrottle < 0) ? 0 : newThrottle;
-  newThrottle = (newThrottle > MAX_THROTTLE) ? MAX_THROTTLE : newThrottle;
+  newThrottle = (newThrottle > maxThrottle) ? maxThrottle : newThrottle;
   throttle = newThrottle;
   newThrottle += (newThrottle == 0) ? 0 : 47;
   escValue = appendChecksum(newThrottle);
 }
 
-uint16_t appendChecksum(uint16_t value, bool telemetryRequest) {
+uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest) {
   value &= 0x7FF;
   value = (value << 1) | telemetryRequest;
   int csum = 0, csum_data = value;
@@ -59,7 +59,7 @@ double calcThrottle(int target, int was[], double masterMultiplier) {
   for (int i = 0; i < TREND_AMOUNT; i++) {
     int t = i - TA_DIV_2;
     was_sum += was[i];
-    t_sq_sum += pow(t, 2);
+    t_sq_sum += t*t;
     t_multi_was_sum += t * was[i];
   }
   was_avg = (double)was_sum / TREND_AMOUNT;
@@ -83,29 +83,27 @@ void receiveSerial() {
 }
 
 float rpsToErpm(float rps){
-  return (rps / RPS_CONVERSION_FACTOR + .5f);
+  return (rps / rpsConversionFactor + .5f);
 }
 
 float erpmToRps(float erpm){
-  return (erpm * RPS_CONVERSION_FACTOR + .5f);
+  return (erpm * rpsConversionFactor + .5f);
 }
 
 void setNewTargetValue(){
   switch (ctrlMode) {
-    case 0:
+    case MODE_THROTTLE:
       nextThrottle = reqValue;
       break;
-    case 1:
-      if (reqValue > MAX_TARGET_RPS)
-        reqValue = MAX_TARGET_RPS;
+    case MODE_RPS:
+      if (reqValue > maxTargetRPS)
+        reqValue = maxTargetRPS;
       targetERPM = rpsToErpm(reqValue);
       break;
-    case 2:
-      if (reqValue > MAX_TARGET_SLIP)
-        reqValue = MAX_TARGET_SLIP;
+    case MODE_SLIP:
+      if (reqValue > maxTargetSlip)
+        reqValue = maxTargetSlip;
       targetSlip = reqValue;
-      break;
-    default:
       break;
   }
 }
@@ -120,22 +118,20 @@ void throttleRoutine(){
   if (armed) {
     switch (ctrlMode) {
       int addToTargetERPM;
-      case 0:
+      case MODE_THROTTLE:
         break;
-      case 1:
+      case MODE_RPS:
         nextThrottle = calcThrottle(targetERPM, previousERPM);
         break;
-      case 2:
-        addToTargetERPM = 40 - (throttle * .2);
+      case MODE_SLIP:
+        addToTargetERPM = zeroERPMOffset - ((float)throttle * (float) zeroERPMOffset / (float) zeroOffsetAtThrottle);
         if (addToTargetERPM < 0)
           addToTargetERPM = 0;
-        targetERPM = ((0.0f - speedBMI) / ((float) targetSlip * .01f - 1)) / ERPM_TO_MM_PER_SECOND + addToTargetERPM;
+        targetERPM = ((-(float)speedBMI) / ((float) targetSlip * .01f - 1)) / erpmToMMPerSecond + addToTargetERPM;
         nextThrottle = calcThrottle(targetERPM, previousERPM, .1);
         break;
-      default:
-        break;
     }
-  } 
+  }
 }
 
 void checkVoltage(){
@@ -151,5 +147,18 @@ void checkVoltage(){
     } else {
       warningVoltageCount = 0;
     }
+  }
+}
+
+uint16_t getMaxValue (int mode){
+  switch (mode){
+    case MODE_THROTTLE:
+      return maxThrottle;
+    case MODE_RPS:
+      return maxTargetRPS;
+    case MODE_SLIP:
+      return maxTargetSlip;
+    default:
+      return 0;
   }
 }

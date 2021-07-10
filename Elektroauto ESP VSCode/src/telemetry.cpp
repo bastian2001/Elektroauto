@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "global.h"
 #include "telemetry.h"
 #include "wifiStuff.h"
@@ -9,16 +8,16 @@ uint32_t lastErrorOutput = 0;
 bool firstTelemetry = true;
 
 void getTelemetry(){
-  while(Serial2.available()){
+  while(Serial1.available()){
     for (uint8_t i = 0; i < 9; i++){
       escTelemetry[i] = escTelemetry[i+1];
     }
-    escTelemetry[9] = (char) Serial2.read();
+    escTelemetry[9] = (char) Serial1.read();
     if (isTelemetryComplete()){
       telemetryTemp = escTelemetry[0];
       telemetryVoltage = (escTelemetry[1] << 8) | escTelemetry[2];
       telemetryERPM = (escTelemetry[7] << 8) | escTelemetry[8];
-      speedWheel = (float)telemetryERPM * ERPM_TO_MM_PER_SECOND;
+      speedWheel = (float)telemetryERPM * erpmToMMPerSecond;
       for (uint8_t i = 0; i < 10; i++){
         escTelemetry[i] = 1;
       }
