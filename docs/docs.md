@@ -1,34 +1,119 @@
 # Pin assignments
 
-```
-| 0  | 2  | 25         | 16        | 22  | 23           | 33     |
-|----|----|------------|-----------|-----|--------------|--------|
-| TX | RX | ESC output | ESC telem | LED | transm. ind. | ESC IR |
-```
+<table>
+  <tr>
+    <td><b>Function</b></td>
+    <td><b>ESP32 Pin</b></td>
+    <td><b>Outside Connection</b></td>
+  </tr>
+  <tr>
+    <td>Supply Voltage</td>
+    <td>5V</td>
+    <td>OUT+ of  buck converter</td>
+  </tr>
+  <tr>
+    <td>Ground</td>
+    <td>GND</td>
+    <td>OUT- of buck converter</td>
+  </tr>
+  <tr>
+    <td>USB-TX (reserved)</td>
+    <td>1</td>
+    <td>-none-</td>
+  </tr>
+  <tr>
+    <td>USB-RX (reserved)</td>
+    <td>3</td>
+    <td>-none-</td>
+  </tr>
+  <tr>
+    <td>LED_BUILTIN</td>
+    <td>22</td>
+    <td>-none-</td>
+  </tr>
+  <tr>
+    <td>ESC 1 Output</td>
+    <td>25</td>
+    <td>ESC 1: S (Signal)</td>
+  </tr>
+  <tr>
+    <td>ESC 1 Telemetry</td>
+    <td>21 (RX1 remapped)</td>
+    <td>ESC 1: T (Telemetry)</td>
+  </tr>
+  <tr>
+    <td>ESC 2 Output</td>
+    <td>27</td>
+    <td>ESC 2: S (Signal)</td>
+  </tr>
+  <tr>
+    <td>ESC 2 Telemetry</td>
+    <td>16 (RX2)</td>
+    <td>ESC 2: S (Telemetry)</td>
+  </tr>
+  <tr>
+    <td>BMI160 - MISO</td>
+    <td>19</td>
+    <td>BMI160: SA0</td>
+  </tr>
+  <tr>
+    <td>BMI160 - MOSI</td>
+    <td>23</td>
+    <td>BMI160: SDA</td>
+  </tr>
+  <tr>
+    <td>BMI160 - CS</td>
+    <td>5</td>
+    <td>BMI160: CS</td>
+  </tr>
+  <tr>
+    <td>BMI160 - SCL</td>
+    <td>18</td>
+    <td>BMI160: SCL</td>
+  </tr>
+  <tr>
+    <td>BMI160 - GND</td>
+    <td>GND</td>
+    <td>BMI160: GND</td>
+  </tr>
+  <tr>
+    <td>BMI160 - VCC</td>
+    <td>3V3 oder 5V</td>
+    <td>BMI160: 3V3</td>
+  </tr>
+  <tr>
+    <td>Transmission indicator</td>
+    <td>33</td>
+    <td>-none-</td>
+  </tr>
+</table>
 
-# Request
+# Device -> Car protocol
 
 - format: `[key]:[value]`
-- device type
-  - key: DEVICE
-  - value: [WEB alias 0|APP alias 1]
-  - example: `DEVICE:APP`
-- telemetry on/off
-  - key: TELEMETRY
-  - value: [ON alias 1|OFF alias 0]
-  - example: `TELEMETRY:ON`
-- armed
-  - key: ARMED
-  - value: [YES alias [1, TRUE]|NO alias [0, FALSE]]
-  - example: `ARMED:YES`
-- change mode
-  - key: MODE
-  - value: [THROTTLE alias 0|RPS alias 1|SLIP alias 2]
-  - example: `MODE:SLIP`
 - set value
   - key: VALUE
   - value: [value] (0...2000, 0...2000, 0...20)
   - example: `VALUE:7`
+- armed
+  - key: ARMED
+  - value: [YES alias [1, TRUE]|NO alias [0, FALSE]]
+  - example: `ARMED:YES`
+- ping
+  - key: PING
+  - value: none
+- change mode
+  - key: MODE
+  - value: [THROTTLE alias 0|RPS alias 1|SLIP alias 2]
+  - example: `MODE:SLIP`
+- telemetry on/off
+  - key: TELEMETRY
+  - value: [ON alias 1|OFF alias 0]
+  - example: `TELEMETRY:ON`
+- device type
+  - key: DEVICE
+  - value: [WEB alias 0|APP alias 1]
+  - example: `DEVICE:APP`
 - race mode
   - key: RACEMODE
   - value: [OFF alias 0|ON alias 1]
@@ -36,24 +121,46 @@
 - start race
   - key: STARTRACE
   - value: none
-- ping
-  - key: PING
-  - value: none
-- error count
-  - key: ERRORCOUNT
-  - value: none
 - set cutoff coltage
   - key: CUTOFFVOLTAGE
   - value: [new cutoff voltage in cV]
-  - example: `CUTOFFVOLTAGE:1480` for 14.8V
+  - example: `CUTOFFVOLTAGE:600` for 6.0V
+- set warning coltage
+  - key: WARNINGVOLTAGE
+  - value: [new warning voltage in cV]
+  - example: `WARNINGVOLTAGE:720` for 7.2V
 - set RPS control variables
   - keys: RPSA, RPSB, RPSC, PIDMULTIPLIER
   - value: [value]
+- error count
+  - key: ERRORCOUNT
+  - value: none
 - reconnect to WiFi
   - key: RECONNECT
   - value: none
+- save settings
+  - key: SAVESETTINGS alias SAVE
+  - value: none
+- read settings
+  - key: READSETTINGS alias READ
+  - value: none
+- restore defaults
+  - key: RESTOREDEFAULTS alias RESTORE
+  - value: none
+- send/print settings
+  - key: SENDSETTINGS alias SETTINGS
+  - value: none
+- set maximum (target) values
+  - keys: MAXTHROTTLE alias MAXT, MAXRPS alias MAXR, MAXSLIP alias MAXS
+  - value: [value]
+- set motorpole count
+  - key: MOTORPOLE
+  - value: [number of motor poles]
+- set wheel diameter
+  - key: WHEELDIAMETER alias WHEELDIA
+  - value: [wheel diameter in mm]
 
-# Responses
+# Car -> Device protocol
 
 ## Special response
 
@@ -77,6 +184,10 @@
   - command: MESSAGE
   - ...args: message
   - example: `MESSAGE bereits disarmed`
+- set maximum slider value
+  - command: MAXVALUE
+  - ...args: new maximum value
+  - example: `MAXVALUE 2000`
 
 ## Telemetry response
 
@@ -86,9 +197,9 @@
 - t: throttle
 - r: rps
 - s: slip
-- v: velocity (mpu)
+- v: velocity (BMI)
 - w: velocity (wheels)
-- c: acceleration (mpu)
+- c: acceleration (BMI)
 - u: voltage (cV)
 - p: temperature (°C)
 - o: override slider and text input - or -
@@ -99,23 +210,26 @@
 
 - core 1
   - loop
-    - MPU
+    - telemetry acquisition and processing
+    - throttle calculation
   - interrupts
-    - (nothing)
+    - ESCir
+      - sending ESC data packet
+      - receiving BMI sensor data
 - core 0
   - loop
     - WiFi
+      - receiving commands and sending telemetry
     - Serial
-    - process telemetry
-  - interrupts
-    - ESCir --> calc
+    - voltage protection
+  - interrupts: none
 
 # Logging in RAM
 
 - every esc cycle (1000Hz) for 5000 frames:
-- uint16_t[] throttle - 10KB (before +47)
-- int16_t[] acceleration(MPU) - 10KB
-- uint16_t[] wheel rps - 10KB
+- uint16_t[] throttle (0...2000) - 10KB
+- int16_t[] acceleration (BMI raw value) - 10KB
+- uint16_t[] raw wheel heRPM - 10KB
 - uint16_t[] voltage (from ESC) in cV - 10KB
 - uint8_t[] temperature (from ESC) in °C - 5KB
 - total: 45KB
