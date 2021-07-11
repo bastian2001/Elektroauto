@@ -1,5 +1,3 @@
-//!@file settings.cpp provides functions to read and write settings
-
 #include "global.h"
 #include "wifiStuff.h"
 

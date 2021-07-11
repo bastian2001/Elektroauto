@@ -1,3 +1,5 @@
+/// @file system.h provides functions for general usability
+
 #include <Arduino.h>
 
 /**
@@ -14,7 +16,7 @@ void setArmed(bool arm);
  * WARNING: There are no further armed checks between this function and the sending of the value, alter the "nextThrottle" variable instead. The offset for the settings is automatically applied
  * @param newThrottle the new throttle between 0 and 2000, value is floored
  */
-void setThrottle(double newThrottle);
+void IRAM_ATTR setThrottle(double newThrottle);
 
 /**
  * @brief appends the checksum and the telemetry request bit
@@ -23,7 +25,7 @@ void setThrottle(double newThrottle);
  * @param telemetryRequest default: true, whether or not to set the telemetry request bit
  * @return the full escValue packet
  */
-uint16_t appendChecksum(uint16_t value, bool telemetryRequest = true);
+uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest = true);
 
 //! @brief starts the race
 void startRace();
@@ -78,4 +80,9 @@ void throttleRoutine();
 //! @brief checks every 10s if the voltage is too low, initiates warning via broadcast if neccessary
 void checkVoltage();
 
+/**
+ * @brief gets the current maximum requestable value
+ * @param mode the mode to check for
+ * @return the maximum value
+ */
 uint16_t getMaxValue (int mode);

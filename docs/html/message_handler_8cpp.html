@@ -68,8 +68,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">messageHandler.cpp File Reference</div>  </div>
 </div><!--header-->
@@ -80,6 +79,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="global_8h_source.html">global.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="message_handler_8h_source.html">messageHandler.h</a>&quot;</code><br />
 <code>#include &quot;wifiStuff.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="settings_8h_source.html">settings.h</a>&quot;</code><br />
 <code>#include &quot;system.h&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -87,49 +87,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a4d8008ef843e298d609bd4d10907fa25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="message_handler_8cpp.html#a4d8008ef843e298d609bd4d10907fa25">processMessage</a> (String message, uint8_t from)</td></tr>
 <tr class="memdesc:a4d8008ef843e298d609bd4d10907fa25"><td class="mdescLeft">&#160;</td><td class="mdescRight">processes Serial- and WebSocket messages  <a href="message_handler_8cpp.html#a4d8008ef843e298d609bd4d10907fa25">More...</a><br /></td></tr>
 <tr class="separator:a4d8008ef843e298d609bd4d10907fa25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memItemLeft" align="right" valign="top"><a id="a5a9d65f1a8d9a12255db818887b5bcd3"></a>
-WebSocketsServer&#160;</td><td class="memItemRight" valign="bottom"><b>webSocket</b></td></tr>
-<tr class="separator:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91670980219cb1a36e56384beaffab0b"><td class="memItemLeft" align="right" valign="top"><a id="a91670980219cb1a36e56384beaffab0b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>raceMode</b></td></tr>
-<tr class="separator:a91670980219cb1a36e56384beaffab0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f8aca73a018ae41759a9fd065036b91"><td class="memItemLeft" align="right" valign="top"><a id="a1f8aca73a018ae41759a9fd065036b91"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [MAX_WS_CONNECTIONS][2]</td></tr>
-<tr class="separator:a1f8aca73a018ae41759a9fd065036b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95a7a3c9dec5f98703b42898ccd417a1"><td class="memItemLeft" align="right" valign="top"><a id="a95a7a3c9dec5f98703b42898ccd417a1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>armed</b></td></tr>
-<tr class="separator:a95a7a3c9dec5f98703b42898ccd417a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b922ab2116126308f7ec04e614621f1"><td class="memItemLeft" align="right" valign="top"><a id="a9b922ab2116126308f7ec04e614621f1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>ctrlMode</b></td></tr>
-<tr class="separator:a9b922ab2116126308f7ec04e614621f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46754fd62ece5cf6a7fa19054af46911"><td class="memItemLeft" align="right" valign="top"><a id="a46754fd62ece5cf6a7fa19054af46911"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>reqValue</b></td></tr>
-<tr class="separator:a46754fd62ece5cf6a7fa19054af46911"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7cfc4e9a7ca51ffdebbe723ea43b3544"><td class="memItemLeft" align="right" valign="top"><a id="a7cfc4e9a7ca51ffdebbe723ea43b3544"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="message_handler_8cpp.html#a7cfc4e9a7ca51ffdebbe723ea43b3544">cutoffVoltage</a></td></tr>
-<tr class="memdesc:a7cfc4e9a7ca51ffdebbe723ea43b3544"><td class="mdescLeft">&#160;</td><td class="mdescRight">voltage warning <br /></td></tr>
-<tr class="separator:a7cfc4e9a7ca51ffdebbe723ea43b3544"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33fb27f228147deb171144d1da749e75"><td class="memItemLeft" align="right" valign="top"><a id="a33fb27f228147deb171144d1da749e75"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>voltageWarning</b></td></tr>
-<tr class="separator:a33fb27f228147deb171144d1da749e75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa41a9d138204b963a89a32e9218a31fe"><td class="memItemLeft" align="right" valign="top"><a id="aa41a9d138204b963a89a32e9218a31fe"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryClientsCounter</b> = 0</td></tr>
-<tr class="separator:aa41a9d138204b963a89a32e9218a31fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fa98adb3fdfd4dc909581e0c54fedec"><td class="memItemLeft" align="right" valign="top"><a id="a0fa98adb3fdfd4dc909581e0c54fedec"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>pidMulti</b></td></tr>
-<tr class="separator:a0fa98adb3fdfd4dc909581e0c54fedec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bd7e88c9b1c79a183a0a806b3a06d64"><td class="memItemLeft" align="right" valign="top"><a id="a8bd7e88c9b1c79a183a0a806b3a06d64"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>erpmA</b></td></tr>
-<tr class="separator:a8bd7e88c9b1c79a183a0a806b3a06d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8fb2b3a2b3ddd1c2cf1039fa37a1c50a"><td class="memItemLeft" align="right" valign="top"><a id="a8fb2b3a2b3ddd1c2cf1039fa37a1c50a"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>erpmB</b></td></tr>
-<tr class="separator:a8fb2b3a2b3ddd1c2cf1039fa37a1c50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9eb2a6de3e4d21d3195ec36a590cdc7b"><td class="memItemLeft" align="right" valign="top"><a id="a9eb2a6de3e4d21d3195ec36a590cdc7b"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>erpmC</b></td></tr>
-<tr class="separator:a9eb2a6de3e4d21d3195ec36a590cdc7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>function for message handling </p>
@@ -170,7 +127,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><b>erpmC</b></td></tr>
 <li>DEVICE command for setting the device type</li>
 <li>RACEMODE command for enabling or disabling race mode</li>
 <li>STARTRACE command for starting the race</li>
-<li>CUTOFFVOLTAGE, VOLTAGEWARNING, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters</li>
+<li>CUTOFFVOLTAGE, WARNINGVOLTAGE, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters</li>
 <li>ERRORCOUNT for requesting the error count</li>
 <li>RECONNECT for reconnecting to WiFi</li>
 <li>RAWDATA for sending raw data to the ESC <dl class="params"><dt>Parameters</dt><dd>

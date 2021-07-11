@@ -77,17 +77,13 @@ $(function() {
 
 <p>the entry point for the project  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;Arduino.h&gt;</code><br />
-<code>#include &quot;WiFi.h&quot;</code><br />
-<code>#include &lt;WebSocketsServer.h&gt;</code><br />
-<code>#include &quot;driver/rmt.h&quot;</code><br />
-<code>#include &quot;math.h&quot;</code><br />
-<code>#include &lt;esp_task_wdt.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="global_8h_source.html">global.h</a>&quot;</code><br />
-<code>#include &quot;system.h&quot;</code><br />
-<code>#include &quot;wifiStuff.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="global_8h_source.html">global.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="system_8h_source.html">system.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="wifi_stuff_8h_source.html">wifiStuff.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="esc_functions_8h_source.html">escFunctions.h</a>&quot;</code><br />
-<code>#include &quot;telemetry.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="settings_8h_source.html">settings.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="telemetry_8h_source.html">telemetry.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="accelerometer_functions_8h_source.html">accelerometerFunctions.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -116,12 +112,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>c1ready</b> = false</
 <tr class="memitem:a97222eeccb5b18e1fc532806c1efcb34"><td class="memItemLeft" align="right" valign="top"><a id="a97222eeccb5b18e1fc532806c1efcb34"></a>
 hw_timer_t *&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b> = NULL</td></tr>
 <tr class="separator:a97222eeccb5b18e1fc532806c1efcb34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memItemLeft" align="right" valign="top"><a id="a5a9d65f1a8d9a12255db818887b5bcd3"></a>
-WebSocketsServer&#160;</td><td class="memItemRight" valign="bottom"><b>webSocket</b> = WebSocketsServer(80)</td></tr>
-<tr class="separator:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f8aca73a018ae41759a9fd065036b91"><td class="memItemLeft" align="right" valign="top"><a id="a1f8aca73a018ae41759a9fd065036b91"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [MAX_WS_CONNECTIONS][2]</td></tr>
-<tr class="separator:a1f8aca73a018ae41759a9fd065036b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the entry point for the project </p>
@@ -142,11 +132,11 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [MAX_W
 </div><div class="memdoc">
 
 <p>loop on core 1 </p>
-<p>the loop on core 1 (time-sensitive stuff)</p>
-<p>time sensitive stuff initiates:</p><ul>
-<li>(MPU checking)</li>
+<p>time sensitive stuff<br  />
+ initiates:</p><ul>
 <li>telemetry acquisition and processing</li>
-<li>throttle routine </li>
+<li>throttle routine</li>
+<li>if neccessary, saves the settings </li>
 </ul>
 
 </div>
@@ -167,8 +157,8 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [MAX_W
 </div><div class="memdoc">
 
 <p>loop on core 0 </p>
-<p>the loop on core 0 (the not so time-sensitive stuff)</p>
-<p>the not so time-sensitive stuff initiates:</p><ul>
+<p>the not so time-sensitive stuff<br  />
+ initiates:</p><ul>
 <li>wifi reconnection if neccessary</li>
 <li>race mode values sending</li>
 <li>low voltage checking</li>
@@ -194,8 +184,13 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [MAX_W
 </div><div class="memdoc">
 
 <p>setup function </p>
-<p>the setup function (runs at start)</p>
-<p>enables Serial communication connects to wifi sets up pins and timer for escir creates task on core 0 initates websocket server </p>
+<ul>
+<li>enables Serial communication</li>
+<li>connects to wifi</li>
+<li>sets up pins and timer for escir</li>
+<li>creates task on core 0</li>
+<li>initates websocket server </li>
+</ul>
 
 </div>
 </div>

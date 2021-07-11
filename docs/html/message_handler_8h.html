@@ -116,13 +116,6 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>processes Serial- and WebSocket messages </p>
-<p>Message more precisely documented in docs.md or <a class="el" href="message_handler_8cpp.html" title="function for message handling">messageHandler.cpp</a> documentation </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">message</td><td>The message </td></tr>
-    <tr><td class="paramname">from</td><td>The origin of the message, 255 for Serial, other values for WebSocket spots</td></tr>
-  </table>
-  </dd>
-</dl>
 <p>Message more precisely documented in docs.md</p><ul>
 <li>VALUE command for requesting a value</li>
 <li>ARMED command for arming the car</li>
@@ -132,7 +125,7 @@ Functions</h2></td></tr>
 <li>DEVICE command for setting the device type</li>
 <li>RACEMODE command for enabling or disabling race mode</li>
 <li>STARTRACE command for starting the race</li>
-<li>CUTOFFVOLTAGE, VOLTAGEWARNING, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters</li>
+<li>CUTOFFVOLTAGE, WARNINGVOLTAGE, RPSA, RPSB, RPSC and PIDMULTIPLIER command for setting their respective parameters</li>
 <li>ERRORCOUNT for requesting the error count</li>
 <li>RECONNECT for reconnecting to WiFi</li>
 <li>RAWDATA for sending raw data to the ESC <dl class="params"><dt>Parameters</dt><dd>

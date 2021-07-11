@@ -1,3 +1,5 @@
+///@file wifiStuff.h functions for wifi communication to clients
+
 #include <Arduino.h>
 #include "WebSocketsServer.h"
 
@@ -18,13 +20,6 @@ void broadcastWSMessage(String text, bool justActive = false, int del = 0, bool 
  * @param del delay in ms between individual messages
 */
 void broadcastWSBin(uint8_t* data, size_t length, bool justActive = false, int del = 0);
-
-/*! @brief send a message to a WebSocket client
- * 
- * @param spot the spot to send the message to, 255 for Serial
- * @param text the text to send
-*/
-void sendWSMessage(uint8_t spot, String text);
 
 /**
  * @brief function to be called on a WebSocket event
@@ -50,20 +45,34 @@ void removeClient (int spot);
 */
 void addClient (int spot);
 
+/*! @brief send a message to a WebSocket client
+ * 
+ * @param spot the spot to send the message to, 255 for Serial
+ * @param text the text to send
+*/
+void sendWSMessage(uint8_t spot, String text);
+
 /*! @brief reconnect to wifi
  * 
  * disables ESC telemetry while reconnecting
 */
 void reconnect();
 
-/*! @brief handles the wifi loop
- * 
- * runs WebSocket loop, checks LEDs and regularly sends telemetry to connected devices
-*/
-void handleWiFi();
-
 /*! @brief checks the LED status
  *
  * transmits new LED status to connected clients if neccessary
  */
 void checkLEDs();
+
+/**
+ * @brief sends the telemetry to all connected phones
+ * 
+ * telemetry format is documented in docs.md
+ */
+void sendTelemetry();
+
+/*! @brief handles the wifi loop
+ * 
+ * runs WebSocket loop, checks LEDs and regularly sends telemetry to connected devices
+*/
+void handleWiFi();

@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['throttle_5flog_41',['throttle_log',['../esc_functions_8cpp.html#a9cbf3d03c61375388c4e2ad6dbb743da',1,'throttle_log():&#160;system.cpp'],['../global_8h.html#a9cbf3d03c61375388c4e2ad6dbb743da',1,'throttle_log():&#160;system.cpp']]]
+  ['erpma_161',['erpmA',['../global_8h.html#a8bd7e88c9b1c79a183a0a806b3a06d64',1,'global.cpp']]],
+  ['erpmb_162',['erpmB',['../global_8h.html#a8fb2b3a2b3ddd1c2cf1039fa37a1c50a',1,'global.cpp']]],
+  ['erpmc_163',['erpmC',['../global_8h.html#a9eb2a6de3e4d21d3195ec36a590cdc7b',1,'global.cpp']]]
 ];

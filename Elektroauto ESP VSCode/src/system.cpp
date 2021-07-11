@@ -3,7 +3,6 @@
 #include "system.h"
 #include "messageHandler.h"
 
-//! voltage warning
 uint32_t nextCheck = 0;
 uint8_t warningVoltageCount = 0;
 
@@ -57,7 +56,7 @@ double calcThrottle(int target, int was[], double masterMultiplier) {
   double was_avg = 0;
   int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
   for (int i = 0; i < TREND_AMOUNT; i++) {
-    int t = i - TA_DIV_2;
+    int t = i - TREND_AMOUNT / 2;
     was_sum += was[i];
     t_sq_sum += t*t;
     t_multi_was_sum += t * was[i];
@@ -66,7 +65,7 @@ double calcThrottle(int target, int was[], double masterMultiplier) {
 
   double m = (double)t_multi_was_sum / (double)t_sq_sum;
 
-  double prediction = m * ((double)TREND_AMOUNT - (double)TA_DIV_2) + (double)was_avg;
+  double prediction = m * ((double)TREND_AMOUNT - (double)(TREND_AMOUNT / 2)) + (double)was_avg;
   if (prediction < 0) prediction = 0;
   double deltaERPM = target - prediction;
   double delta_throttle = erpmA * pow(deltaERPM, 3) + erpmB * pow(deltaERPM, 2) + erpmC * deltaERPM;

@@ -32,6 +32,9 @@ void initBMI(){
         Serial.println("could not connect to the BMI160 sensor");
     #endif
     
+    BMI160.setAccelerometerRange(2); //+/-2g range for high precision
+    BMI160.setAccelerometerRate(1600); //1600Hz for fast sampling
+
     //accelerometer calibration
     BMI160.autoCalibrateXAccelOffset(0);
     BMI160.autoCalibrateYAccelOffset(0);
@@ -44,7 +47,5 @@ void initBMI(){
     else Serial.println("Calibration finished.");
     #endif
 
-    BMI160.setAccelerometerRange(2); //+/-2g range for high precision
-    BMI160.setAccelerometerRate(1600); //1600Hz for fast sampling
     delay(10);
 }

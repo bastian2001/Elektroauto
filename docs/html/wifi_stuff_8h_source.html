@@ -71,26 +71,39 @@ $(function() {
 <div class="title">wifiStuff.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;Arduino.h&gt;</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;WebSocketsServer.h&quot;</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keywordtype">void</span> broadcastWSMessage(String text, <span class="keywordtype">bool</span> justActive = <span class="keyword">false</span>, <span class="keywordtype">int</span> del = 0, <span class="keywordtype">bool</span> noPrint = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span> broadcastWSBin(uint8_t* data, <span class="keywordtype">size_t</span> length, <span class="keywordtype">bool</span> justActive = <span class="keyword">false</span>, <span class="keywordtype">int</span> del = 0);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">void</span> sendWSMessage(uint8_t spot, String text);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keywordtype">void</span> onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t * payload, <span class="keywordtype">size_t</span> length);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keywordtype">void</span> removeClient (<span class="keywordtype">int</span> spot);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keywordtype">void</span> addClient (<span class="keywordtype">int</span> spot);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keywordtype">void</span> reconnect();</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keywordtype">void</span> handleWiFi();</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keywordtype">void</span> checkLEDs();</div>
+<a href="wifi_stuff_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;Arduino.h&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;WebSocketsServer.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#a774efd774e406746809c21e65ca16031">broadcastWSMessage</a>(String text, <span class="keywordtype">bool</span> justActive = <span class="keyword">false</span>, <span class="keywordtype">int</span> del = 0, <span class="keywordtype">bool</span> noPrint = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#a74a22e72263dac736c8664225f9c707a">broadcastWSBin</a>(uint8_t* data, <span class="keywordtype">size_t</span> length, <span class="keywordtype">bool</span> justActive = <span class="keyword">false</span>, <span class="keywordtype">int</span> del = 0);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#aadfb6ad34995b55f37c18e59c0735345">onWebSocketEvent</a>(uint8_t clientNo, WStype_t type, uint8_t * payload, <span class="keywordtype">size_t</span> length);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#a81e23b809a48aa88b1e1679a163c5c64">removeClient</a> (<span class="keywordtype">int</span> spot);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#a09a7bd50efe5e976aeeb835590943894">addClient</a> (<span class="keywordtype">int</span> spot);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#a3571c82344bafb0db9aaf62e0b7f2c85">sendWSMessage</a>(uint8_t spot, String text);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#a4bcd6ce7d04c38f8c4ff908d1fc50f86">reconnect</a>();</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#ab81dd8fc3c237db5a4ebd1b7a30d012a">checkLEDs</a>();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#a8f9fa76a93541264f22c8f23f3fc1631">sendTelemetry</a>();</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#aef11d16b4d8e760671e3487b2106b6b2">handleWiFi</a>();</div>
+<div class="ttc" id="awifi_stuff_8h_html_a09a7bd50efe5e976aeeb835590943894"><div class="ttname"><a href="wifi_stuff_8h.html#a09a7bd50efe5e976aeeb835590943894">addClient</a></div><div class="ttdeci">void addClient(int spot)</div><div class="ttdoc">routine after a client connects</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:71</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a3571c82344bafb0db9aaf62e0b7f2c85"><div class="ttname"><a href="wifi_stuff_8h.html#a3571c82344bafb0db9aaf62e0b7f2c85">sendWSMessage</a></div><div class="ttdeci">void sendWSMessage(uint8_t spot, String text)</div><div class="ttdoc">send a message to a WebSocket client</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:98</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a4bcd6ce7d04c38f8c4ff908d1fc50f86"><div class="ttname"><a href="wifi_stuff_8h.html#a4bcd6ce7d04c38f8c4ff908d1fc50f86">reconnect</a></div><div class="ttdeci">void reconnect()</div><div class="ttdoc">reconnect to wifi</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:106</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a74a22e72263dac736c8664225f9c707a"><div class="ttname"><a href="wifi_stuff_8h.html#a74a22e72263dac736c8664225f9c707a">broadcastWSBin</a></div><div class="ttdeci">void broadcastWSBin(uint8_t *data, size_t length, bool justActive=false, int del=0)</div><div class="ttdoc">broadcasting binary data to multiple devices</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:35</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a774efd774e406746809c21e65ca16031"><div class="ttname"><a href="wifi_stuff_8h.html#a774efd774e406746809c21e65ca16031">broadcastWSMessage</a></div><div class="ttdeci">void broadcastWSMessage(String text, bool justActive=false, int del=0, bool noPrint=false)</div><div class="ttdoc">broadcast a message to all connected WebSocket clients</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:9</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a81e23b809a48aa88b1e1679a163c5c64"><div class="ttname"><a href="wifi_stuff_8h.html#a81e23b809a48aa88b1e1679a163c5c64">removeClient</a></div><div class="ttdeci">void removeClient(int spot)</div><div class="ttdoc">routine after a client disconnects</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:62</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a8f9fa76a93541264f22c8f23f3fc1631"><div class="ttname"><a href="wifi_stuff_8h.html#a8f9fa76a93541264f22c8f23f3fc1631">sendTelemetry</a></div><div class="ttdeci">void sendTelemetry()</div><div class="ttdoc">sends the telemetry to all connected phones</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:153</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_aadfb6ad34995b55f37c18e59c0735345"><div class="ttname"><a href="wifi_stuff_8h.html#aadfb6ad34995b55f37c18e59c0735345">onWebSocketEvent</a></div><div class="ttdeci">void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t *payload, size_t length)</div><div class="ttdoc">function to be called on a WebSocket event</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:46</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_ab81dd8fc3c237db5a4ebd1b7a30d012a"><div class="ttname"><a href="wifi_stuff_8h.html#ab81dd8fc3c237db5a4ebd1b7a30d012a">checkLEDs</a></div><div class="ttdeci">void checkLEDs()</div><div class="ttdoc">checks the LED status</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:135</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_aef11d16b4d8e760671e3487b2106b6b2"><div class="ttname"><a href="wifi_stuff_8h.html#aef11d16b4d8e760671e3487b2106b6b2">handleWiFi</a></div><div class="ttdeci">void handleWiFi()</div><div class="ttdoc">handles the wifi loop</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:166</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

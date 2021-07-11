@@ -75,10 +75,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>global functions  
+<p>global functions and settings  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;Arduino.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="global_8h_source.html">global.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="global_8h_source.html">global.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -95,12 +94,177 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="glob
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a0fa98adb3fdfd4dc909581e0c54fedec"><td class="memItemLeft" align="right" valign="top"><a id="a0fa98adb3fdfd4dc909581e0c54fedec"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>pidMulti</b> = 1</td></tr>
+<tr class="separator:a0fa98adb3fdfd4dc909581e0c54fedec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bd7e88c9b1c79a183a0a806b3a06d64"><td class="memItemLeft" align="right" valign="top"><a id="a8bd7e88c9b1c79a183a0a806b3a06d64"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>erpmA</b> = 0.000000008</td></tr>
+<tr class="separator:a8bd7e88c9b1c79a183a0a806b3a06d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fb2b3a2b3ddd1c2cf1039fa37a1c50a"><td class="memItemLeft" align="right" valign="top"><a id="a8fb2b3a2b3ddd1c2cf1039fa37a1c50a"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>erpmB</b> = 0.0000006</td></tr>
+<tr class="separator:a8fb2b3a2b3ddd1c2cf1039fa37a1c50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eb2a6de3e4d21d3195ec36a590cdc7b"><td class="memItemLeft" align="right" valign="top"><a id="a9eb2a6de3e4d21d3195ec36a590cdc7b"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>erpmC</b> = 0.01</td></tr>
+<tr class="separator:a9eb2a6de3e4d21d3195ec36a590cdc7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58dbca7fc4b257b24877ad902fb5b941"><td class="memItemLeft" align="right" valign="top"><a id="a58dbca7fc4b257b24877ad902fb5b941"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>maxThrottle</b> = 2000</td></tr>
+<tr class="separator:a58dbca7fc4b257b24877ad902fb5b941"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6d0762f775c0ff335fa744a677d2015"><td class="memItemLeft" align="right" valign="top"><a id="ac6d0762f775c0ff335fa744a677d2015"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>maxTargetRPS</b> = 1500</td></tr>
+<tr class="separator:ac6d0762f775c0ff335fa744a677d2015"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a830a7932532dbb50469279dec065ac2a"><td class="memItemLeft" align="right" valign="top"><a id="a830a7932532dbb50469279dec065ac2a"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>maxTargetSlip</b> = 20</td></tr>
+<tr class="separator:a830a7932532dbb50469279dec065ac2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac991449a1bfe5335d13a84b4e4cb82e5"><td class="memItemLeft" align="right" valign="top"><a id="ac991449a1bfe5335d13a84b4e4cb82e5"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>motorPoleCount</b> = 12</td></tr>
+<tr class="separator:ac991449a1bfe5335d13a84b4e4cb82e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ae47d11efdf9feaa5dcce484875a23b"><td class="memItemLeft" align="right" valign="top"><a id="a1ae47d11efdf9feaa5dcce484875a23b"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>wheelDiameter</b> = 30</td></tr>
+<tr class="separator:a1ae47d11efdf9feaa5dcce484875a23b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0a2c7ec8f5a39a07e9d882a47fccae1"><td class="memItemLeft" align="right" valign="top"><a id="aa0a2c7ec8f5a39a07e9d882a47fccae1"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>rpsConversionFactor</b> = (1.6667f / ((float)motorPoleCount / 2.0f))</td></tr>
+<tr class="separator:aa0a2c7ec8f5a39a07e9d882a47fccae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47f4f9bbb7eaeb4f024c40db82861843"><td class="memItemLeft" align="right" valign="top"><a id="a47f4f9bbb7eaeb4f024c40db82861843"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>erpmToMMPerSecond</b> = (rpsConversionFactor * (float)wheelDiameter * PI)</td></tr>
+<tr class="separator:a47f4f9bbb7eaeb4f024c40db82861843"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a293fd24739e748e0d8af14c196bcccbb"><td class="memItemLeft" align="right" valign="top"><a id="a293fd24739e748e0d8af14c196bcccbb"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>zeroERPMOffset</b> = 40</td></tr>
+<tr class="separator:a293fd24739e748e0d8af14c196bcccbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a375f34883446af337a33a9e148d423b5"><td class="memItemLeft" align="right" valign="top"><a id="a375f34883446af337a33a9e148d423b5"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>zeroOffsetAtThrottle</b> = 200</td></tr>
+<tr class="separator:a375f34883446af337a33a9e148d423b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00d209d466b20a672654d85ba6b33a9e"><td class="memItemLeft" align="right" valign="top"><a id="a00d209d466b20a672654d85ba6b33a9e"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>commitFlag</b> = false</td></tr>
+<tr class="separator:a00d209d466b20a672654d85ba6b33a9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7cfc4e9a7ca51ffdebbe723ea43b3544"><td class="memItemLeft" align="right" valign="top"><a id="a7cfc4e9a7ca51ffdebbe723ea43b3544"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>cutoffVoltage</b> = 640</td></tr>
+<tr class="separator:a7cfc4e9a7ca51ffdebbe723ea43b3544"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="memItemLeft" align="right" valign="top"><a id="a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>warningVoltage</b> = 740</td></tr>
+<tr class="separator:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae23951bd8593a2989cc852b02275a1b1"><td class="memItemLeft" align="right" valign="top"><a id="ae23951bd8593a2989cc852b02275a1b1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>targetERPM</b> = 0</td></tr>
+<tr class="separator:ae23951bd8593a2989cc852b02275a1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b922ab2116126308f7ec04e614621f1"><td class="memItemLeft" align="right" valign="top"><a id="a9b922ab2116126308f7ec04e614621f1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>ctrlMode</b> = MODE_THROTTLE</td></tr>
+<tr class="separator:a9b922ab2116126308f7ec04e614621f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46754fd62ece5cf6a7fa19054af46911"><td class="memItemLeft" align="right" valign="top"><a id="a46754fd62ece5cf6a7fa19054af46911"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>reqValue</b> = 0</td></tr>
+<tr class="separator:a46754fd62ece5cf6a7fa19054af46911"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bea781e5ef8ad1f812adf338b225435"><td class="memItemLeft" align="right" valign="top"><a id="a2bea781e5ef8ad1f812adf338b225435"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>targetSlip</b> = 0</td></tr>
+<tr class="separator:a2bea781e5ef8ad1f812adf338b225435"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b34135ba96284c15e4f57caa1da8535"><td class="memItemLeft" align="right" valign="top"><a id="a3b34135ba96284c15e4f57caa1da8535"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>escValue</b> = 0x0011</td></tr>
+<tr class="separator:a3b34135ba96284c15e4f57caa1da8535"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95a7a3c9dec5f98703b42898ccd417a1"><td class="memItemLeft" align="right" valign="top"><a id="a95a7a3c9dec5f98703b42898ccd417a1"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>armed</b> = false</td></tr>
+<tr class="separator:a95a7a3c9dec5f98703b42898ccd417a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f75b7d6cc659674185fee0af0ca6a54"><td class="memItemLeft" align="right" valign="top"><a id="a5f75b7d6cc659674185fee0af0ca6a54"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>throttle</b> = 0</td></tr>
+<tr class="separator:a5f75b7d6cc659674185fee0af0ca6a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a082abd2e29cbe1ad17175acd56353c54"><td class="memItemLeft" align="right" valign="top"><a id="a082abd2e29cbe1ad17175acd56353c54"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>nextThrottle</b> = 0</td></tr>
+<tr class="separator:a082abd2e29cbe1ad17175acd56353c54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1717158a022e696a395c650020f63ea1"><td class="memItemLeft" align="right" valign="top"><a id="a1717158a022e696a395c650020f63ea1"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryERPM</b> = 0</td></tr>
+<tr class="separator:a1717158a022e696a395c650020f63ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd0e0c6f7a14817cb4688f755798cb2b"><td class="memItemLeft" align="right" valign="top"><a id="abd0e0c6f7a14817cb4688f755798cb2b"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryVoltage</b> = 0</td></tr>
+<tr class="separator:abd0e0c6f7a14817cb4688f755798cb2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa18d2cd1776d420f3bf4f1711bb67d29"><td class="memItemLeft" align="right" valign="top"><a id="aa18d2cd1776d420f3bf4f1711bb67d29"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryTemp</b> = 0</td></tr>
+<tr class="separator:aa18d2cd1776d420f3bf4f1711bb67d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3db094deb28aaba554842aec875da37a"><td class="memItemLeft" align="right" valign="top"><a id="a3db094deb28aaba554842aec875da37a"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>speedWheel</b> = 0</td></tr>
+<tr class="separator:a3db094deb28aaba554842aec875da37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a0571ec4a1b576b0864f831f72d5c67"><td class="memItemLeft" align="right" valign="top"><a id="a2a0571ec4a1b576b0864f831f72d5c67"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>redLED</b></td></tr>
+<tr class="separator:a2a0571ec4a1b576b0864f831f72d5c67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa10aa7c2fdf11e1fef0871e34a749f7"><td class="memItemLeft" align="right" valign="top"><a id="aaa10aa7c2fdf11e1fef0871e34a749f7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>greenLED</b></td></tr>
+<tr class="separator:aaa10aa7c2fdf11e1fef0871e34a749f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4ce072d581b4ef2c21e520c6c3158cb"><td class="memItemLeft" align="right" valign="top"><a id="aa4ce072d581b4ef2c21e520c6c3158cb"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>blueLED</b></td></tr>
+<tr class="separator:aa4ce072d581b4ef2c21e520c6c3158cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a763241cbe54adcea12292c72183ecad6"><td class="memItemLeft" align="right" valign="top"><a id="a763241cbe54adcea12292c72183ecad6"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newRedLED</b></td></tr>
+<tr class="separator:a763241cbe54adcea12292c72183ecad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5d5094de4934be018c36387807ef157"><td class="memItemLeft" align="right" valign="top"><a id="ad5d5094de4934be018c36387807ef157"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newBlueLED</b></td></tr>
+<tr class="separator:ad5d5094de4934be018c36387807ef157"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a562770a1969177c3aa00043693faebda"><td class="memItemLeft" align="right" valign="top"><a id="a562770a1969177c3aa00043693faebda"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newGreenLED</b></td></tr>
+<tr class="separator:a562770a1969177c3aa00043693faebda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ac3f202ac25c2daa08b77cb528a8e63"><td class="memItemLeft" align="right" valign="top"><a id="a2ac3f202ac25c2daa08b77cb528a8e63"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualDataAmount</b> = 0</td></tr>
+<tr class="separator:a2ac3f202ac25c2daa08b77cb528a8e63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafc55f3520d73278eabe66588581d682"><td class="memItemLeft" align="right" valign="top"><a id="aafc55f3520d73278eabe66588581d682"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualData</b> [20]</td></tr>
+<tr class="separator:aafc55f3520d73278eabe66588581d682"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf939d54a139f1622309631f51791575"><td class="memItemLeft" align="right" valign="top"><a id="acf939d54a139f1622309631f51791575"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>previousERPM</b> [<a class="el" href="global_8h.html#a7db45444f58d4ef5a2387d71bf2eb6cd">TREND_AMOUNT</a>]</td></tr>
+<tr class="separator:acf939d54a139f1622309631f51791575"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91670980219cb1a36e56384beaffab0b"><td class="memItemLeft" align="right" valign="top"><a id="a91670980219cb1a36e56384beaffab0b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>raceMode</b> = false</td></tr>
+<tr class="separator:a91670980219cb1a36e56384beaffab0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7a5cea7be1e2be630ea4a61f97d4bf0"><td class="memItemLeft" align="right" valign="top"><a id="ae7a5cea7be1e2be630ea4a61f97d4bf0"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>raceActive</b> = false</td></tr>
+<tr class="separator:ae7a5cea7be1e2be630ea4a61f97d4bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3545d5500a3aae06ed9a4c388e8ea168"><td class="memItemLeft" align="right" valign="top"><a id="a3545d5500a3aae06ed9a4c388e8ea168"></a>
+uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>logData</b></td></tr>
+<tr class="separator:a3545d5500a3aae06ed9a4c388e8ea168"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3252691477374fd8250bdc3d4b4f3147"><td class="memItemLeft" align="right" valign="top"><a id="a3252691477374fd8250bdc3d4b4f3147"></a>
+uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>throttle_log</b></td></tr>
+<tr class="separator:a3252691477374fd8250bdc3d4b4f3147"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dde6213a71d22e6844055114d29a953"><td class="memItemLeft" align="right" valign="top"><a id="a8dde6213a71d22e6844055114d29a953"></a>
+uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>erpm_log</b></td></tr>
+<tr class="separator:a8dde6213a71d22e6844055114d29a953"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8700b953a6aab079474d345e71d295a"><td class="memItemLeft" align="right" valign="top"><a id="ae8700b953a6aab079474d345e71d295a"></a>
+uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>voltage_log</b></td></tr>
+<tr class="separator:ae8700b953a6aab079474d345e71d295a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd9fe67f3116cca989ad0e7fd59c64ed"><td class="memItemLeft" align="right" valign="top"><a id="abd9fe67f3116cca989ad0e7fd59c64ed"></a>
+int16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>acceleration_log</b></td></tr>
+<tr class="separator:abd9fe67f3116cca989ad0e7fd59c64ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8863054859aab1dd1bc84abb264b3e5d"><td class="memItemLeft" align="right" valign="top"><a id="a8863054859aab1dd1bc84abb264b3e5d"></a>
+uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>temp_log</b></td></tr>
+<tr class="separator:a8863054859aab1dd1bc84abb264b3e5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e17b7e9e8b47aeace0f0ff75da60ba7"><td class="memItemLeft" align="right" valign="top"><a id="a1e17b7e9e8b47aeace0f0ff75da60ba7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>raceModeSendValues</b> = false</td></tr>
+<tr class="separator:a1e17b7e9e8b47aeace0f0ff75da60ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bcf7b6642ac34dbd8a5421045cdd275"><td class="memItemLeft" align="right" valign="top"><a id="a9bcf7b6642ac34dbd8a5421045cdd275"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>logPosition</b> = 0</td></tr>
+<tr class="separator:a9bcf7b6642ac34dbd8a5421045cdd275"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0b586088d40e2cc42eb940440efa25a"><td class="memItemLeft" align="right" valign="top"><a id="ae0b586088d40e2cc42eb940440efa25a"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>distBMI</b> = 0</td></tr>
+<tr class="separator:ae0b586088d40e2cc42eb940440efa25a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a903957a9e576bf846f7886e8a876937d"><td class="memItemLeft" align="right" valign="top"><a id="a903957a9e576bf846f7886e8a876937d"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>speedBMI</b> = 0</td></tr>
+<tr class="separator:a903957a9e576bf846f7886e8a876937d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24df1cc087cfeb6f8b7cb95deada4f19"><td class="memItemLeft" align="right" valign="top"><a id="a24df1cc087cfeb6f8b7cb95deada4f19"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>acceleration</b> = 0</td></tr>
+<tr class="separator:a24df1cc087cfeb6f8b7cb95deada4f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fe8481b1eb531bad4b39b731ee251a7"><td class="memItemLeft" align="right" valign="top"><a id="a6fe8481b1eb531bad4b39b731ee251a7"></a>
+int16_t&#160;</td><td class="memItemRight" valign="bottom"><b>rawAccel</b> = 0</td></tr>
+<tr class="separator:a6fe8481b1eb531bad4b39b731ee251a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memItemLeft" align="right" valign="top"><a id="a5a9d65f1a8d9a12255db818887b5bcd3"></a>
+WebSocketsServer&#160;</td><td class="memItemRight" valign="bottom"><b>webSocket</b> = WebSocketsServer(80)</td></tr>
+<tr class="separator:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f8aca73a018ae41759a9fd065036b91"><td class="memItemLeft" align="right" valign="top"><a id="a1f8aca73a018ae41759a9fd065036b91"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [<a class="el" href="global_8h.html#a96e73aba01abd5e449ffc21fb3ca36f8">MAX_WS_CONNECTIONS</a>][2]</td></tr>
+<tr class="separator:a1f8aca73a018ae41759a9fd065036b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa41a9d138204b963a89a32e9218a31fe"><td class="memItemLeft" align="right" valign="top"><a id="aa41a9d138204b963a89a32e9218a31fe"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryClientsCounter</b> = 0</td></tr>
+<tr class="separator:aa41a9d138204b963a89a32e9218a31fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a396e4de6e38f0fabefa20680a5ac6eac"><td class="memItemLeft" align="right" valign="top"><a id="a396e4de6e38f0fabefa20680a5ac6eac"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>errorCount</b> = 0</td></tr>
+<tr class="separator:a396e4de6e38f0fabefa20680a5ac6eac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb6edc9615c2f5c857291e31320cb9ac"><td class="memItemLeft" align="right" valign="top"><a id="aeb6edc9615c2f5c857291e31320cb9ac"></a>
 String&#160;</td><td class="memItemRight" valign="bottom"><b>toBePrinted</b> = &quot;&quot;</td></tr>
 <tr class="separator:aeb6edc9615c2f5c857291e31320cb9ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>global functions </p>
+<div class="textblock"><p>global functions and settings </p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="aeaa07ee96f76e3cef2560526a0245cd2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeaa07ee96f76e3cef2560526a0245cd2">&#9670;&nbsp;</a></span>sPrint()</h2>

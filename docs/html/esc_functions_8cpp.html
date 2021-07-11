@@ -77,37 +77,27 @@ $(function() {
 
 <p>all the neccessary ESC functions  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;driver/rmt.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="global_8h_source.html">global.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="global_8h_source.html">global.h</a>&quot;</code><br />
 <code>#include &quot;system.h&quot;</code><br />
-<code>#include &lt;Arduino.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="accelerometer_functions_8h_source.html">accelerometerFunctions.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac43cd4d3e336d8b5187c435970c4e98d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8cpp.html#ac43cd4d3e336d8b5187c435970c4e98d">esc_init</a> (uint8_t channel, uint8_t pin)</td></tr>
-<tr class="memdesc:ac43cd4d3e336d8b5187c435970c4e98d"><td class="mdescLeft">&#160;</td><td class="mdescRight">initializes the RMT peripheral for DShot data transmittion  <a href="esc_functions_8cpp.html#ac43cd4d3e336d8b5187c435970c4e98d">More...</a><br /></td></tr>
-<tr class="separator:ac43cd4d3e336d8b5187c435970c4e98d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a879fe6417ae26047085779f17e870065"><td class="memItemLeft" align="right" valign="top"><a id="a879fe6417ae26047085779f17e870065"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setup_rmt_data_buffer</b> (uint16_t value)</td></tr>
-<tr class="separator:a879fe6417ae26047085779f17e870065"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1335384f9847cb1067a6b522d388acc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8cpp.html#a1335384f9847cb1067a6b522d388acc8">esc_send_value</a> (uint16_t value, bool wait)</td></tr>
-<tr class="memdesc:a1335384f9847cb1067a6b522d388acc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">prepares the DShot-packet and sends it  <a href="esc_functions_8cpp.html#a1335384f9847cb1067a6b522d388acc8">More...</a><br /></td></tr>
-<tr class="separator:a1335384f9847cb1067a6b522d388acc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af34dde1971825c0524be244a348ac85a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8cpp.html#af34dde1971825c0524be244a348ac85a">escIR</a> ()</td></tr>
-<tr class="memdesc:af34dde1971825c0524be244a348ac85a"><td class="mdescLeft">&#160;</td><td class="mdescRight">the ESC interrupt routine  <a href="esc_functions_8cpp.html#af34dde1971825c0524be244a348ac85a">More...</a><br /></td></tr>
-<tr class="separator:af34dde1971825c0524be244a348ac85a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6d86ff51f354f47b026686b1e659266"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8cpp.html#ab6d86ff51f354f47b026686b1e659266">esc_init</a> (rmt_channel_t channel, uint8_t pin)</td></tr>
+<tr class="memdesc:ab6d86ff51f354f47b026686b1e659266"><td class="mdescLeft">&#160;</td><td class="mdescRight">initializes the RMT peripheral for DShot data transmittion  <a href="esc_functions_8cpp.html#ab6d86ff51f354f47b026686b1e659266">More...</a><br /></td></tr>
+<tr class="separator:ab6d86ff51f354f47b026686b1e659266"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addd62c2bd90d5c5fa6d0d720cc2094ba"><td class="memItemLeft" align="right" valign="top"><a id="addd62c2bd90d5c5fa6d0d720cc2094ba"></a>
+void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><b>setup_rmt_data_buffer</b> (uint16_t value)</td></tr>
+<tr class="separator:addd62c2bd90d5c5fa6d0d720cc2094ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ee60aa82f21a8de84a2f22741a41cb6"><td class="memItemLeft" align="right" valign="top">void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8cpp.html#a7ee60aa82f21a8de84a2f22741a41cb6">esc_send_value</a> (uint16_t value, bool wait, rmt_channel_t channel)</td></tr>
+<tr class="memdesc:a7ee60aa82f21a8de84a2f22741a41cb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">prepares the DShot-packet and sends it  <a href="esc_functions_8cpp.html#a7ee60aa82f21a8de84a2f22741a41cb6">More...</a><br /></td></tr>
+<tr class="separator:a7ee60aa82f21a8de84a2f22741a41cb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1535fdba757e532b938113f9321c9987"><td class="memItemLeft" align="right" valign="top">void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8cpp.html#a1535fdba757e532b938113f9321c9987">escIR</a> ()</td></tr>
+<tr class="memdesc:a1535fdba757e532b938113f9321c9987"><td class="mdescLeft">&#160;</td><td class="mdescRight">the ESC interrupt routine  <a href="esc_functions_8cpp.html#a1535fdba757e532b938113f9321c9987">More...</a><br /></td></tr>
+<tr class="separator:a1535fdba757e532b938113f9321c9987"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a763241cbe54adcea12292c72183ecad6"><td class="memItemLeft" align="right" valign="top"><a id="a763241cbe54adcea12292c72183ecad6"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newRedLED</b></td></tr>
-<tr class="separator:a763241cbe54adcea12292c72183ecad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5d5094de4934be018c36387807ef157"><td class="memItemLeft" align="right" valign="top"><a id="ad5d5094de4934be018c36387807ef157"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newBlueLED</b></td></tr>
-<tr class="separator:ad5d5094de4934be018c36387807ef157"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a562770a1969177c3aa00043693faebda"><td class="memItemLeft" align="right" valign="top"><a id="a562770a1969177c3aa00043693faebda"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newGreenLED</b></td></tr>
-<tr class="separator:a562770a1969177c3aa00043693faebda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19e5a328d8d8cae5e45c72be8cd9aee0"><td class="memItemLeft" align="right" valign="top"><a id="a19e5a328d8d8cae5e45c72be8cd9aee0"></a>
 rmt_item32_t&#160;</td><td class="memItemRight" valign="bottom"><b>escDataBuffer</b> [ESC_BUFFER_ITEMS]</td></tr>
 <tr class="separator:a19e5a328d8d8cae5e45c72be8cd9aee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,67 +107,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>escOutputCounter</b> =
 <tr class="memitem:a891d4aa3e366fd61fe5d0a17007db2f8"><td class="memItemLeft" align="right" valign="top"><a id="a891d4aa3e366fd61fe5d0a17007db2f8"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>escOutputCounter3</b> = 0</td></tr>
 <tr class="separator:a891d4aa3e366fd61fe5d0a17007db2f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf939d54a139f1622309631f51791575"><td class="memItemLeft" align="right" valign="top"><a id="acf939d54a139f1622309631f51791575"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>previousERPM</b> [TREND_AMOUNT]</td></tr>
-<tr class="separator:acf939d54a139f1622309631f51791575"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1717158a022e696a395c650020f63ea1"><td class="memItemLeft" align="right" valign="top"><a id="a1717158a022e696a395c650020f63ea1"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryERPM</b></td></tr>
-<tr class="separator:a1717158a022e696a395c650020f63ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd0e0c6f7a14817cb4688f755798cb2b"><td class="memItemLeft" align="right" valign="top"><a id="abd0e0c6f7a14817cb4688f755798cb2b"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryVoltage</b></td></tr>
-<tr class="separator:abd0e0c6f7a14817cb4688f755798cb2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa18d2cd1776d420f3bf4f1711bb67d29"><td class="memItemLeft" align="right" valign="top"><a id="aa18d2cd1776d420f3bf4f1711bb67d29"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryTemp</b></td></tr>
-<tr class="separator:aa18d2cd1776d420f3bf4f1711bb67d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e17b7e9e8b47aeace0f0ff75da60ba7"><td class="memItemLeft" align="right" valign="top"><a id="a1e17b7e9e8b47aeace0f0ff75da60ba7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>raceModeSendValues</b></td></tr>
-<tr class="separator:a1e17b7e9e8b47aeace0f0ff75da60ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95a7a3c9dec5f98703b42898ccd417a1"><td class="memItemLeft" align="right" valign="top"><a id="a95a7a3c9dec5f98703b42898ccd417a1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>armed</b> = false</td></tr>
-<tr class="separator:a95a7a3c9dec5f98703b42898ccd417a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7a5cea7be1e2be630ea4a61f97d4bf0"><td class="memItemLeft" align="right" valign="top"><a id="ae7a5cea7be1e2be630ea4a61f97d4bf0"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>raceActive</b> = false</td></tr>
-<tr class="separator:ae7a5cea7be1e2be630ea4a61f97d4bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b34135ba96284c15e4f57caa1da8535"><td class="memItemLeft" align="right" valign="top"><a id="a3b34135ba96284c15e4f57caa1da8535"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>escValue</b></td></tr>
-<tr class="separator:a3b34135ba96284c15e4f57caa1da8535"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bcf7b6642ac34dbd8a5421045cdd275"><td class="memItemLeft" align="right" valign="top"><a id="a9bcf7b6642ac34dbd8a5421045cdd275"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>logPosition</b> = 0</td></tr>
-<tr class="separator:a9bcf7b6642ac34dbd8a5421045cdd275"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9cbf3d03c61375388c4e2ad6dbb743da"><td class="memItemLeft" align="right" valign="top"><a id="a9cbf3d03c61375388c4e2ad6dbb743da"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8cpp.html#a9cbf3d03c61375388c4e2ad6dbb743da">throttle_log</a> [LOG_FRAMES]</td></tr>
-<tr class="memdesc:a9cbf3d03c61375388c4e2ad6dbb743da"><td class="mdescLeft">&#160;</td><td class="mdescRight">race mode <br /></td></tr>
-<tr class="separator:a9cbf3d03c61375388c4e2ad6dbb743da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6b420ae5cffdc353bff061c3188c4a0"><td class="memItemLeft" align="right" valign="top"><a id="aa6b420ae5cffdc353bff061c3188c4a0"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>erpm_log</b> [LOG_FRAMES]</td></tr>
-<tr class="separator:aa6b420ae5cffdc353bff061c3188c4a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bf84e98cec81ed2cd257e90c59238e6"><td class="memItemLeft" align="right" valign="top"><a id="a7bf84e98cec81ed2cd257e90c59238e6"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>voltage_log</b> [LOG_FRAMES]</td></tr>
-<tr class="separator:a7bf84e98cec81ed2cd257e90c59238e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a741b22bb882aec60ea8f73e6ab53d2e3"><td class="memItemLeft" align="right" valign="top"><a id="a741b22bb882aec60ea8f73e6ab53d2e3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>acceleration_log</b> [LOG_FRAMES]</td></tr>
-<tr class="separator:a741b22bb882aec60ea8f73e6ab53d2e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff9f2e30b1624aa9b2424545770c576b"><td class="memItemLeft" align="right" valign="top"><a id="aff9f2e30b1624aa9b2424545770c576b"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>temp_log</b> [LOG_FRAMES]</td></tr>
-<tr class="separator:aff9f2e30b1624aa9b2424545770c576b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f75b7d6cc659674185fee0af0ca6a54"><td class="memItemLeft" align="right" valign="top"><a id="a5f75b7d6cc659674185fee0af0ca6a54"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>throttle</b> = 0</td></tr>
-<tr class="separator:a5f75b7d6cc659674185fee0af0ca6a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a082abd2e29cbe1ad17175acd56353c54"><td class="memItemLeft" align="right" valign="top"><a id="a082abd2e29cbe1ad17175acd56353c54"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>nextThrottle</b> = 0</td></tr>
-<tr class="separator:a082abd2e29cbe1ad17175acd56353c54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ac3f202ac25c2daa08b77cb528a8e63"><td class="memItemLeft" align="right" valign="top"><a id="a2ac3f202ac25c2daa08b77cb528a8e63"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualDataAmount</b> = 0</td></tr>
-<tr class="separator:a2ac3f202ac25c2daa08b77cb528a8e63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafc55f3520d73278eabe66588581d682"><td class="memItemLeft" align="right" valign="top"><a id="aafc55f3520d73278eabe66588581d682"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualData</b> [20]</td></tr>
-<tr class="separator:aafc55f3520d73278eabe66588581d682"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>all the neccessary ESC functions </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ac43cd4d3e336d8b5187c435970c4e98d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac43cd4d3e336d8b5187c435970c4e98d">&#9670;&nbsp;</a></span>esc_init()</h2>
+<a id="ab6d86ff51f354f47b026686b1e659266"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6d86ff51f354f47b026686b1e659266">&#9670;&nbsp;</a></span>esc_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,7 +120,7 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualData</b> [2
         <tr>
           <td class="memname">void esc_init </td>
           <td>(</td>
-          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramtype">rmt_channel_t&#160;</td>
           <td class="paramname"><em>channel</em>, </td>
         </tr>
         <tr>
@@ -207,14 +142,14 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualData</b> [2
 
 </div>
 </div>
-<a id="a1335384f9847cb1067a6b522d388acc8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1335384f9847cb1067a6b522d388acc8">&#9670;&nbsp;</a></span>esc_send_value()</h2>
+<a id="a7ee60aa82f21a8de84a2f22741a41cb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ee60aa82f21a8de84a2f22741a41cb6">&#9670;&nbsp;</a></span>esc_send_value()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void esc_send_value </td>
+          <td class="memname">void IRAM_ATTR esc_send_value </td>
           <td>(</td>
           <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>value</em>, </td>
@@ -223,7 +158,13 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualData</b> [2
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>wait</em>&#160;</td>
+          <td class="paramname"><em>wait</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">rmt_channel_t&#160;</td>
+          <td class="paramname"><em>channel</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -244,14 +185,14 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualData</b> [2
 
 </div>
 </div>
-<a id="af34dde1971825c0524be244a348ac85a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af34dde1971825c0524be244a348ac85a">&#9670;&nbsp;</a></span>escIR()</h2>
+<a id="a1535fdba757e532b938113f9321c9987"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1535fdba757e532b938113f9321c9987">&#9670;&nbsp;</a></span>escIR()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void escIR </td>
+          <td class="memname">void IRAM_ATTR escIR </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['throttle_5flog_20',['throttle_log',['../esc_functions_8cpp.html#a9cbf3d03c61375388c4e2ad6dbb743da',1,'throttle_log():&#160;system.cpp'],['../global_8h.html#a9cbf3d03c61375388c4e2ad6dbb743da',1,'throttle_log():&#160;system.cpp']]]
+  ['initbmi_34',['initBMI',['../accelerometer_functions_8h.html#a60525f709585221bad6e92a1051b45a7',1,'accelerometerFunctions.cpp']]],
+  ['istelemetrycomplete_35',['isTelemetryComplete',['../telemetry_8h.html#aab83386233fdb944673a4b1c1a530a0a',1,'telemetry.cpp']]]
 ];

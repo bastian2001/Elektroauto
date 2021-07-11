@@ -1,7 +1,7 @@
 /// @file main.cpp the entry point for the project
 
 
-/*======================================================includes======================================================*/
+/*====================================================includes====================================================*/
 
 #include "global.h"
 #include "system.h"
@@ -12,7 +12,7 @@
 #include "accelerometerFunctions.h"
 
 
-/*======================================================global variables==================================================*/
+/*====================================================global variables================================================*/
 
 //Core 0 variables
 TaskHandle_t core0Task;
@@ -24,12 +24,12 @@ hw_timer_t * timer = NULL;
 
 
 
-/*======================================================system methods====================================================*/
+/*====================================================system methods==================================================*/
 
 /**
  * @brief loop on core 0
  * 
- * the not so time-sensitive stuff
+ * the not so time-sensitive stuff<br>
  * initiates:
  * - wifi reconnection if neccessary
  * - race mode values sending
@@ -62,10 +62,11 @@ void loop0() {
 /**
  * @brief loop on core 1
  * 
- * time sensitive stuff
+ * time sensitive stuff<br>
  * initiates:
  * - telemetry acquisition and processing
  * - throttle routine
+ * - if neccessary, saves the settings
  */
 void loop() {
   getTelemetry();
@@ -95,11 +96,11 @@ void core0Code( void * parameter) {
 /**
  * @brief setup function
  * 
- * enables Serial communication
- * connects to wifi
- * sets up pins and timer for escir
- * creates task on core 0
- * initates websocket server
+ * - enables Serial communication
+ * - connects to wifi
+ * - sets up pins and timer for escir
+ * - creates task on core 0
+ * - initates websocket server
  */
 void setup() {
   //reading settings from EEPROM or writing them
@@ -110,7 +111,7 @@ void setup() {
     readEEPROM();
 
   //logData initialization
-  logData = (uint16_t *)malloc(LOG_FRAMES * 11);
+  logData = (uint16_t *)malloc(LOG_SIZE);
   throttle_log = logData + 0 * LOG_FRAMES;
   acceleration_log = (int16_t *)logData + 2 * LOG_FRAMES;
   erpm_log = logData + 4 * LOG_FRAMES;

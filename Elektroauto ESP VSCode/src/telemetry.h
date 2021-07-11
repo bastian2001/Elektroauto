@@ -1,3 +1,5 @@
+///@file telemetry.h provides functions for the acquisition of the ESC's telemetry
+
 /**
  * @brief acquires telemetry data
  * 
@@ -9,20 +11,12 @@
 void getTelemetry();
 
 /**
- * @brief sends the telemetry to all connected phones
- * 
- * telemetry format is documented in docs.md
- */
-void sendTelemetry();
-
-/**
  * @brief checks if telemetry is ready to be processed
  * 
  * @return whether telemetry can be read
  */
 bool isTelemetryComplete();
 
-//! @brief updates the crc checksum
 uint8_t update_crc8(uint8_t crc, uint8_t crc_seed);
 
 /**

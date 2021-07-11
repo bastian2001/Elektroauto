@@ -1,5 +1,3 @@
-//! @file escFunctions.cpp all the neccessary ESC functions
-
 #include "global.h"
 #include "system.h"
 #include "accelerometerFunctions.h"
@@ -8,11 +6,6 @@ rmt_item32_t escDataBuffer[ESC_BUFFER_ITEMS];
 
 int escOutputCounter = 0, escOutputCounter3 = 0;
 
-/**
- * @brief initializes the RMT peripheral for DShot data transmittion
- * 
- * automatically run at startup
- */
 void esc_init(rmt_channel_t channel, uint8_t pin) {
   rmt_config_t config;
   config.rmt_mode = RMT_MODE_TX;
@@ -38,14 +31,6 @@ void IRAM_ATTR setup_rmt_data_buffer(uint16_t value) {
   }
 }
 
-/**
- * @brief prepares the DShot-packet and sends it
- * 
- * also checks for LED-changes
- * WARNING: please do not manually run it, escIR runs it at the frequency specified in ESC_FREQ
- * @param value the full packet to transmit
- * @param wait whether to wait until the transmission is done
- */
 void IRAM_ATTR esc_send_value(uint16_t value, bool wait, rmt_channel_t channel) {
   setup_rmt_data_buffer(value);
   ESP_ERROR_CHECK(rmt_write_items(channel, escDataBuffer, ESC_BUFFER_ITEMS, wait));
@@ -73,17 +58,6 @@ void IRAM_ATTR esc_send_value(uint16_t value, bool wait, rmt_channel_t channel) 
       break;
   }
 }
-
-/**
- * @brief the ESC interrupt routine
- * 
- * WARNING: please do not manually run it, the timer interrupt runs it at the frequency specified in ESC_FREQ
- * - runs setThrottle if car is armed, thus applies the checksum
- * - if available, it takes the manualData inplace of the escValue and sends the respective value to the esc
- * - then, if neccessary, it pushes the manualData array one to the front
- * - same thing goes for telemetryERPM history
- * - if the race is active, it also logs the data
- */
 void IRAM_ATTR escIR() {
   //set Throttle
   if (armed){
