@@ -8,7 +8,7 @@
   </tr>
   <tr>
     <td>Supply Voltage</td>
-    <td>5V</td>
+    <td>5V/3V3 depending on converter</td>
     <td>OUT+ of  buck converter</td>
   </tr>
   <tr>
@@ -78,7 +78,7 @@
   </tr>
   <tr>
     <td>BMI160 - VCC</td>
-    <td>3V3 oder 5V</td>
+    <td>26</td>
     <td>BMI160: 3V3</td>
   </tr>
   <tr>

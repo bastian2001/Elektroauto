@@ -176,6 +176,7 @@ void setup() {
     Serial.println("ready");
   #endif
 
+  #if TELEMETRY_DEBUG != 0
   #ifdef PRINT_TELEMETRY_THROTTLE
     Serial.print("Throttle\t");
   #endif
@@ -190,6 +191,7 @@ void setup() {
   #endif
   #if defined(PRINT_TELEMETRY_THROTTLE) || defined(PRINT_TELEMETRY_TEMP) || defined(PRINT_TELEMETRY_VOLTAGE) || defined(PRINT_TELEMETRY_ERPM)
     Serial.println();
+  #endif
   #endif
   c1ready = true;
 }

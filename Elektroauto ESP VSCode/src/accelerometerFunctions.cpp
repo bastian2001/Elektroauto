@@ -18,6 +18,9 @@ void readBMI(){
 }
 
 void initBMI(){
+    pinMode(26, OUTPUT);
+    digitalWrite(26, HIGH);
+    delay(20);
     #ifdef PRINT_SETUP
     Serial.println("Connecting to BMI160...");
     #endif
