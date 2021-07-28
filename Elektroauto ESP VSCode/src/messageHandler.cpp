@@ -3,6 +3,7 @@
 #include "wifiStuff.h"
 #include "settings.h"
 #include "system.h"
+#include "accelerometerFunctions.h"
 
 void processMessage(String message, uint8_t from) {
   #ifdef PRINT_INCOMING_MESSAGES
@@ -134,6 +135,11 @@ void processMessage(String message, uint8_t from) {
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE Tempomat-Master ist nun ") + String(pidMulti));
   }
+  else if (command == "SLIPMULTIPLIER"){
+    slipMulti = message.substring(dividerPos + 1).toFloat();
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE Schlupf-Master ist nun ") + String(slipMulti));
+  }
 
   else if (command == "ERRORCOUNT"){
     sendWSMessage(from, "MESSAGE Error-Count beträgt " + String(errorCount));
@@ -217,5 +223,15 @@ void processMessage(String message, uint8_t from) {
     erpmToMMPerSecond = (rpsConversionFactor * (float)wheelDiameter * PI);
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE Raddurchmesser beträgt nun ") + String(pidMulti) + String(" mm"));
+  }
+  
+  // else if (command == "CALIBRATE"){ // currently results in crash
+  //   calibrateFlag = true;
+  //   if (!message.endsWith("NOMESSAGE"))
+  //     sendWSMessage(from, "MESSAGE Beschleunigungssensor wird kalibriert");
+  // }
+
+  else if (command == "REBOOT" || command == "RESTART"){
+    ESP.restart();
   }
 }

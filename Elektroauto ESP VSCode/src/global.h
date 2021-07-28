@@ -109,6 +109,8 @@ enum Modes {
 // rps control variables
 /// holds the master multiplier for RPS/slip control, default value is set here
 extern double pidMulti;
+/// additional multiplier for slip control
+extern double slipMulti;
 /// große Änderungen: zu viel -> overshooting bei großen Anpassungen, abwürgen. Zu wenig -> langsames Anpassen bei großen Änderungen; holds the third power value for RPS/slip control, default value is given here
 extern double erpmA;
 /// holds the second power value for RPS/slip control, default value is set here
@@ -179,6 +181,7 @@ extern uint16_t logPosition;
 // accelerometer
 extern double distBMI, speedBMI, acceleration;
 extern int16_t rawAccel;
+extern bool calibrateFlag;
 
 // WiFi/WebSockets
 extern WebSocketsServer webSocket;

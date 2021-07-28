@@ -2,6 +2,7 @@
 
 // rps control settings
 double pidMulti = 1;
+double slipMulti = 2;
 double erpmA = 0.000000008;
 double erpmB = 0.0000006;
 double erpmC = 0.01;
@@ -57,6 +58,7 @@ uint16_t logPosition = 0;
 // accelerometer
 double distBMI = 0, speedBMI = 0, acceleration = 0;
 int16_t rawAccel = 0;
+bool calibrateFlag = false;
 
 // WiFi/WebSockets
 WebSocketsServer webSocket = WebSocketsServer(80);

@@ -16,9 +16,12 @@
 
 //Core 0 variables
 TaskHandle_t core0Task;
-bool c1ready = false;
+bool c1ready = false, c0ready = false;
 
 hw_timer_t * timer = NULL;
+
+volatile unsigned long lastCore0 = 0;
+volatile unsigned long lastCore1 = 0;
 
 
 
@@ -32,20 +35,22 @@ hw_timer_t * timer = NULL;
  * the not so time-sensitive stuff<br>
  * initiates:
  * - wifi reconnection if neccessary
- * - race mode values sending
+ * - sending race mode values
  * - low voltage checking
- * - wifi and serial message handling
+ * - User I/O handling
  * - Serial string printing
  */
 void loop0() {
   if (WiFi.status() != WL_CONNECTED) {
     disableCore0WDT();
+    lastCore0 = millis() + 5000;
     reconnect();
     delay(1);
     enableCore0WDT();
   }
   if (raceModeSendValues){
     raceMode = false;
+    lastCore0 = millis() + 2000;
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
     sendRaceLog();
     logPosition = 0;
@@ -57,6 +62,11 @@ void loop0() {
 
   printSerial();
   delay(1);
+  lastCore0 = millis();
+  if (lastCore1 + (timerAlarmEnabled(timer) ? 5 : 500) < millis() && lastCore1 != 0){
+    Serial.println(String("Restarting because of Core 1 ") + lastCore0);
+    ESP.restart();
+  }
 }
 
 /**
@@ -77,17 +87,28 @@ void loop() {
     EEPROM.commit();
     timerAlarmEnable(timer);
   }
+  if (calibrateFlag){
+    timerAlarmDisable(timer);
+    calibrateAccelerometer();
+    calibrateFlag = false;
+    timerAlarmEnable(timer);
+  }
+  lastCore1 = millis();
+  if (lastCore0 + 200 < millis() && lastCore0 != 0){
+    Serial.println(String("Restarting because of Core 0 ") + lastCore0);
+    ESP.restart();
+  }
 }
 
 //! @brief Task for core 0, creates loop0
 void core0Code( void * parameter) {
   Serial1.begin(115200, SERIAL_8N1, ESC1_INPUT_PIN);
   Serial2.begin(115200);
-
+  c0ready = true;
   while (!c1ready) {
-    yield();
+    delay(1);
+    lastCore0 = millis();
   }
-
   while (true) {
     loop0();
   }
@@ -104,7 +125,7 @@ void core0Code( void * parameter) {
  */
 void setup() {
   //reading settings from EEPROM or writing them
-  EEPROM.begin(44);
+  EEPROM.begin(52);
   if (firstStartup())
     writeEEPROM();
   else
@@ -141,6 +162,7 @@ void setup() {
     Serial.print("IP: ");
     Serial.println(WiFi.localIP());
   #endif
+  delay(20);
 
   //BMI initialization
   initBMI();
@@ -193,5 +215,10 @@ void setup() {
     Serial.println();
   #endif
   #endif
+  lastCore1 = millis();
   c1ready = true;
+  while (!c0ready) {
+    delay(1);
+    lastCore1 = millis();
+  }
 }

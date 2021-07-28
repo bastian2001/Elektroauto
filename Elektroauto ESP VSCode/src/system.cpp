@@ -127,7 +127,7 @@ void throttleRoutine(){
         if (addToTargetERPM < 0)
           addToTargetERPM = 0;
         targetERPM = ((-(float)speedBMI) / ((float) targetSlip * .01f - 1)) / erpmToMMPerSecond + addToTargetERPM;
-        nextThrottle = calcThrottle(targetERPM, previousERPM, .1);
+        nextThrottle = calcThrottle(targetERPM, previousERPM, slipMulti);
         break;
     }
   }

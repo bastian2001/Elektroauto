@@ -106,7 +106,6 @@ void sendWSMessage(uint8_t spot, String text){
 void reconnect() {
   Serial1.end();
   WiFi.disconnect();
-  int counterWiFi = 0;
   while (WiFi.status() == WL_CONNECTED) {
     yield();
   }
@@ -114,22 +113,18 @@ void reconnect() {
     Serial.print("Reconnecting");
   #endif
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(300);
-    Serial.print(".");
-    if (counterWiFi == 30) {
-      #ifdef PRINT_SETUP
-        Serial.println();
-        Serial.println("WiFi-Connection could not be established!");
-      #endif
-      break;
-    }
-    counterWiFi++;
+  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    #ifdef PRINT_SETUP
+      Serial.println();
+      Serial.println("WiFi-Connection could not be established!");
+      Serial.println("Restart...");
+    #endif
+    ESP.restart();
   }
   #ifdef PRINT_SETUP
     Serial.println();
   #endif
-  Serial1.begin(115200);
+  Serial1.begin(115200, SERIAL_8N1, ESC1_INPUT_PIN);
 }
 
 void checkLEDs(){

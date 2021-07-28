@@ -15,3 +15,10 @@ void readBMI();
  * connects to the sensor, sets the polling rate and calibrates it
  */
 void initBMI();
+
+/**
+ * @brief calibrates the accelerometer
+ * 
+ * enables offset and calculates it
+ */
+void calibrateAccelerometer();
