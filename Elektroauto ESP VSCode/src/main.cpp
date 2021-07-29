@@ -25,6 +25,15 @@ volatile unsigned long lastCore1 = 0;
 
 
 
+void onESCError(ESC * esc, uint8_t err){
+
+}
+void onStatusChange(ESC * esc, uint8_t newStatus, uint8_t oldStatus){
+
+}
+
+
+
 
 
 /*====================================================system methods==================================================*/
@@ -58,14 +67,15 @@ void loop0() {
   checkVoltage();
 
   handleWiFi();
+  Serial.println('e');
   receiveSerial();
 
   printSerial();
   delay(1);
   lastCore0 = millis();
-  if (lastCore1 + (timerAlarmEnabled(timer) ? 5 : 500) < millis() && lastCore1 != 0){
+  if (lastCore1 + (timerAlarmEnabled(timer) ? 5 : 500) < millis() && lastCore1 != 0 && millis() > 5000){
     Serial.println(String("Restarting because of Core 1 ") + lastCore0);
-    ESP.restart();
+    // ESP.restart();
   }
 }
 
@@ -79,7 +89,8 @@ void loop0() {
  * - if neccessary, saves the settings
  */
 void loop() {
-  getTelemetry();
+  ESCs[0]->loop();
+  ESCs[1]->loop();
   throttleRoutine();
   if (commitFlag){
     timerAlarmDisable(timer);
@@ -94,16 +105,14 @@ void loop() {
     timerAlarmEnable(timer);
   }
   lastCore1 = millis();
-  if (lastCore0 + 200 < millis() && lastCore0 != 0){
-    Serial.println(String("Restarting because of Core 0 ") + lastCore0);
-    ESP.restart();
+  if (lastCore0 + 200 < millis() && lastCore0 != 0 && millis() > 5000){
+    // Serial.println(String("Restarting because of Core 0 ") + lastCore0);
+    // ESP.restart();
   }
 }
 
 //! @brief Task for core 0, creates loop0
 void core0Code( void * parameter) {
-  Serial1.begin(115200, SERIAL_8N1, ESC1_INPUT_PIN);
-  Serial2.begin(115200);
   c0ready = true;
   while (!c1ready) {
     delay(1);
@@ -175,8 +184,8 @@ void setup() {
   pinMode(TRANSMISSION_PIN, OUTPUT);
   digitalWrite(TRANSMISSION_PIN, HIGH);
   #endif
-  esc_init(RMT_CHANNEL_0, ESC1_OUTPUT_PIN);
-  esc_init(RMT_CHANNEL_1, ESC2_OUTPUT_PIN);
+  ESCs[0] = new ESC(&Serial1, ESC1_OUTPUT_PIN, ESC1_INPUT_PIN, RMT_CHANNEL_0, onESCError, onStatusChange);
+  ESCs[1] = new ESC(&Serial2, ESC2_OUTPUT_PIN, ESC2_INPUT_PIN, RMT_CHANNEL_1, onESCError, onStatusChange);
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &escIR, true);
   timerAlarmWrite(timer, ESC_FREQ, true);

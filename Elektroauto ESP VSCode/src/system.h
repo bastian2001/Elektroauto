@@ -38,7 +38,7 @@ void startRace();
  * @param masterMultiplier default: 1, another GP multiplier for quick adjustments
  * @return the next throttle value (NOT set automatically)
  */
-double calcThrottle(int target, int was[], double masterMultiplier = 1);
+double calcThrottle(int target, int was[], double currentThrottle, double masterMultiplier = 1);
 
 //! @brief reads the Serial0 port and processes the message using processMessage
 void receiveSerial();

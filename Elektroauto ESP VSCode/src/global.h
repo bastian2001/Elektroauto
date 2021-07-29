@@ -7,6 +7,7 @@
 #include "WiFi.h"
 #include <esp_task_wdt.h>
 #include "BMI160Gen.h"
+#include "ESC.h"
 
 
 
@@ -31,24 +32,9 @@
 /// pin used for SCL/SCK of the SPI driver
 #define SPI_SCL 18
 
-/// maximum amount of manual data
-#define MAX_MANUAL_DATA 20
+
 ///frequency of basically everything
-#define ESC_FREQ 800
-///DShot 150: 12, DShot 300: 6, DShot 600: 3, change value accordingly for the desired DShot speed
-#define CLK_DIV 3
-/// 0 bit high time
-#define T0H 17
-/// 1 bit high time
-#define T1H 33
-/// 0 bit low time
-#define T0L 27
-/// 1 bit low time
-#define T1L 11
-/// reset length in multiples of bit time
-#define T_RESET 21
-/// number of bits sent out via DShot
-#define ESC_BUFFER_ITEMS 16
+#define ESC_FREQ 1600
 
 
 //ESC/DShot debugging settings
@@ -120,7 +106,7 @@ extern double erpmC;
 
 // motor and wheel settings
 /// holds the maximum allowed throttle, default value is set here
-extern uint16_t maxThrottle;
+// extern uint16_t maxThrottle;
 /// holds the maximum allowed target RPS, default value is set here
 extern uint16_t maxTargetRPS;
 /// holds the maximum allowed target slip ratio, default value is set here
@@ -144,28 +130,28 @@ extern bool commitFlag;
 
 // voltage settings
 /// holds the value for the cutoff voltage (no movement possible, car stops), default value is set here
-extern uint16_t cutoffVoltage;
+// extern uint16_t cutoffVoltage;
 /// holds the value for the warning voltage (user is warned of low voltage), default value is set here
 extern uint16_t warningVoltage;
 
 // control variables
 extern int targetERPM, ctrlMode, reqValue, targetSlip;
-extern uint16_t escValue; // telemetry needs to be on before first arm
-extern bool armed;
-extern double throttle, nextThrottle;
+// extern uint16_t escValue; // telemetry needs to be on before first arm
+// extern bool armed;
+// extern double throttle, nextThrottle;
 
 // telemetry
-extern uint16_t telemetryERPM, telemetryVoltage;
-extern uint8_t telemetryTemp;
-extern uint16_t speedWheel;
+// extern uint16_t telemetryERPM, telemetryVoltage;
+// extern uint8_t telemetryTemp;
+// extern uint16_t speedWheel;
 
 // LEDs
-extern bool redLED, greenLED, blueLED;
-extern uint8_t newRedLED, newGreenLED, newBlueLED;
+// extern bool redLED, greenLED, blueLED;
+// extern uint8_t newRedLED, newGreenLED, newBlueLED;
 
 // manual data
-extern uint8_t manualDataAmount;
-extern uint16_t manualData[MAX_MANUAL_DATA];
+// extern uint8_t manualDataAmount;
+// extern uint16_t manualData[20];
 
 // throttle calculation
 extern int previousERPM[TREND_AMOUNT];
@@ -187,6 +173,9 @@ extern bool calibrateFlag;
 extern WebSocketsServer webSocket;
 extern uint8_t clients[MAX_WS_CONNECTIONS][2]; //[device (disconnected, app, web)][telemetry (off, on)]
 extern uint8_t telemetryClientsCounter;
+
+// ESCs
+extern ESC *ESCs[2]; //0: left, 1: right
 
 // error
 extern uint16_t errorCount;

@@ -70,14 +70,14 @@ void removeClient (int spot) {
 
 void addClient (int spot) {
   if (spot < MAX_WS_CONNECTIONS && !raceActive) {
-    if (!armed && !raceMode){
+    if (!(ESCs[0]->status & ARMED_MASK) && !raceMode){
       webSocket.sendTXT(spot, "BLOCK VALUE 0");
     } else if (raceMode){
       webSocket.sendTXT(spot, "SET RACEMODE ON");
     }
-    webSocket.sendTXT(spot, "SET REDLED " + String(redLED));
-    webSocket.sendTXT(spot, "SET BLUELED " + String(blueLED));
-    webSocket.sendTXT(spot, "SET GREENLED " + String(greenLED));
+    webSocket.sendTXT(spot, "SET REDLED " + String(((ESCs[0]->status) & RED_LED_MASK) ? '1' : '0'));
+    webSocket.sendTXT(spot, "SET BLUELED " + String(((ESCs[0]->status) & GREEN_LED_MASK) ? '1' : '0'));
+    webSocket.sendTXT(spot, "SET GREENLED " + String(((ESCs[0]->status) & BLUE_LED_MASK) ? '1' : '0'));
     String modeText = "SET MODESPINNER ";
     modeText += ctrlMode;
     webSocket.sendTXT(spot, modeText);
@@ -127,42 +127,26 @@ void reconnect() {
   Serial1.begin(115200, SERIAL_8N1, ESC1_INPUT_PIN);
 }
 
-void checkLEDs(){
-  if (newRedLED){
-    redLED = newRedLED - 1;
-    broadcastWSMessage("SET REDLED " + String(redLED));
-    newRedLED = 0;
-  }
-  if (newGreenLED){
-    greenLED = newGreenLED - 1;
-    broadcastWSMessage("SET GREENLED " + String(greenLED));
-    newGreenLED = 0;
-  }
-  if (newBlueLED){
-    blueLED = newBlueLED - 1;
-    broadcastWSMessage("SET BLUELED " + String(blueLED));
-    newBlueLED = 0;
-  }
-}
-
 void sendTelemetry() {
-  float rps = erpmToRps (telemetryERPM);
+  float rps = erpmToRps (ESCs[0]->heRPM);
   int slipPercent = 0;
+  uint16_t speedWheel = ((float)(ESCs[0]->heRPM)) * erpmToMMPerSecond;
   if (speedWheel != 0) {
     slipPercent = (float)(speedWheel - speedBMI) / speedWheel * 100;
   }
   char telData[66];
   snprintf(telData, 66, "TELEMETRY a%d!p%d!u%d!t%d!r%d!s%d!v%d!w%d!c%d!%c%d", 
-    armed > 0, telemetryTemp, telemetryVoltage, (int) throttle, (int) rps, slipPercent, (int) speedBMI, speedWheel,
-    (int)(acceleration + .5), (raceMode && !raceActive) ? 'o' : 'q', reqValue);
+    (ESCs[0]->status & ARMED_MASK) > 0, ESCs[0]->temperature, ESCs[0]->voltage, (int) (ESCs[0]->currentThrottle), (int) rps, slipPercent, (int) speedBMI, speedWheel, (int)(acceleration + .5), (raceMode && !raceActive) ? 'o' : 'q', reqValue);
   broadcastWSMessage(telData, true, 0, true);
 }
 
 void handleWiFi() {
+  Serial.println('a');
   webSocket.loop();
-  checkLEDs();
+  Serial.println('b');
   if (millis() > lastTelemetry + TELEMETRY_UPDATE_MS + TELEMETRY_UPDATE_ADD * telemetryClientsCounter) {
     lastTelemetry = millis();
     sendTelemetry();
   }
+  Serial.println('c');
 }

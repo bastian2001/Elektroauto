@@ -7,25 +7,15 @@ uint32_t nextCheck = 0;
 uint8_t warningVoltageCount = 0;
 
 void setArmed (bool arm){
-  if (arm != armed){
+  if (arm != (ESCs[0]->status & ARMED_MASK)){
     if (!raceActive){
       reqValue = 0;
       targetERPM = 0;
     }
     broadcastWSMessage((raceActive ? arm : arm || raceMode) ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
-    armed = arm;
-    setThrottle(0);
-    nextThrottle = 0;
+    ESCs[0]->arm(arm);
+    ESCs[0]->arm(arm);
   }
-}
-
-void IRAM_ATTR setThrottle(double newThrottle) {
-  newThrottle = (newThrottle > 2000) ? 2000 : newThrottle;
-  newThrottle = (newThrottle < 0) ? 0 : newThrottle;
-  newThrottle = (newThrottle > maxThrottle) ? maxThrottle : newThrottle;
-  throttle = newThrottle;
-  newThrottle += (newThrottle == 0) ? 0 : 47;
-  escValue = appendChecksum(newThrottle);
 }
 
 uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest) {
@@ -52,7 +42,7 @@ void startRace(){
   }
 }
 
-double calcThrottle(int target, int was[], double masterMultiplier) {
+double calcThrottle(int target, int was[], double currentThrottle, double masterMultiplier) {
   double was_avg = 0;
   int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
   for (int i = 0; i < TREND_AMOUNT; i++) {
@@ -68,10 +58,10 @@ double calcThrottle(int target, int was[], double masterMultiplier) {
   double prediction = m * ((double)TREND_AMOUNT - (double)(TREND_AMOUNT / 2)) + (double)was_avg;
   if (prediction < 0) prediction = 0;
   double deltaERPM = target - prediction;
-  double delta_throttle = erpmA * pow(deltaERPM, 3) + erpmB * pow(deltaERPM, 2) + erpmC * deltaERPM;
+  double delta_throttle = erpmA * deltaERPM*deltaERPM*deltaERPM + erpmB * deltaERPM*deltaERPM + erpmC * deltaERPM;
   delta_throttle *= pidMulti * masterMultiplier;
 
-  return throttle + delta_throttle;
+  return currentThrottle + delta_throttle;
 }
 
 void receiveSerial() {
@@ -92,7 +82,8 @@ float erpmToRps(float erpm){
 void setNewTargetValue(){
   switch (ctrlMode) {
     case MODE_THROTTLE:
-      nextThrottle = reqValue;
+      ESCs[0]->setThrottle(reqValue);
+      ESCs[1]->setThrottle(reqValue);
       break;
     case MODE_RPS:
       if (reqValue > maxTargetRPS)
@@ -114,20 +105,26 @@ void sendRaceLog(){
 }
 
 void throttleRoutine(){
-  if (armed) {
+  if ((ESCs[0]->status) & ARMED_MASK) {
     switch (ctrlMode) {
-      int addToTargetERPM;
+      int addToTargetERPMLeft, addToTargetERPMRight;
       case MODE_THROTTLE:
         break;
       case MODE_RPS:
-        nextThrottle = calcThrottle(targetERPM, previousERPM);
+        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM, ESCs[0]->currentThrottle));
+        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM, ESCs[1]->currentThrottle));
         break;
       case MODE_SLIP:
-        addToTargetERPM = zeroERPMOffset - ((float)throttle * (float) zeroERPMOffset / (float) zeroOffsetAtThrottle);
-        if (addToTargetERPM < 0)
-          addToTargetERPM = 0;
-        targetERPM = ((-(float)speedBMI) / ((float) targetSlip * .01f - 1)) / erpmToMMPerSecond + addToTargetERPM;
-        nextThrottle = calcThrottle(targetERPM, previousERPM, slipMulti);
+        addToTargetERPMLeft = zeroERPMOffset - ((float)(ESCs[0]->currentThrottle) * (float) zeroERPMOffset / (float) zeroOffsetAtThrottle);
+        if (addToTargetERPMLeft < 0)
+          addToTargetERPMLeft = 0;
+        addToTargetERPMRight = zeroERPMOffset - ((float)(ESCs[0]->currentThrottle) * (float) zeroERPMOffset / (float) zeroOffsetAtThrottle);
+        if (addToTargetERPMRight < 0)
+          addToTargetERPMRight = 0;
+        
+        targetERPM = ((-(float)speedBMI) / ((float) targetSlip * .01f - 1)) / erpmToMMPerSecond + (addToTargetERPMLeft + addToTargetERPMRight) / 2;
+        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM, ESCs[0]->currentThrottle, slipMulti));
+        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM, ESCs[1]->currentThrottle, slipMulti));
         break;
     }
   }
@@ -136,12 +133,12 @@ void throttleRoutine(){
 void checkVoltage(){
   if (millis() > nextCheck){
     nextCheck += 10000;
-    if (telemetryVoltage < warningVoltage && telemetryVoltage != 0 && telemetryVoltage != 257){
+    if (ESCs[0]->voltage < warningVoltage && ESCs[0]->voltage != 0 && ESCs[0]->status & CONNECTED_MASK){
       warningVoltageCount++;
       if (warningVoltageCount % 5 == 3){
         broadcastWSMessage(F("MESSAGEBEEP Warnung! Spannung niedrig!"));
-        manualData[0] = 0xbb;
-        manualDataAmount = 1;
+        ESCs[0]->beep(ESC_BEEP_5);
+        ESCs[1]->beep(ESC_BEEP_5);
       }
     } else {
       warningVoltageCount = 0;
@@ -152,7 +149,7 @@ void checkVoltage(){
 uint16_t getMaxValue (int mode){
   switch (mode){
     case MODE_THROTTLE:
-      return maxThrottle;
+      return ESC::getMaxThrottle();
     case MODE_RPS:
       return maxTargetRPS;
     case MODE_SLIP:

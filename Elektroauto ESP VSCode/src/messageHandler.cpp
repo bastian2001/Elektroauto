@@ -47,12 +47,12 @@ void processMessage(String message, uint8_t from) {
     modeText += ctrlMode;
     switch(ctrlMode){
       case MODE_THROTTLE:
-        reqValue = nextThrottle; // stationary
+        reqValue = (((int)(ESCs[0]->currentThrottle)) + ((int)(ESCs[1]->currentThrottle))) / 2; // stationary
         break;
       case MODE_RPS:
-        if (erpmToRps(telemetryERPM) > maxTargetRPS)
+        if (erpmToRps((((uint16_t)(ESCs[0]->heRPM)) + ((uint16_t)(ESCs[1]->heRPM))) / 2) > maxTargetRPS)
           reqValue = maxTargetRPS;
-        reqValue = erpmToRps(telemetryERPM);
+        reqValue = erpmToRps((((uint16_t)(ESCs[0]->heRPM)) + ((uint16_t)(ESCs[1]->heRPM))) / 2);
         targetERPM = rpsToErpm(reqValue);
         break;
       case MODE_SLIP:
@@ -91,7 +91,7 @@ void processMessage(String message, uint8_t from) {
       broadcastWSMessage("UNBLOCK VALUE");
     } else {
       broadcastWSMessage("SET RACEMODETOGGLE OFF");
-      if (!armed)
+      if (!((ESCs[0]->status) & ARMED_MASK))
         broadcastWSMessage("BLOCK VALUE 0");
     }
     raceMode = raceModeOn;
@@ -102,9 +102,11 @@ void processMessage(String message, uint8_t from) {
   }
 
   else if (command == "CUTOFFVOLTAGE"){
-    cutoffVoltage = message.substring(dividerPos + 1).toInt();
+    uint16_t vol = message.substring(dividerPos + 1).toInt();
+    ESCs[0]->cutoffVoltage = vol;
+    ESCs[1]->cutoffVoltage = vol;
     char bcMessage[50];
-    snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", (double)cutoffVoltage/100.0);
+    snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", (double)vol/100.0);
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, bcMessage);
   }
@@ -167,9 +169,11 @@ void processMessage(String message, uint8_t from) {
             data |= ((c - '0') << ((3-n) * 4));
           }
         }
-        manualData[i/5] = data;
+        ESCs[0]->manualData11[i/5] = data;
+        ESCs[1]->manualData11[i/5] = data;
       }
-      manualDataAmount = length / 5 + 1;
+      ESCs[0]->manualDataAmount = length / 5 + 1;
+      ESCs[1]->manualDataAmount = length / 5 + 1;
     }
   }
 
@@ -191,11 +195,11 @@ void processMessage(String message, uint8_t from) {
     sendSettings(from);
   }
   else if (command == "MAXT" || command == "MAXTHROTTLE"){
-    maxThrottle = message.substring(dividerPos + 1).toInt();
+    ESC::setMaxThrottle(message.substring(dividerPos + 1).toInt());
     if (ctrlMode == MODE_THROTTLE)
-      broadcastWSMessage(String("MAXVALUE ") + String(maxThrottle));
+      broadcastWSMessage(String("MAXVALUE ") + String(ESC::getMaxThrottle()));
     if (!message.endsWith("NOMESSAGE"))
-      sendWSMessage(from, String("MESSAGE Max. Gaswert ist nun ") + String(maxThrottle));
+      sendWSMessage(from, String("MESSAGE Max. Gaswert ist nun ") + String(ESC::getMaxThrottle()));
   }
   else if (command == "MAXR" || command == "MAXRPS"){
     maxTargetRPS = message.substring(dividerPos + 1).toInt();

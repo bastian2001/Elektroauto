@@ -6,7 +6,7 @@ double rawAccelToPhysicalAccel(int raw){ // in mm per s
 
 void readBMI(){
     rawAccel = -BMI160.getAccelerationX();
-    if (telemetryERPM > 0 || throttle > 0){
+    if (ESCs[0]->heRPM > 0 || ESCs[0]->currentThrottle > 0){
         acceleration = rawAccelToPhysicalAccel(rawAccel);
         speedBMI += acceleration / (double)ESC_FREQ;
         distBMI += speedBMI / (double)ESC_FREQ;
@@ -18,21 +18,11 @@ void readBMI(){
 }
 
 void calibrateAccelerometer(){
-    BMI160.autoCalibrateXAccelOffset(0);
-    BMI160.autoCalibrateYAccelOffset(0);
-    BMI160.autoCalibrateZAccelOffset(1);
-    BMI160.setAccelOffsetEnabled(true);
-
-    #ifdef PRINT_SETUP
-    if (!(BMI160.getRegister(0x1b) & 0x8))
-        Serial.println("Couldn't calibrate the BMI160");
-    else Serial.println("Calibration finished.");
-    #endif
 }
 
 void initBMI(){
-    pinMode(26, OUTPUT);
-    digitalWrite(26, HIGH);
+    // pinMode(22, OUTPUT);
+    // digitalWrite(22, HIGH);
     delay(20);
     #ifdef PRINT_SETUP
     Serial.println("Connecting to BMI160...");
@@ -49,9 +39,19 @@ void initBMI(){
     #endif
     
     BMI160.setAccelerometerRange(2); //+/-2g range for high precision
-    BMI160.setAccelerometerRate(800); //1600Hz for fast sampling
+    BMI160.setAccelerometerRate(1600); //1600Hz for fast sampling
 
-    calibrateAccelerometer();
+    
+    BMI160.autoCalibrateXAccelOffset(0);
+    BMI160.autoCalibrateYAccelOffset(0);
+    BMI160.autoCalibrateZAccelOffset(1);
+    BMI160.setAccelOffsetEnabled(true);
+
+    #ifdef PRINT_SETUP
+    if (!(BMI160.getRegister(0x1b) & 0x8))
+        Serial.println("Couldn't calibrate the BMI160");
+    else Serial.println("Calibration finished.");
+    #endif
 
     delay(10);
 }
