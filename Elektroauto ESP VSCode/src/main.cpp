@@ -26,10 +26,54 @@ volatile unsigned long lastCore1 = 0;
 
 
 void onESCError(ESC * esc, uint8_t err){
-
+  int pos = 0;
+  while (!broadcastQueue[pos].isEmpty())
+    pos++;
+  switch(err){
+    case ERROR_TOO_FAST:
+      broadcastQueue[pos] = "MESSAGEBEEP Wegen Überhitzung disarmed";
+      ESCs[0]->arm(false);
+      ESCs[1]->arm(false);
+      break;
+    case ERROR_VOLTAGE_LOW:
+      broadcastQueue[pos] = "MESSAGEBEEP Cutoff-Spannung unterschritten";
+      ESCs[0]->arm(false);
+      ESCs[1]->arm(false);
+      break;
+    case ERROR_OVERHEAT:
+      broadcastQueue[pos] = "MESSAGEBEEP Zu hohe Drehzahl";
+      ESCs[0]->arm(false);
+      ESCs[1]->arm(false);
+      break;
+  }
 }
 void onStatusChange(ESC * esc, uint8_t newStatus, uint8_t oldStatus){
-
+  int pos = 0;
+  while (!broadcastQueue[pos].isEmpty())
+    pos++;
+  oldStatus ^= newStatus;
+  if (oldStatus & CONNECTED_MASK){
+    if (newStatus & CONNECTED_MASK){
+      if (esc == ESCs[0])
+        Serial.println("Verbindung zum linken ESC hergestellt");
+      if (esc == ESCs[1])
+        Serial.println("Verbindung zum rechten ESC hergestellt");
+    } else {
+      if (esc == ESCs[0])
+        Serial.println("Verbindung zum linken ESC verloren");
+      if (esc == ESCs[1])
+        Serial.println("Verbindung zum rechten ESC verloren");
+    }
+  }
+  if (oldStatus & RED_LED_MASK){
+    broadcastQueue[pos++] = String("SET REDLED ") + esc->getRedLED();
+  }
+  if (oldStatus & GREEN_LED_MASK){
+    broadcastQueue[pos++] = String("SET GREENLED ") + esc->getGreenLED();
+  }
+  if (oldStatus & BLUE_LED_MASK){
+    broadcastQueue[pos++] = String("SET BLUELED ") + esc->getBlueLED();
+  }
 }
 
 
@@ -67,7 +111,6 @@ void loop0() {
   checkVoltage();
 
   handleWiFi();
-  Serial.println('e');
   receiveSerial();
 
   printSerial();
@@ -133,6 +176,8 @@ void core0Code( void * parameter) {
  * - initates websocket server
  */
 void setup() {
+  delay(100);
+
   //reading settings from EEPROM or writing them
   EEPROM.begin(52);
   if (firstStartup())
@@ -175,7 +220,6 @@ void setup() {
 
   //BMI initialization
   initBMI();
-
 
   //ESC pins Setup
   pinMode(ESC1_OUTPUT_PIN, OUTPUT);

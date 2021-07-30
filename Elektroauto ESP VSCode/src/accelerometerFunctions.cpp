@@ -21,9 +21,6 @@ void calibrateAccelerometer(){
 }
 
 void initBMI(){
-    // pinMode(22, OUTPUT);
-    // digitalWrite(22, HIGH);
-    delay(20);
     #ifdef PRINT_SETUP
     Serial.println("Connecting to BMI160...");
     #endif

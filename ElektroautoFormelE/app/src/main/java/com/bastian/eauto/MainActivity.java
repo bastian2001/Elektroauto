@@ -231,23 +231,23 @@ public class MainActivity extends AppCompatActivity {
         buttonDirectionTwo.setOnClickListener(_v -> {sendRawData("02B9", 10);});
         buttonRed.setOnClickListener(_v -> {
             if(redLED)
-                sendRawData("0356", 1);
+                sendRawData("001A", 1);
             else
-                sendRawData("02DF", 1);
+                sendRawData("0016", 1);
         });//on: 02DF, off: 0356
         buttonGreen.setOnClickListener(_v -> {
             if(greenLED)
-                sendRawData("0374", 1);
+                sendRawData("001B", 1);
             else
-                sendRawData("02FD", 1);
-            greenLED = !greenLED;
+                sendRawData("0017", 1);
+            //greenLED = !greenLED;
         });//on: 02FD, off: 0374
         buttonBlue.setOnClickListener(_v -> {
             if(blueLED)
-                sendRawData("039A", 1);
+                sendRawData("001C", 1);
             else
-                sendRawData("0312", 1);
-            blueLED = !blueLED;
+                sendRawData("0018", 1);
+            //blueLED = !blueLED;
         });//on: 0312, off: 0399
 
         wsStart();

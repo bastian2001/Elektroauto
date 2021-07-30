@@ -13,7 +13,6 @@ void IRAM_ATTR escIR() {
   // #endif
 
   ESCs[currentESC]->send();
-  currentESC = 1 - currentESC;
   
   // #if TRANSMISSION_IND != 0
   // if (escOutputCounter == 0)
@@ -22,9 +21,11 @@ void IRAM_ATTR escIR() {
 
   // record new previousERPM value
   for (int i = 0; i < TREND_AMOUNT - 1; i++) {
-    previousERPM[i] = previousERPM[i + 1];
+    previousERPM[currentESC][i] = previousERPM[currentESC][i + 1];
   }
-  previousERPM[TREND_AMOUNT - 1] = ESCs[0]->heRPM;
+  previousERPM[currentESC][TREND_AMOUNT - 1] = ESCs[currentESC]->heRPM;
+
+  currentESC = 1 - currentESC;
 
   // handle BMI routine
   readBMI();
@@ -59,7 +60,7 @@ void IRAM_ATTR escIR() {
   if (raceActive){
     throttle_log[logPosition] = ESCs[0]->currentThrottle;
     acceleration_log[logPosition] = 0;
-    erpm_log[logPosition] = previousERPM[TREND_AMOUNT - 1];
+    erpm_log[logPosition] = previousERPM[0][TREND_AMOUNT - 1];
     voltage_log[logPosition] = ESCs[0]->voltage;
     temp_log[logPosition] = ESCs[0]->temperature;
     logPosition++;

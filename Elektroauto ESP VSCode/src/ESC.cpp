@@ -39,21 +39,21 @@ ESC::~ESC(){
 bool ESC::loop(){
     bool newTelemetry = false;
 
-    if (noTelemetryCounter > 50 && status & CONNECTED_MASK && status & ENABLED_MASK){
+    if (noTelemetryCounter > 50 && (status & CONNECTED_MASK) && (status & ENABLED_MASK)){
         status &= ((uint8_t) 0xFF - CONNECTED_MASK);
     }
-
+    // Serial.print('1');
     while (this->telemetryStream->available()){
         for (uint8_t i = 0; i < 9; i++){
             telemetry[i] = telemetry[i+1];
         }
-        telemetry[9] = (char) Serial1.read();
+        telemetry[9] = (char) telemetryStream->read();
         if (isTelemetryComplete()){
             noTelemetryCounter = 0;
 
             if (!(status & CONNECTED_MASK)){
                 for (uint8_t i = 0; i < 17; i++){
-                    manualData11[i] = 0x1;
+                    manualData11[i] = 0;
                 }
                 manualData11[17] = (status & RED_LED_MASK) ? CMD_LED0_ON : CMD_LED0_OFF;
                 manualData11[18] = (status & GREEN_LED_MASK) ? CMD_LED1_ON : CMD_LED1_OFF;
@@ -120,7 +120,11 @@ void ESC::resume(){
 
 
 void ESC::arm(bool arm){
-    status = arm ? (status | ARMED_MASK) : (status & ((unsigned char) 0xFF - ARMED_MASK));
+    if (arm){
+        status |= ARMED_MASK;
+    } else {
+        status &= (0xFF - ARMED_MASK);
+    }
     nextThrottle = 0;
     currentThrottle = 0;
 }
@@ -130,7 +134,7 @@ void ESC::beep(uint8_t level, bool pauseBefore){
     uint8_t start = manualDataAmount;
     if (pauseBefore){
         while (start < 50){
-            this->manualData11[start] = 0x1;
+            this->manualData11[start] = 0;
             start++;
         }
     }
@@ -157,11 +161,11 @@ void ESC::beep(uint8_t level, bool pauseBefore){
 
 void ESC::setThrottle(double newThrottle){
     newThrottle = (newThrottle < 0) ? 0 : newThrottle;
-    newThrottle = (newThrottle > maxThrottle) ? maxThrottle : newThrottle;
+    nextThrottle = (newThrottle > maxThrottle) ? maxThrottle : newThrottle;
 }
 
-
 void IRAM_ATTR ESC::send(){
+    currentThrottle = nextThrottle;
     if (manualDataAmount){
         sendRaw11(manualData11[0]);
         manualDataAmount--;
@@ -170,11 +174,11 @@ void IRAM_ATTR ESC::send(){
         }
     } else {
         if (status & ARMED_MASK){
-            currentThrottle = nextThrottle;
             sendThrottle(currentThrottle + .5);
+        } else {
+            sendThrottle(0);
         }
     }
-    currentThrottle = nextThrottle;
 }
 
 
@@ -223,17 +227,17 @@ void IRAM_ATTR ESC::sendFullRaw(uint16_t rawValueWithChecksum){
 
 
 bool ESC::getRedLED(){
-    return this->status & RED_LED_MASK;
+    return (this->status & RED_LED_MASK) > 0;
 }
 
 
 bool ESC::getGreenLED(){
-    return this->status & BLUE_LED_MASK;
+    return (this->status & GREEN_LED_MASK) > 0;
 }
 
 
 bool ESC::getBlueLED(){
-    return this->status & BLUE_LED_MASK;
+    return (this->status & BLUE_LED_MASK) > 0;
 }
 
 void ESC::setMaxThrottle (uint16_t maxThrottle){

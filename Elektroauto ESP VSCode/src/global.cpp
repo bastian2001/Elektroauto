@@ -45,7 +45,7 @@ int targetERPM = 0, ctrlMode = MODE_THROTTLE, reqValue = 0, targetSlip = 0;
 // uint16_t manualData[MAX_MANUAL_DATA];
 
 // throttle calculation
-int previousERPM[TREND_AMOUNT];
+int previousERPM[2][TREND_AMOUNT];
 
 // race mode, adjust LOG_SIZE when changing logged data
 bool raceMode = false, raceActive = false, raceModeSendValues = false;
@@ -64,6 +64,7 @@ bool calibrateFlag = false;
 WebSocketsServer webSocket = WebSocketsServer(80);
 uint8_t clients[MAX_WS_CONNECTIONS][2];
 uint8_t telemetryClientsCounter = 0;
+String broadcastQueue[10];
 
 // ESCs
 ESC *ESCs[2];

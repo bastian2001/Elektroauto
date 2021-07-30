@@ -62,6 +62,8 @@
 #define ssid "Test"
 /// The password for wifi
 #define password "CaputDraconis"
+// #define ssid "POCO X3 NFC"
+// #define password "055fb39a4cc4"
 
 //debugging settings
 /// print setup info (e.g. IP-Address)
@@ -154,7 +156,7 @@ extern int targetERPM, ctrlMode, reqValue, targetSlip;
 // extern uint16_t manualData[20];
 
 // throttle calculation
-extern int previousERPM[TREND_AMOUNT];
+extern int previousERPM[2][TREND_AMOUNT];
 
 // race mode
 extern bool raceModeSendValues, raceMode, raceActive;
@@ -173,6 +175,7 @@ extern bool calibrateFlag;
 extern WebSocketsServer webSocket;
 extern uint8_t clients[MAX_WS_CONNECTIONS][2]; //[device (disconnected, app, web)][telemetry (off, on)]
 extern uint8_t telemetryClientsCounter;
+extern String broadcastQueue[10];
 
 // ESCs
 extern ESC *ESCs[2]; //0: left, 1: right

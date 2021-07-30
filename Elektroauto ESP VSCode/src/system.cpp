@@ -7,14 +7,17 @@ uint32_t nextCheck = 0;
 uint8_t warningVoltageCount = 0;
 
 void setArmed (bool arm){
-  if (arm != (ESCs[0]->status & ARMED_MASK)){
+  if (arm != ((ESCs[0]->status & ARMED_MASK) > 0)){
+    Serial.print(arm);
     if (!raceActive){
       reqValue = 0;
       targetERPM = 0;
     }
     broadcastWSMessage((raceActive ? arm : arm || raceMode) ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
     ESCs[0]->arm(arm);
-    ESCs[0]->arm(arm);
+    ESCs[1]->arm(arm);
+    Serial.print(ESCs[0]->status, BIN);
+    Serial.print(ESCs[1]->status, BIN);
   }
 }
 
@@ -65,6 +68,7 @@ double calcThrottle(int target, int was[], double currentThrottle, double master
 }
 
 void receiveSerial() {
+  delay(1);
   if (Serial.available()) {
     String readout = Serial.readStringUntil('\n');
     processMessage(readout, 255);
@@ -111,8 +115,8 @@ void throttleRoutine(){
       case MODE_THROTTLE:
         break;
       case MODE_RPS:
-        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM, ESCs[0]->currentThrottle));
-        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM, ESCs[1]->currentThrottle));
+        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM[0], ESCs[0]->currentThrottle));
+        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM[1], ESCs[1]->currentThrottle));
         break;
       case MODE_SLIP:
         addToTargetERPMLeft = zeroERPMOffset - ((float)(ESCs[0]->currentThrottle) * (float) zeroERPMOffset / (float) zeroOffsetAtThrottle);
@@ -123,8 +127,8 @@ void throttleRoutine(){
           addToTargetERPMRight = 0;
         
         targetERPM = ((-(float)speedBMI) / ((float) targetSlip * .01f - 1)) / erpmToMMPerSecond + (addToTargetERPMLeft + addToTargetERPMRight) / 2;
-        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM, ESCs[0]->currentThrottle, slipMulti));
-        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM, ESCs[1]->currentThrottle, slipMulti));
+        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM[0], ESCs[0]->currentThrottle, slipMulti));
+        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM[1], ESCs[1]->currentThrottle, slipMulti));
         break;
     }
   }
