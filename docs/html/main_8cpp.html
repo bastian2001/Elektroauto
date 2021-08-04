@@ -87,6 +87,12 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a8b0ba260d66d9f019ee0f7edb8c18b60"><td class="memItemLeft" align="right" valign="top"><a id="a8b0ba260d66d9f019ee0f7edb8c18b60"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>onESCError</b> (<a class="el" href="class_e_s_c.html">ESC</a> *esc, uint8_t err)</td></tr>
+<tr class="separator:a8b0ba260d66d9f019ee0f7edb8c18b60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94e5f9f4af5de27b647523a85626d27c"><td class="memItemLeft" align="right" valign="top"><a id="a94e5f9f4af5de27b647523a85626d27c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>onStatusChange</b> (<a class="el" href="class_e_s_c.html">ESC</a> *esc, uint8_t newStatus, uint8_t oldStatus)</td></tr>
+<tr class="separator:a94e5f9f4af5de27b647523a85626d27c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26b30696e54f6ba948e549b2e1704f75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8cpp.html#a26b30696e54f6ba948e549b2e1704f75">loop0</a> ()</td></tr>
 <tr class="memdesc:a26b30696e54f6ba948e549b2e1704f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">loop on core 0  <a href="main_8cpp.html#a26b30696e54f6ba948e549b2e1704f75">More...</a><br /></td></tr>
 <tr class="separator:a26b30696e54f6ba948e549b2e1704f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,9 +115,18 @@ TaskHandle_t&#160;</td><td class="memItemRight" valign="bottom"><b>core0Task</b>
 <tr class="memitem:a7ca4b5135917e120e72f4a8a146ffab9"><td class="memItemLeft" align="right" valign="top"><a id="a7ca4b5135917e120e72f4a8a146ffab9"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>c1ready</b> = false</td></tr>
 <tr class="separator:a7ca4b5135917e120e72f4a8a146ffab9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41c8960f7551406b58e8d9e2e24edf4c"><td class="memItemLeft" align="right" valign="top"><a id="a41c8960f7551406b58e8d9e2e24edf4c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>c0ready</b> = false</td></tr>
+<tr class="separator:a41c8960f7551406b58e8d9e2e24edf4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97222eeccb5b18e1fc532806c1efcb34"><td class="memItemLeft" align="right" valign="top"><a id="a97222eeccb5b18e1fc532806c1efcb34"></a>
 hw_timer_t *&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b> = NULL</td></tr>
 <tr class="separator:a97222eeccb5b18e1fc532806c1efcb34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d969a117ff354753046a6b35e922858"><td class="memItemLeft" align="right" valign="top"><a id="a6d969a117ff354753046a6b35e922858"></a>
+volatile unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>lastCore0</b> = 0</td></tr>
+<tr class="separator:a6d969a117ff354753046a6b35e922858"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8208feb03dcffe4d62ca8f13c28dce27"><td class="memItemLeft" align="right" valign="top"><a id="a8208feb03dcffe4d62ca8f13c28dce27"></a>
+volatile unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>lastCore1</b> = 0</td></tr>
+<tr class="separator:a8208feb03dcffe4d62ca8f13c28dce27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>the entry point for the project </p>
@@ -160,9 +175,9 @@ hw_timer_t *&#160;</td><td class="memItemRight" valign="bottom"><b>timer</b> = N
 <p>the not so time-sensitive stuff<br  />
  initiates:</p><ul>
 <li>wifi reconnection if neccessary</li>
-<li>race mode values sending</li>
+<li>sending race mode values</li>
 <li>low voltage checking</li>
-<li>wifi and serial message handling</li>
+<li>User I/O handling</li>
 <li>Serial string printing </li>
 </ul>
 

@@ -86,6 +86,7 @@ $(function() {
 <code>#include &quot;WiFi.h&quot;</code><br />
 <code>#include &lt;esp_task_wdt.h&gt;</code><br />
 <code>#include &quot;BMI160Gen.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="_e_s_c_8h_source.html">ESC.h</a>&quot;</code><br />
 </div>
 <p><a href="global_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -131,49 +132,17 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a2a4476ae47f5d5a8fc7957242f61710b">SPI_SCL</a>&#160;&#160;&#160;18</td></tr>
 <tr class="memdesc:a2a4476ae47f5d5a8fc7957242f61710b"><td class="mdescLeft">&#160;</td><td class="mdescRight">pin used for SCL/SCK of the SPI driver <br /></td></tr>
 <tr class="separator:a2a4476ae47f5d5a8fc7957242f61710b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0421f559f421e5e767afcee6218b9bbd"><td class="memItemLeft" align="right" valign="top"><a id="a0421f559f421e5e767afcee6218b9bbd"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a0421f559f421e5e767afcee6218b9bbd">MAX_MANUAL_DATA</a>&#160;&#160;&#160;20</td></tr>
-<tr class="memdesc:a0421f559f421e5e767afcee6218b9bbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">maximum amount of manual data <br /></td></tr>
-<tr class="separator:a0421f559f421e5e767afcee6218b9bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80c5db6627af198f27aeba2efd397f65"><td class="memItemLeft" align="right" valign="top"><a id="a80c5db6627af198f27aeba2efd397f65"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a80c5db6627af198f27aeba2efd397f65">ESC_FREQ</a>&#160;&#160;&#160;800</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a80c5db6627af198f27aeba2efd397f65">ESC_FREQ</a>&#160;&#160;&#160;1600</td></tr>
 <tr class="memdesc:a80c5db6627af198f27aeba2efd397f65"><td class="mdescLeft">&#160;</td><td class="mdescRight">frequency of basically everything <br /></td></tr>
 <tr class="separator:a80c5db6627af198f27aeba2efd397f65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9be9d353e7467e5f6cd20f68bd912dc"><td class="memItemLeft" align="right" valign="top"><a id="ac9be9d353e7467e5f6cd20f68bd912dc"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#ac9be9d353e7467e5f6cd20f68bd912dc">CLK_DIV</a>&#160;&#160;&#160;3</td></tr>
-<tr class="memdesc:ac9be9d353e7467e5f6cd20f68bd912dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">DShot 150: 12, DShot 300: 6, DShot 600: 3, change value accordingly for the desired DShot speed. <br /></td></tr>
-<tr class="separator:ac9be9d353e7467e5f6cd20f68bd912dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b15781780446cc96c3529e67ffd155b"><td class="memItemLeft" align="right" valign="top"><a id="a1b15781780446cc96c3529e67ffd155b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a1b15781780446cc96c3529e67ffd155b">T0H</a>&#160;&#160;&#160;17</td></tr>
-<tr class="memdesc:a1b15781780446cc96c3529e67ffd155b"><td class="mdescLeft">&#160;</td><td class="mdescRight">0 bit high time <br /></td></tr>
-<tr class="separator:a1b15781780446cc96c3529e67ffd155b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0de4e06e642a9dfa3d6f273a5c8e23b"><td class="memItemLeft" align="right" valign="top"><a id="ae0de4e06e642a9dfa3d6f273a5c8e23b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#ae0de4e06e642a9dfa3d6f273a5c8e23b">T1H</a>&#160;&#160;&#160;33</td></tr>
-<tr class="memdesc:ae0de4e06e642a9dfa3d6f273a5c8e23b"><td class="mdescLeft">&#160;</td><td class="mdescRight">1 bit high time <br /></td></tr>
-<tr class="separator:ae0de4e06e642a9dfa3d6f273a5c8e23b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa6df9b03f5c83a82da353df9bb19a60"><td class="memItemLeft" align="right" valign="top"><a id="aaa6df9b03f5c83a82da353df9bb19a60"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#aaa6df9b03f5c83a82da353df9bb19a60">T0L</a>&#160;&#160;&#160;27</td></tr>
-<tr class="memdesc:aaa6df9b03f5c83a82da353df9bb19a60"><td class="mdescLeft">&#160;</td><td class="mdescRight">0 bit low time <br /></td></tr>
-<tr class="separator:aaa6df9b03f5c83a82da353df9bb19a60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad296a317c61b4367f690d958fb2ee12"><td class="memItemLeft" align="right" valign="top"><a id="aad296a317c61b4367f690d958fb2ee12"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#aad296a317c61b4367f690d958fb2ee12">T1L</a>&#160;&#160;&#160;11</td></tr>
-<tr class="memdesc:aad296a317c61b4367f690d958fb2ee12"><td class="mdescLeft">&#160;</td><td class="mdescRight">1 bit low time <br /></td></tr>
-<tr class="separator:aad296a317c61b4367f690d958fb2ee12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2200db6bd258037917b0a5a4bbbedcce"><td class="memItemLeft" align="right" valign="top"><a id="a2200db6bd258037917b0a5a4bbbedcce"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a2200db6bd258037917b0a5a4bbbedcce">T_RESET</a>&#160;&#160;&#160;21</td></tr>
-<tr class="memdesc:a2200db6bd258037917b0a5a4bbbedcce"><td class="mdescLeft">&#160;</td><td class="mdescRight">reset length in multiples of bit time <br /></td></tr>
-<tr class="separator:a2200db6bd258037917b0a5a4bbbedcce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03e5d66497c5de80038cf08880bb7378"><td class="memItemLeft" align="right" valign="top"><a id="a03e5d66497c5de80038cf08880bb7378"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a03e5d66497c5de80038cf08880bb7378">ESC_BUFFER_ITEMS</a>&#160;&#160;&#160;16</td></tr>
-<tr class="memdesc:a03e5d66497c5de80038cf08880bb7378"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of bits sent out via DShot <br /></td></tr>
-<tr class="separator:a03e5d66497c5de80038cf08880bb7378"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a237cf6d05ca8467dea7399045ca9d6a3"><td class="memItemLeft" align="right" valign="top"><a id="a237cf6d05ca8467dea7399045ca9d6a3"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a237cf6d05ca8467dea7399045ca9d6a3">TRANSMISSION_IND</a>&#160;&#160;&#160;0</td></tr>
 <tr class="memdesc:a237cf6d05ca8467dea7399045ca9d6a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">transmission indicator every ... frames; 0 for disabled (recommended for final/semi-stable build) <br /></td></tr>
 <tr class="separator:a237cf6d05ca8467dea7399045ca9d6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b79d48b6cabc261f17b4933e379d5ad"><td class="memItemLeft" align="right" valign="top"><a id="a8b79d48b6cabc261f17b4933e379d5ad"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a8b79d48b6cabc261f17b4933e379d5ad">TELEMETRY_DEBUG</a>&#160;&#160;&#160;0</td></tr>
-<tr class="memdesc:a8b79d48b6cabc261f17b4933e379d5ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print telemetry from ESC out to Serial every ... frames; 0 for disabled (recommended for final/semi-stable build); use lower values with care. <br /></td></tr>
+<tr class="memdesc:a8b79d48b6cabc261f17b4933e379d5ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print telemetry from <a class="el" href="class_e_s_c.html">ESC</a> out to Serial every ... frames; 0 for disabled (recommended for final/semi-stable build); use lower values with care. <br /></td></tr>
 <tr class="separator:a8b79d48b6cabc261f17b4933e379d5ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13ab435552e77175e45358dd829439b9"><td class="memItemLeft" align="right" valign="top"><a id="a13ab435552e77175e45358dd829439b9"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a13ab435552e77175e45358dd829439b9">PRINT_TELEMETRY_THROTTLE</a></td></tr>
@@ -181,7 +150,7 @@ Macros</h2></td></tr>
 <tr class="separator:a13ab435552e77175e45358dd829439b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb765ba3aad67611651f569b7cd1ab6a"><td class="memItemLeft" align="right" valign="top"><a id="afb765ba3aad67611651f569b7cd1ab6a"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#afb765ba3aad67611651f569b7cd1ab6a">PRINT_TELEMETRY_TEMP</a></td></tr>
-<tr class="memdesc:afb765ba3aad67611651f569b7cd1ab6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the temperature of the ESC when printing the telemetry. <br /></td></tr>
+<tr class="memdesc:afb765ba3aad67611651f569b7cd1ab6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the temperature of the <a class="el" href="class_e_s_c.html">ESC</a> when printing the telemetry. <br /></td></tr>
 <tr class="separator:afb765ba3aad67611651f569b7cd1ab6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90e815192367808af30e7a3c4ecbbb54"><td class="memItemLeft" align="right" valign="top"><a id="a90e815192367808af30e7a3c4ecbbb54"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a90e815192367808af30e7a3c4ecbbb54">PRINT_TELEMETRY_ERPM</a></td></tr>
@@ -272,6 +241,10 @@ Variables</h2></td></tr>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a0fa98adb3fdfd4dc909581e0c54fedec">pidMulti</a></td></tr>
 <tr class="memdesc:a0fa98adb3fdfd4dc909581e0c54fedec"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the master multiplier for RPS/slip control, default value is set here <br /></td></tr>
 <tr class="separator:a0fa98adb3fdfd4dc909581e0c54fedec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81562e6195d0c616ae6a836c8906257e"><td class="memItemLeft" align="right" valign="top"><a id="a81562e6195d0c616ae6a836c8906257e"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a81562e6195d0c616ae6a836c8906257e">slipMulti</a></td></tr>
+<tr class="memdesc:a81562e6195d0c616ae6a836c8906257e"><td class="mdescLeft">&#160;</td><td class="mdescRight">additional multiplier for slip control <br /></td></tr>
+<tr class="separator:a81562e6195d0c616ae6a836c8906257e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bd7e88c9b1c79a183a0a806b3a06d64"><td class="memItemLeft" align="right" valign="top"><a id="a8bd7e88c9b1c79a183a0a806b3a06d64"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a8bd7e88c9b1c79a183a0a806b3a06d64">erpmA</a></td></tr>
 <tr class="memdesc:a8bd7e88c9b1c79a183a0a806b3a06d64"><td class="mdescLeft">&#160;</td><td class="mdescRight">große Änderungen: zu viel -&gt; overshooting bei großen Anpassungen, abwürgen. Zu wenig -&gt; langsames Anpassen bei großen Änderungen; holds the third power value for RPS/slip control, default value is given here <br /></td></tr>
@@ -284,13 +257,8 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a9eb2a6de3e4d21d3195ec36a590cdc7b">erpmC</a></td></tr>
 <tr class="memdesc:a9eb2a6de3e4d21d3195ec36a590cdc7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">responsiveness: zu viel -&gt; schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -&gt; langsames Anpassen bei kleinen Änderungen; holds the linear factor for RPS/slip control, default value is set here <br /></td></tr>
 <tr class="separator:a9eb2a6de3e4d21d3195ec36a590cdc7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58dbca7fc4b257b24877ad902fb5b941"><td class="memItemLeft" align="right" valign="top"><a id="a58dbca7fc4b257b24877ad902fb5b941"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a58dbca7fc4b257b24877ad902fb5b941">maxThrottle</a></td></tr>
-<tr class="memdesc:a58dbca7fc4b257b24877ad902fb5b941"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the maximum allowed throttle, default value is set here <br /></td></tr>
-<tr class="separator:a58dbca7fc4b257b24877ad902fb5b941"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6d0762f775c0ff335fa744a677d2015"><td class="memItemLeft" align="right" valign="top"><a id="ac6d0762f775c0ff335fa744a677d2015"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#ac6d0762f775c0ff335fa744a677d2015">maxTargetRPS</a></td></tr>
-<tr class="memdesc:ac6d0762f775c0ff335fa744a677d2015"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the maximum allowed target RPS, default value is set here <br /></td></tr>
+<tr class="memitem:ac6d0762f775c0ff335fa744a677d2015"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#ac6d0762f775c0ff335fa744a677d2015">maxTargetRPS</a></td></tr>
+<tr class="memdesc:ac6d0762f775c0ff335fa744a677d2015"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the maximum allowed throttle, default value is set here  <a href="global_8h.html#ac6d0762f775c0ff335fa744a677d2015">More...</a><br /></td></tr>
 <tr class="separator:ac6d0762f775c0ff335fa744a677d2015"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a830a7932532dbb50469279dec065ac2a"><td class="memItemLeft" align="right" valign="top"><a id="a830a7932532dbb50469279dec065ac2a"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a830a7932532dbb50469279dec065ac2a">maxTargetSlip</a></td></tr>
@@ -322,13 +290,8 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a00d209d466b20a672654d85ba6b33a9e">commitFlag</a></td></tr>
 <tr class="memdesc:a00d209d466b20a672654d85ba6b33a9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">don't change anything here, keeps track of whether/when to save the settings to EEPROM <br /></td></tr>
 <tr class="separator:a00d209d466b20a672654d85ba6b33a9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7cfc4e9a7ca51ffdebbe723ea43b3544"><td class="memItemLeft" align="right" valign="top"><a id="a7cfc4e9a7ca51ffdebbe723ea43b3544"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a7cfc4e9a7ca51ffdebbe723ea43b3544">cutoffVoltage</a></td></tr>
-<tr class="memdesc:a7cfc4e9a7ca51ffdebbe723ea43b3544"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the value for the cutoff voltage (no movement possible, car stops), default value is set here <br /></td></tr>
-<tr class="separator:a7cfc4e9a7ca51ffdebbe723ea43b3544"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="memItemLeft" align="right" valign="top"><a id="a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc">warningVoltage</a></td></tr>
-<tr class="memdesc:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the value for the warning voltage (user is warned of low voltage), default value is set here <br /></td></tr>
+<tr class="memitem:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc">warningVoltage</a></td></tr>
+<tr class="memdesc:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the value for the cutoff voltage (no movement possible, car stops), default value is set here  <a href="global_8h.html#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc">More...</a><br /></td></tr>
 <tr class="separator:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae23951bd8593a2989cc852b02275a1b1"><td class="memItemLeft" align="right" valign="top"><a id="ae23951bd8593a2989cc852b02275a1b1"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>targetERPM</b></td></tr>
@@ -342,57 +305,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>reqValue</b></td></tr>
 <tr class="memitem:a2bea781e5ef8ad1f812adf338b225435"><td class="memItemLeft" align="right" valign="top"><a id="a2bea781e5ef8ad1f812adf338b225435"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>targetSlip</b></td></tr>
 <tr class="separator:a2bea781e5ef8ad1f812adf338b225435"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b34135ba96284c15e4f57caa1da8535"><td class="memItemLeft" align="right" valign="top"><a id="a3b34135ba96284c15e4f57caa1da8535"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>escValue</b></td></tr>
-<tr class="separator:a3b34135ba96284c15e4f57caa1da8535"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95a7a3c9dec5f98703b42898ccd417a1"><td class="memItemLeft" align="right" valign="top"><a id="a95a7a3c9dec5f98703b42898ccd417a1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>armed</b></td></tr>
-<tr class="separator:a95a7a3c9dec5f98703b42898ccd417a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f75b7d6cc659674185fee0af0ca6a54"><td class="memItemLeft" align="right" valign="top"><a id="a5f75b7d6cc659674185fee0af0ca6a54"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>throttle</b></td></tr>
-<tr class="separator:a5f75b7d6cc659674185fee0af0ca6a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a082abd2e29cbe1ad17175acd56353c54"><td class="memItemLeft" align="right" valign="top"><a id="a082abd2e29cbe1ad17175acd56353c54"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>nextThrottle</b></td></tr>
-<tr class="separator:a082abd2e29cbe1ad17175acd56353c54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1717158a022e696a395c650020f63ea1"><td class="memItemLeft" align="right" valign="top"><a id="a1717158a022e696a395c650020f63ea1"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryERPM</b></td></tr>
-<tr class="separator:a1717158a022e696a395c650020f63ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd0e0c6f7a14817cb4688f755798cb2b"><td class="memItemLeft" align="right" valign="top"><a id="abd0e0c6f7a14817cb4688f755798cb2b"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryVoltage</b></td></tr>
-<tr class="separator:abd0e0c6f7a14817cb4688f755798cb2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa18d2cd1776d420f3bf4f1711bb67d29"><td class="memItemLeft" align="right" valign="top"><a id="aa18d2cd1776d420f3bf4f1711bb67d29"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryTemp</b></td></tr>
-<tr class="separator:aa18d2cd1776d420f3bf4f1711bb67d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3db094deb28aaba554842aec875da37a"><td class="memItemLeft" align="right" valign="top"><a id="a3db094deb28aaba554842aec875da37a"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>speedWheel</b></td></tr>
-<tr class="separator:a3db094deb28aaba554842aec875da37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a0571ec4a1b576b0864f831f72d5c67"><td class="memItemLeft" align="right" valign="top"><a id="a2a0571ec4a1b576b0864f831f72d5c67"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>redLED</b></td></tr>
-<tr class="separator:a2a0571ec4a1b576b0864f831f72d5c67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa10aa7c2fdf11e1fef0871e34a749f7"><td class="memItemLeft" align="right" valign="top"><a id="aaa10aa7c2fdf11e1fef0871e34a749f7"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>greenLED</b></td></tr>
-<tr class="separator:aaa10aa7c2fdf11e1fef0871e34a749f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4ce072d581b4ef2c21e520c6c3158cb"><td class="memItemLeft" align="right" valign="top"><a id="aa4ce072d581b4ef2c21e520c6c3158cb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>blueLED</b></td></tr>
-<tr class="separator:aa4ce072d581b4ef2c21e520c6c3158cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a763241cbe54adcea12292c72183ecad6"><td class="memItemLeft" align="right" valign="top"><a id="a763241cbe54adcea12292c72183ecad6"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newRedLED</b></td></tr>
-<tr class="separator:a763241cbe54adcea12292c72183ecad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a562770a1969177c3aa00043693faebda"><td class="memItemLeft" align="right" valign="top"><a id="a562770a1969177c3aa00043693faebda"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newGreenLED</b></td></tr>
-<tr class="separator:a562770a1969177c3aa00043693faebda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5d5094de4934be018c36387807ef157"><td class="memItemLeft" align="right" valign="top"><a id="ad5d5094de4934be018c36387807ef157"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>newBlueLED</b></td></tr>
-<tr class="separator:ad5d5094de4934be018c36387807ef157"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ac3f202ac25c2daa08b77cb528a8e63"><td class="memItemLeft" align="right" valign="top"><a id="a2ac3f202ac25c2daa08b77cb528a8e63"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualDataAmount</b></td></tr>
-<tr class="separator:a2ac3f202ac25c2daa08b77cb528a8e63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae77f4140a70a3a318c41ea021259f5f"><td class="memItemLeft" align="right" valign="top"><a id="aae77f4140a70a3a318c41ea021259f5f"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualData</b> [<a class="el" href="global_8h.html#a0421f559f421e5e767afcee6218b9bbd">MAX_MANUAL_DATA</a>]</td></tr>
-<tr class="separator:aae77f4140a70a3a318c41ea021259f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf939d54a139f1622309631f51791575"><td class="memItemLeft" align="right" valign="top"><a id="acf939d54a139f1622309631f51791575"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>previousERPM</b> [<a class="el" href="global_8h.html#a7db45444f58d4ef5a2387d71bf2eb6cd">TREND_AMOUNT</a>]</td></tr>
-<tr class="separator:acf939d54a139f1622309631f51791575"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c3e4f8775adc339d2efa6eba86b7f18"><td class="memItemLeft" align="right" valign="top"><a id="a7c3e4f8775adc339d2efa6eba86b7f18"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>previousERPM</b> [2][<a class="el" href="global_8h.html#a7db45444f58d4ef5a2387d71bf2eb6cd">TREND_AMOUNT</a>]</td></tr>
+<tr class="separator:a7c3e4f8775adc339d2efa6eba86b7f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e17b7e9e8b47aeace0f0ff75da60ba7"><td class="memItemLeft" align="right" valign="top"><a id="a1e17b7e9e8b47aeace0f0ff75da60ba7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>raceModeSendValues</b></td></tr>
 <tr class="separator:a1e17b7e9e8b47aeace0f0ff75da60ba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -435,6 +350,9 @@ double&#160;</td><td class="memItemRight" valign="bottom"><b>acceleration</b></t
 <tr class="memitem:a6fe8481b1eb531bad4b39b731ee251a7"><td class="memItemLeft" align="right" valign="top"><a id="a6fe8481b1eb531bad4b39b731ee251a7"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><b>rawAccel</b></td></tr>
 <tr class="separator:a6fe8481b1eb531bad4b39b731ee251a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a426b74b367ea29feddfe90380b3aa9b3"><td class="memItemLeft" align="right" valign="top"><a id="a426b74b367ea29feddfe90380b3aa9b3"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>calibrateFlag</b></td></tr>
+<tr class="separator:a426b74b367ea29feddfe90380b3aa9b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memItemLeft" align="right" valign="top"><a id="a5a9d65f1a8d9a12255db818887b5bcd3"></a>
 WebSocketsServer&#160;</td><td class="memItemRight" valign="bottom"><b>webSocket</b></td></tr>
 <tr class="separator:a5a9d65f1a8d9a12255db818887b5bcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -444,6 +362,12 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [<a cl
 <tr class="memitem:aa41a9d138204b963a89a32e9218a31fe"><td class="memItemLeft" align="right" valign="top"><a id="aa41a9d138204b963a89a32e9218a31fe"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryClientsCounter</b></td></tr>
 <tr class="separator:aa41a9d138204b963a89a32e9218a31fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f9da6ab58d87124f947e5302d55d769"><td class="memItemLeft" align="right" valign="top"><a id="a8f9da6ab58d87124f947e5302d55d769"></a>
+String&#160;</td><td class="memItemRight" valign="bottom"><b>broadcastQueue</b> [10]</td></tr>
+<tr class="separator:a8f9da6ab58d87124f947e5302d55d769"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c95490a642dca93aa868ac6f250469e"><td class="memItemLeft" align="right" valign="top"><a id="a8c95490a642dca93aa868ac6f250469e"></a>
+<a class="el" href="class_e_s_c.html">ESC</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>ESCs</b> [2]</td></tr>
+<tr class="separator:a8c95490a642dca93aa868ac6f250469e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a396e4de6e38f0fabefa20680a5ac6eac"><td class="memItemLeft" align="right" valign="top"><a id="a396e4de6e38f0fabefa20680a5ac6eac"></a>
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>errorCount</b></td></tr>
 <tr class="separator:a396e4de6e38f0fabefa20680a5ac6eac"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -500,6 +424,57 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>errorCount</b></t
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ac6d0762f775c0ff335fa744a677d2015"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6d0762f775c0ff335fa744a677d2015">&#9670;&nbsp;</a></span>maxTargetRPS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t maxTargetRPS</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>holds the maximum allowed throttle, default value is set here </p>
+<p>holds the maximum allowed target RPS, default value is set here </p>
+
+</div>
+</div>
+<a id="a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc">&#9670;&nbsp;</a></span>warningVoltage</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t warningVoltage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>holds the value for the cutoff voltage (no movement possible, car stops), default value is set here </p>
+<p>holds the value for the warning voltage (user is warned of low voltage), default value is set here </p>
 
 </div>
 </div>

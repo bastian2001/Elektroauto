@@ -86,7 +86,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a1361245b98c0a4bdd6b6672d904d2d90"><td class="mdescLeft">&#160;</td><td class="mdescRight">arms or disarms the car  <a href="system_8h.html#a1361245b98c0a4bdd6b6672d904d2d90">More...</a><br /></td></tr>
 <tr class="separator:a1361245b98c0a4bdd6b6672d904d2d90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a864152e747dddf045a6f0c2ae455ca"><td class="memItemLeft" align="right" valign="top">void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="system_8h.html#a0a864152e747dddf045a6f0c2ae455ca">setThrottle</a> (double newThrottle)</td></tr>
-<tr class="memdesc:a0a864152e747dddf045a6f0c2ae455ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the ESC value with the appended checksum.  <a href="system_8h.html#a0a864152e747dddf045a6f0c2ae455ca">More...</a><br /></td></tr>
+<tr class="memdesc:a0a864152e747dddf045a6f0c2ae455ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the <a class="el" href="class_e_s_c.html">ESC</a> value with the appended checksum.  <a href="system_8h.html#a0a864152e747dddf045a6f0c2ae455ca">More...</a><br /></td></tr>
 <tr class="separator:a0a864152e747dddf045a6f0c2ae455ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ca850cad220e1e76adfeb9fa299574f"><td class="memItemLeft" align="right" valign="top">uint16_t IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="system_8h.html#a7ca850cad220e1e76adfeb9fa299574f">appendChecksum</a> (uint16_t value, bool telemetryRequest=true)</td></tr>
 <tr class="memdesc:a7ca850cad220e1e76adfeb9fa299574f"><td class="mdescLeft">&#160;</td><td class="mdescRight">appends the checksum and the telemetry request bit  <a href="system_8h.html#a7ca850cad220e1e76adfeb9fa299574f">More...</a><br /></td></tr>
@@ -95,9 +95,9 @@ Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="system_8h.html#a2fdb9996058244b9a986bc1d3dd4e0db">startRace</a> ()</td></tr>
 <tr class="memdesc:a2fdb9996058244b9a986bc1d3dd4e0db"><td class="mdescLeft">&#160;</td><td class="mdescRight">starts the race <br /></td></tr>
 <tr class="separator:a2fdb9996058244b9a986bc1d3dd4e0db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9765a12616961c9ff1893573340996e2"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="system_8h.html#a9765a12616961c9ff1893573340996e2">calcThrottle</a> (int target, int was[], double masterMultiplier=1)</td></tr>
-<tr class="memdesc:a9765a12616961c9ff1893573340996e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculates the next throttle value in speed control mode  <a href="system_8h.html#a9765a12616961c9ff1893573340996e2">More...</a><br /></td></tr>
-<tr class="separator:a9765a12616961c9ff1893573340996e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1be87d977eca23988a782a03d901e7f1"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="system_8h.html#a1be87d977eca23988a782a03d901e7f1">calcThrottle</a> (int target, int was[], double currentThrottle, double masterMultiplier=1)</td></tr>
+<tr class="memdesc:a1be87d977eca23988a782a03d901e7f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculates the next throttle value in speed control mode  <a href="system_8h.html#a1be87d977eca23988a782a03d901e7f1">More...</a><br /></td></tr>
+<tr class="separator:a1be87d977eca23988a782a03d901e7f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd5c80d067d6526fddee014b075ee1dd"><td class="memItemLeft" align="right" valign="top"><a id="abd5c80d067d6526fddee014b075ee1dd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="system_8h.html#abd5c80d067d6526fddee014b075ee1dd">receiveSerial</a> ()</td></tr>
 <tr class="memdesc:abd5c80d067d6526fddee014b075ee1dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">reads the Serial0 port and processes the message using processMessage <br /></td></tr>
@@ -167,8 +167,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="syst
 
 </div>
 </div>
-<a id="a9765a12616961c9ff1893573340996e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9765a12616961c9ff1893573340996e2">&#9670;&nbsp;</a></span>calcThrottle()</h2>
+<a id="a1be87d977eca23988a782a03d901e7f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1be87d977eca23988a782a03d901e7f1">&#9670;&nbsp;</a></span>calcThrottle()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -184,6 +184,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="syst
           <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>was</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>currentThrottle</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -355,7 +361,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="syst
       </table>
 </div><div class="memdoc">
 
-<p>Sets the ESC value with the appended checksum. </p>
+<p>Sets the <a class="el" href="class_e_s_c.html">ESC</a> value with the appended checksum. </p>
 <p>WARNING: There are no further armed checks between this function and the sending of the value, alter the "nextThrottle" variable instead. The offset for the settings is automatically applied </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">newThrottle</td><td>the new throttle between 0 and 2000, value is floored </td></tr>

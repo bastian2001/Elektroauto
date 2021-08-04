@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['zeroerpmoffset_171',['zeroERPMOffset',['../global_8h.html#a293fd24739e748e0d8af14c196bcccbb',1,'global.cpp']]],
-  ['zerooffsetatthrottle_172',['zeroOffsetAtThrottle',['../global_8h.html#a375f34883446af337a33a9e148d423b5',1,'global.cpp']]]
+  ['warningvoltage_163',['warningVoltage',['../global_8h.html#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc',1,'global.cpp']]],
+  ['wheeldiameter_164',['wheelDiameter',['../global_8h.html#a1ae47d11efdf9feaa5dcce484875a23b',1,'global.cpp']]]
 ];

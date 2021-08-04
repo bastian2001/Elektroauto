@@ -74,7 +74,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>all the neccessary ESC functions  
+<p>all the neccessary <a class="el" href="class_e_s_c.html">ESC</a> functions  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;Arduino.h&gt;</code><br />
 </div>
@@ -82,101 +82,13 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab6d86ff51f354f47b026686b1e659266"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8h.html#ab6d86ff51f354f47b026686b1e659266">esc_init</a> (rmt_channel_t channel, uint8_t pin)</td></tr>
-<tr class="memdesc:ab6d86ff51f354f47b026686b1e659266"><td class="mdescLeft">&#160;</td><td class="mdescRight">initializes the RMT peripheral for DShot data transmittion  <a href="esc_functions_8h.html#ab6d86ff51f354f47b026686b1e659266">More...</a><br /></td></tr>
-<tr class="separator:ab6d86ff51f354f47b026686b1e659266"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ee60aa82f21a8de84a2f22741a41cb6"><td class="memItemLeft" align="right" valign="top">void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8h.html#a7ee60aa82f21a8de84a2f22741a41cb6">esc_send_value</a> (uint16_t value, bool wait, rmt_channel_t channel)</td></tr>
-<tr class="memdesc:a7ee60aa82f21a8de84a2f22741a41cb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">prepares the DShot-packet and sends it  <a href="esc_functions_8h.html#a7ee60aa82f21a8de84a2f22741a41cb6">More...</a><br /></td></tr>
-<tr class="separator:a7ee60aa82f21a8de84a2f22741a41cb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af34dde1971825c0524be244a348ac85a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="esc_functions_8h.html#af34dde1971825c0524be244a348ac85a">escIR</a> ()</td></tr>
-<tr class="memdesc:af34dde1971825c0524be244a348ac85a"><td class="mdescLeft">&#160;</td><td class="mdescRight">the ESC interrupt routine  <a href="esc_functions_8h.html#af34dde1971825c0524be244a348ac85a">More...</a><br /></td></tr>
+<tr class="memdesc:af34dde1971825c0524be244a348ac85a"><td class="mdescLeft">&#160;</td><td class="mdescRight">the <a class="el" href="class_e_s_c.html">ESC</a> interrupt routine  <a href="esc_functions_8h.html#af34dde1971825c0524be244a348ac85a">More...</a><br /></td></tr>
 <tr class="separator:af34dde1971825c0524be244a348ac85a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>all the neccessary ESC functions </p>
+<div class="textblock"><p>all the neccessary <a class="el" href="class_e_s_c.html">ESC</a> functions </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ab6d86ff51f354f47b026686b1e659266"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6d86ff51f354f47b026686b1e659266">&#9670;&nbsp;</a></span>esc_init()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void esc_init </td>
-          <td>(</td>
-          <td class="paramtype">rmt_channel_t&#160;</td>
-          <td class="paramname"><em>channel</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>pin</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>initializes the RMT peripheral for DShot data transmittion </p>
-<p>automatically run at startup </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">channel</td><td>the channel to be initialized </td></tr>
-    <tr><td class="paramname">pin</td><td>the pin number </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a7ee60aa82f21a8de84a2f22741a41cb6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ee60aa82f21a8de84a2f22741a41cb6">&#9670;&nbsp;</a></span>esc_send_value()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void IRAM_ATTR esc_send_value </td>
-          <td>(</td>
-          <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>value</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>wait</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">rmt_channel_t&#160;</td>
-          <td class="paramname"><em>channel</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>prepares the DShot-packet and sends it </p>
-<p>also checks for LED changes</p>
-<p>WARNING: please do not manually run it, escIR runs it at the frequency specified in ESC_FREQ </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">value</td><td>the full packet to transmit </td></tr>
-    <tr><td class="paramname">wait</td><td>whether to wait until the transmission is done </td></tr>
-    <tr><td class="paramname">channel</td><td>the channel where the value should be sent </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="af34dde1971825c0524be244a348ac85a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af34dde1971825c0524be244a348ac85a">&#9670;&nbsp;</a></span>escIR()</h2>
 
@@ -192,7 +104,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>the ESC interrupt routine </p>
+<p>the <a class="el" href="class_e_s_c.html">ESC</a> interrupt routine </p>
 <p>WARNING: please do not manually run it, the timer interrupt runs it at the frequency specified in ESC_FREQ</p><ul>
 <li>runs setThrottle if car is armed, thus applies the checksum</li>
 <li>if available, it takes the manualData inplace of the escValue and sends the respective value to the esc</li>
