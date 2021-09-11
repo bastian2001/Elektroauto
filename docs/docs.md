@@ -49,7 +49,7 @@
   <tr>
     <td>ESC 2 Telemetry</td>
     <td>16 (RX2)</td>
-    <td>ESC 2: S (Telemetry)</td>
+    <td>ESC 2: T (Telemetry)</td>
   </tr>
   <tr>
     <td>BMI160 - MISO</td>
@@ -78,7 +78,7 @@
   </tr>
   <tr>
     <td>BMI160 - VCC</td>
-    <td>26</td>
+    <td>3V3</td>
     <td>BMI160: 3V3</td>
   </tr>
   <tr>
