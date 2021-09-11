@@ -1,10 +1,12 @@
 #include "global.h"
 #include "wifiStuff.h"
-#include "telemetry.h"
 #include "messageHandler.h"
 #include "system.h"
 
 unsigned long lastTelemetry = 0;
+char telData[24];
+//armed, throttle0, throttle1, speed0, speed1, rps0, rps1, temp0, temp1, tempBMI, voltage0, voltage1, acceleration, raceModeThing
+// 1      2          2          2       2       2     2     1      1      2        2         2         2             1            = 24
 
 void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
   #ifdef PRINT_BROADCASTS
@@ -128,15 +130,23 @@ void reconnect() {
 }
 
 void sendTelemetry() {
-  float rps = erpmToRps (ESCs[0]->heRPM);
+  //armed, throttle0, throttle1, speed0, speed1, rps0, rps1, temp0, temp1, tempBMI, voltage0, voltage1, acceleration, raceModeThing
+  // 1      2          2          2       2       2     2     1      1      2        2         2         2             1            = 24
+  float rps0 = erpmToRps (ESCs[0]->heRPM);
+  float rps1 = erpmToRps (ESCs[1]->heRPM);
   int slipPercent = 0;
   uint16_t speedWheel = ((float)(ESCs[0]->heRPM)) * erpmToMMPerSecond;
   if (speedWheel != 0) {
     slipPercent = (float)(speedWheel - speedBMI) / speedWheel * 100;
   }
-  char telData[66];
-  snprintf(telData, 66, "TELEMETRY a%d!p%d!u%d!t%d!r%d!s%d!v%d!w%d!c%d!%c%d", 
-    (ESCs[0]->status & ARMED_MASK) > 0, ESCs[0]->temperature, ESCs[0]->voltage, (int) (ESCs[0]->currentThrottle), (int) rps, slipPercent, (int) speedBMI, speedWheel, (int)(acceleration + .5), (raceMode && !raceActive) ? 'o' : 'q', reqValue);
+  telData[0] = ESCs[0]->status & ARMED_MASK;
+  telData[1] = ((uint16_t)ESCs[0]->currentThrottle) >> 8;
+  telData[2] = ((uint16_t)ESCs[1]->currentThrottle) & 0xFF;
+
+  // snprintf(telData, 73, "TELEMETRY a%d!p%d!u%d!t%d!u%d!r%d!s%d!v%d!w%d!c%d!%c%d", 
+  //   (ESCs[0]->status & ARMED_MASK) > 0, (ESCs[0]->temperature + ESCs[1]->temperature) / 2, (ESCs[0]->voltage + ESCs[1]->voltage) / 2, (int) (ESCs[0]->currentThrottle), (int) (ESCs[1]->currentThrottle), (int) rps0, (int) rps1, slipPercent, (int) speedBMI, speedWheel, (int)(acceleration + .5), (raceMode && !raceActive) ? 'o' : 'q', reqValue);
+
+  
   broadcastWSMessage(telData, true, 0, true);
 }
 
