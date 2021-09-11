@@ -1,8 +1,5 @@
 #include "global.h"
-#include "system.h"
 #include "accelerometerFunctions.h"
-
-uint8_t currentESC = 0;
 
 void IRAM_ATTR escIR() {
   // #if TRANSMISSION_IND != 0
@@ -12,7 +9,8 @@ void IRAM_ATTR escIR() {
   // delayMicroseconds(20);
   // #endif
 
-  ESCs[currentESC]->send();
+  ESCs[0]->send();
+  ESCs[1]->send();
   
   // #if TRANSMISSION_IND != 0
   // if (escOutputCounter == 0)
@@ -21,11 +19,11 @@ void IRAM_ATTR escIR() {
 
   // record new previousERPM value
   for (int i = 0; i < TREND_AMOUNT - 1; i++) {
-    previousERPM[currentESC][i] = previousERPM[currentESC][i + 1];
+    previousERPM[0][i] = previousERPM[0][i + 1];
+    previousERPM[1][i] = previousERPM[1][i + 1];
   }
-  previousERPM[currentESC][TREND_AMOUNT - 1] = ESCs[currentESC]->heRPM;
-
-  currentESC = 1 - currentESC;
+  previousERPM[0][TREND_AMOUNT - 1] = ESCs[0]->heRPM;
+  previousERPM[1][TREND_AMOUNT - 1] = ESCs[1]->heRPM;
 
   // handle BMI routine
   readBMI();
@@ -58,11 +56,16 @@ void IRAM_ATTR escIR() {
 
   // logging, if race is active
   if (raceActive){
-    throttle_log[logPosition] = ESCs[0]->currentThrottle;
-    acceleration_log[logPosition] = 0;
-    erpm_log[logPosition] = previousERPM[0][TREND_AMOUNT - 1];
-    voltage_log[logPosition] = ESCs[0]->voltage;
-    temp_log[logPosition] = ESCs[0]->temperature;
+    throttle_log[0][logPosition] = ESCs[0]->currentThrottle + .5;
+    throttle_log[1][logPosition] = ESCs[1]->currentThrottle + .5;
+    erpm_log[0][logPosition] = ESCs[0]->heRPM;
+    erpm_log[1][logPosition] = ESCs[1]->heRPM;
+    voltage_log[0][logPosition] = ESCs[0]->voltage;
+    voltage_log[1][logPosition] = ESCs[1]->voltage;
+    temp_log[0][logPosition] = ESCs[0]->temperature;
+    temp_log[1][logPosition] = ESCs[1]->temperature;
+    acceleration_log[logPosition] = rawAccel;
+    bmi_temp_log[logPosition] = bmiRawTemp;
     logPosition++;
     if (logPosition == LOG_FRAMES){
       raceActive = false;

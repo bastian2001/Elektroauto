@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     //constants
     private final int REQUEST_UPDATE_MS = 20;
-    private final int LOG_FRAMES = 5000, PACKET_SIZE = 100;
+    private final int LOG_FRAMES = 5000;
     private final int PING_AMOUNT = 20;
 
     //SharedPrefs
@@ -91,7 +91,12 @@ public class MainActivity extends AppCompatActivity {
     private int[] pingArray = new int[PING_AMOUNT];
 
     //log variables
-    private int[] throttle_log = new int[LOG_FRAMES], erpm_log = new int[LOG_FRAMES], voltage_log = new int[LOG_FRAMES], acceleration_log = new int[LOG_FRAMES], temp_log = new int[LOG_FRAMES];
+    private int[] throttle_log_0 = new int[LOG_FRAMES], throttle_log_1 = new int[LOG_FRAMES],
+            erpm_log_0 = new int[LOG_FRAMES], erpm_log_1 = new int[LOG_FRAMES],
+            voltage_log_0 = new int[LOG_FRAMES], voltage_log_1 = new int[LOG_FRAMES],
+            temp_log_0 = new int[LOG_FRAMES], temp_log_1 = new int[LOG_FRAMES],
+            acceleration_log = new int[LOG_FRAMES],
+            temp_log_bmi = new int[LOG_FRAMES];
 
     private static TaskHandle setTimeout(final Runnable r, long delay) {
         final Handler h = new Handler();
@@ -149,10 +154,6 @@ public class MainActivity extends AppCompatActivity {
         mEditor = mPreferences.edit();
 
         editTextIP.setText(mPreferences.getString("IP", "192.168.0.111"));
-
-        for (int i = 0; i < LOG_FRAMES; i+=PACKET_SIZE){
-            throttle_log[i] = -1;
-        }
 
         buttonArm.setOnClickListener(_v -> sendArmed (true));//Arm
         buttonDisarm.setOnClickListener(_V -> sendArmed(false));//Disarm
@@ -677,25 +678,40 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             byte[] bytes = bin.toByteArray();
             for (int i = 0; i < LOG_FRAMES; i++){
-                throttle_log[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);
-                acceleration_log[i] = (((bytes[i * 2 + LOG_FRAMES * 2 + 1]) << 8) & 0xFF) | (bytes[i * 2 + LOG_FRAMES * 2] & 0xFF);
-                erpm_log[i] = (((bytes[i * 2 + LOG_FRAMES * 4 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 4] & 0xFF);
-                voltage_log[i] = (((bytes[i * 2 + LOG_FRAMES * 6 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 6] & 0xFF);
-                temp_log[i] = (bytes[i + LOG_FRAMES * 8] & 0xFF);
+                throttle_log_0[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);
+                throttle_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 2 + 1]) << 8) & 0xFF) | (bytes[i * 2 + LOG_FRAMES * 2] & 0xFF);
+                erpm_log_0[i] = (((bytes[i * 2 + LOG_FRAMES * 4 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 4] & 0xFF);
+                erpm_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 6 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 6] & 0xFF);
+                voltage_log_0[i] = (((bytes[i * 2 + LOG_FRAMES * 8 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 8] & 0xFF);
+                voltage_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 10 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 10] & 0xFF);
+                temp_log_bmi[i] = (bytes[i + LOG_FRAMES * 12] & 0xFF);
+                temp_log_bmi[i] = (bytes[i + LOG_FRAMES * 13] & 0xFF);
+                acceleration_log[i] = (((bytes[i * 2 + LOG_FRAMES * 14 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 14] & 0xFF);
+                temp_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 16 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 16] & 0xFF);
             }
 
             try {
                 JSONObject output = new JSONObject();
-                JSONArray finalThrottleArray = new JSONArray(throttle_log);
+                JSONArray finalThrottle0Array = new JSONArray(throttle_log_0);
+                JSONArray finalThrottle1Array = new JSONArray(throttle_log_1);
+                JSONArray finalERPM0Array = new JSONArray(erpm_log_0);
+                JSONArray finalERPM1Array = new JSONArray(erpm_log_1);
+                JSONArray finalVoltage0Array = new JSONArray(voltage_log_0);
+                JSONArray finalVoltage1Array = new JSONArray(voltage_log_1);
+                JSONArray finalTemperature0Array = new JSONArray(temp_log_0);
+                JSONArray finalTemperature1Array = new JSONArray(temp_log_1);
                 JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
-                JSONArray finalERPMArray = new JSONArray(erpm_log);
-                JSONArray finalVoltageArray = new JSONArray(voltage_log);
-                JSONArray finalTemperatureArray = new JSONArray(temp_log);
-                output.put("throttle", finalThrottleArray);
+                JSONArray finalTemperatureBMIArray = new JSONArray(temp_log_bmi);
+                output.put("throttle0", finalThrottle0Array);
+                output.put("throttle1", finalThrottle1Array);
+                output.put("erpm0", finalERPM0Array);
+                output.put("erpm1", finalERPM1Array);
+                output.put("voltage0", finalVoltage0Array);
+                output.put("voltage1", finalVoltage1Array);
+                output.put("temperature0", finalTemperature0Array);
+                output.put("temperature1", finalTemperature1Array);
                 output.put("acceleration", finalAccelerationArray);
-                output.put("erpm", finalERPMArray);
-                output.put("voltage", finalVoltageArray);
-                output.put("temperature", finalTemperatureArray);
+                output.put("temperatureBMI", finalTemperatureBMIArray);
                 String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
                         + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
                         + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
@@ -734,14 +750,16 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
                 }
 
-                throttle_log = new int[LOG_FRAMES];
+                throttle_log_0 = new int[LOG_FRAMES];
+                throttle_log_1 = new int[LOG_FRAMES];
+                erpm_log_0 = new int[LOG_FRAMES];
+                erpm_log_1 = new int[LOG_FRAMES];
+                voltage_log_0 = new int[LOG_FRAMES];
+                voltage_log_1 = new int[LOG_FRAMES];
+                temp_log_0 = new int[LOG_FRAMES];
+                temp_log_1 = new int[LOG_FRAMES];
                 acceleration_log = new int[LOG_FRAMES];
-                erpm_log = new int[LOG_FRAMES];
-                voltage_log = new int[LOG_FRAMES];
-                temp_log = new int[LOG_FRAMES];
-                for (int i = 0; i < LOG_FRAMES; i += PACKET_SIZE) {
-                    throttle_log[i] = -1;
-                }
+                temp_log_bmi = new int[LOG_FRAMES];
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {

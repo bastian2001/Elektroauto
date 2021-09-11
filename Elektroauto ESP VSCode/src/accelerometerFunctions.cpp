@@ -15,6 +15,7 @@ void readBMI(){
         speedBMI = 0;
         distBMI = 0;
     }
+    bmiRawTemp = BMI160.getTemperature();
 }
 
 void calibrateAccelerometer(){
@@ -36,7 +37,7 @@ void initBMI(){
     #endif
     
     BMI160.setAccelerometerRange(2); //+/-2g range for high precision
-    BMI160.setAccelerometerRate(1600); //1600Hz for fast sampling
+    BMI160.setAccelerometerRate(800); //800Hz for no aliasing (is default anyway)
 
     
     BMI160.autoCalibrateXAccelOffset(0);

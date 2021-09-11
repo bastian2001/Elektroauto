@@ -50,14 +50,15 @@ int previousERPM[2][TREND_AMOUNT];
 // race mode, adjust LOG_SIZE when changing logged data
 bool raceMode = false, raceActive = false, raceModeSendValues = false;
 uint16_t *logData;
-uint16_t *throttle_log, *erpm_log, *voltage_log;
+uint16_t *throttle_log[2], *erpm_log[2], *voltage_log[2];
+uint8_t *temp_log[2];
 int16_t *acceleration_log;
-uint8_t *temp_log;
+int16_t *bmi_temp_log;
 uint16_t logPosition = 0;
 
 // accelerometer
 double distBMI = 0, speedBMI = 0, acceleration = 0;
-int16_t rawAccel = 0;
+int16_t rawAccel = 0, bmiRawTemp;
 bool calibrateFlag = false;
 
 // WiFi/WebSockets

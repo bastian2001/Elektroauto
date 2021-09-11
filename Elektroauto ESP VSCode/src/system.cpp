@@ -105,7 +105,7 @@ void setNewTargetValue(){
 void sendRaceLog(){
   raceModeSendValues = false;
   delay(2);
-  broadcastWSBin((uint8_t*)logData, LOG_FRAMES * 9, true, 20);
+  broadcastWSBin((uint8_t*)logData, LOG_SIZE, true, 20);
 }
 
 void throttleRoutine(){

@@ -34,7 +34,7 @@
 
 
 ///frequency of basically everything
-#define ESC_FREQ 1600
+#define ESC_FREQ 800
 
 
 //ESC/DShot debugging settings
@@ -83,7 +83,7 @@
 /// number of frames that are logged in race mode
 #define LOG_FRAMES 5000
 /// number of bytes needed per log frame
-#define BYTES_PER_LOG_FRAME 9
+#define BYTES_PER_LOG_FRAME 18
 /// bytes reserved for logging
 #define LOG_SIZE (LOG_FRAMES * BYTES_PER_LOG_FRAME)
 
@@ -161,14 +161,15 @@ extern int previousERPM[2][TREND_AMOUNT];
 // race mode
 extern bool raceModeSendValues, raceMode, raceActive;
 extern uint16_t *logData;
-extern uint16_t *throttle_log, *erpm_log, *voltage_log;
+extern uint16_t *throttle_log[2], *erpm_log[2], *voltage_log[2];
+extern uint8_t *temp_log[2];
 extern int16_t *acceleration_log;
-extern uint8_t *temp_log;
+extern int16_t *bmi_temp_log;
 extern uint16_t logPosition;
 
 // accelerometer
 extern double distBMI, speedBMI, acceleration;
-extern int16_t rawAccel;
+extern int16_t rawAccel, bmiRawTemp;
 extern bool calibrateFlag;
 
 // WiFi/WebSockets
