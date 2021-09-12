@@ -16,6 +16,7 @@ void readBMI(){
         distBMI = 0;
     }
     bmiRawTemp = BMI160.getTemperature();
+    bmiTemp = 23 + bmiRawTemp / 512;
 }
 
 void calibrateAccelerometer(){

@@ -170,6 +170,7 @@ extern uint16_t logPosition;
 // accelerometer
 extern double distBMI, speedBMI, acceleration;
 extern int16_t rawAccel, bmiRawTemp;
+extern int8_t bmiTemp;
 extern bool calibrateFlag;
 
 // WiFi/WebSockets

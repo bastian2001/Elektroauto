@@ -96,11 +96,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cad899bc-e912-46f5-adbc-e5792a663ea7" name="Default Changelist" comment="dshot mX values configured">
       <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/accelerometerFunctions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/accelerometerFunctions.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/escFunctions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/escFunctions.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/global.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/global.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/global.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/global.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/system.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/system.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/wifiStuff.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Elektroauto ESP VSCode/src/wifiStuff.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/bastian/eauto/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/bastian/eauto/MainActivity.java" afterDir="false" />
     </list>
@@ -109,7 +109,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[VirtualDevicePath@C:\Users\bascs\.android\avd\Android_Wear_Round_API_28.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[VirtualDevicePath@C:\Users\bascs\.android\avd\Android_Wear_Round_Chin_API_28.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />

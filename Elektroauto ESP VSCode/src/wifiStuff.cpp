@@ -4,9 +4,9 @@
 #include "system.h"
 
 unsigned long lastTelemetry = 0;
-char telData[24];
-//armed, throttle0, throttle1, speed0, speed1, rps0, rps1, temp0, temp1, tempBMI, voltage0, voltage1, acceleration, raceModeThing
-// 1      2          2          2       2       2     2     1      1      2        2         2         2             1            = 24
+char telData[28];
+//armed, throttle0, throttle1, speed0, speed1, speedBMI, rps0, rps1, temp0, temp1, tempBMI, voltage0, voltage1, acceleration, raceModeThing, reqValue
+// 1      2          2          2       2       2         2     2     1      1      2        2         2         2             1              2        = 28
 
 void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
   #ifdef PRINT_BROADCASTS
@@ -130,21 +130,42 @@ void reconnect() {
 }
 
 void sendTelemetry() {
-  //armed, throttle0, throttle1, speed0, speed1, rps0, rps1, temp0, temp1, tempBMI, voltage0, voltage1, acceleration, raceModeThing
-  // 1      2          2          2       2       2     2     1      1      2        2         2         2             1            = 24
-  float rps0 = erpmToRps (ESCs[0]->heRPM);
-  float rps1 = erpmToRps (ESCs[1]->heRPM);
-  int slipPercent = 0;
-  uint16_t speedWheel = ((float)(ESCs[0]->heRPM)) * erpmToMMPerSecond;
-  if (speedWheel != 0) {
-    slipPercent = (float)(speedWheel - speedBMI) / speedWheel * 100;
-  }
+  uint16_t rps0 = erpmToRps (ESCs[0]->heRPM);
+  uint16_t rps1 = erpmToRps (ESCs[1]->heRPM);
+  uint16_t speedWheel0 = ((float)(ESCs[0]->heRPM)) * erpmToMMPerSecond;
+  uint16_t speedWheel1 = ((float)(ESCs[1]->heRPM)) * erpmToMMPerSecond;
+  uint16_t t0 = ESCs[0]->currentThrottle;
+  uint16_t t1 = ESCs[1]->currentThrottle;
+  int acc = acceleration + .5;
+  int sBMI = speedBMI;
   telData[0] = ESCs[0]->status & ARMED_MASK;
-  telData[1] = ((uint16_t)ESCs[0]->currentThrottle) >> 8;
-  telData[2] = ((uint16_t)ESCs[1]->currentThrottle) & 0xFF;
-
-  // snprintf(telData, 73, "TELEMETRY a%d!p%d!u%d!t%d!u%d!r%d!s%d!v%d!w%d!c%d!%c%d", 
-  //   (ESCs[0]->status & ARMED_MASK) > 0, (ESCs[0]->temperature + ESCs[1]->temperature) / 2, (ESCs[0]->voltage + ESCs[1]->voltage) / 2, (int) (ESCs[0]->currentThrottle), (int) (ESCs[1]->currentThrottle), (int) rps0, (int) rps1, slipPercent, (int) speedBMI, speedWheel, (int)(acceleration + .5), (raceMode && !raceActive) ? 'o' : 'q', reqValue);
+  telData[1] = (t0) >> 8;
+  telData[2] = (t0) & 0xFF;
+  telData[3] = (t1) >> 8;
+  telData[4] = (t1) & 0xFF;
+  telData[5] = speedWheel0 >> 8;
+  telData[6] = speedWheel0 & 0xFF;
+  telData[7] = speedWheel1 >> 8;
+  telData[8] = speedWheel1 & 0xFF;
+  telData[9] = sBMI >> 8;
+  telData[10] = sBMI & 0xFF;
+  telData[11] = rps0 >> 8;
+  telData[12] = rps0 & 0xFF;
+  telData[13] = rps1 >> 8;
+  telData[14] = rps1 & 0xFF;
+  telData[15] = ESCs[0]->temperature;
+  telData[16] = ESCs[1]->temperature;
+  telData[17] = bmiTemp;
+  telData[18] = temperatureRead();
+  telData[19] = ESCs[0]->voltage >> 8;
+  telData[20] = ESCs[0]->voltage & 0xFF;
+  telData[21] = ESCs[1]->voltage >> 8;
+  telData[22] = ESCs[1]->voltage & 0xFF;
+  telData[23] = acc >> 8;
+  telData[24] = acc & 0xFF;
+  telData[25] = raceMode && !raceActive;
+  telData[26] = reqValue >> 8;
+  telData[27] = reqValue & 0xFF;
 
   
   broadcastWSMessage(telData, true, 0, true);

@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
     //main variables
     private int espMode = 0, modeBeforeSoftDisarm = 0;
-    private int res_throttle = 0, res_rps = 0, res_slip = 0, res_velocity1 = 0, res_velocity2 = 0, res_acceleration = 0, res_voltage = 0, res_temp = 0;
     private MainActivity.TaskHandle autoSend;
     private boolean newSeekbarValueAvailable = false;
     private int newSeekbarValue = -1;
@@ -84,6 +83,18 @@ public class MainActivity extends AppCompatActivity {
     boolean seekbarTouch = false;
     private boolean firstStartup = true;
     private boolean redLED = false, greenLED = false, blueLED = false;
+
+    //telemetry
+    private boolean res_armed = false;
+    private int res_throttle0 = 0, res_throttle1 = 0;
+    private int res_speed0 = 0, res_speed1 = 0, res_speed_bmi = 0;
+    private int res_rps0 = 0, res_rps1 = 0;
+    private int res_temp0 = 0, res_temp1 = 0, res_temp_bmi = 0, res_temp_chip = 0;
+    private int res_voltage0 = 0, res_voltage1 = 0;
+    private int res_acceleration = 0;
+    private boolean res_raceModeThing = false;
+    private int res_reqValue = 0;
+    private int res_slip0 =0, res_slip1 = 0;
 
     //ping
     private long pMillis = 0;
@@ -295,79 +306,7 @@ public class MainActivity extends AppCompatActivity {
     private void onWSText(final String txt) {
         gotTelemetry = true;
         runOnUiThread(() -> {
-            if (txt.startsWith("TELEMETRY")) {
-                String telemetryText = txt.substring(txt.indexOf(" ") + 1);
-                String[] response_separated = telemetryText.split("!");
-                boolean res_armed = false;
-                boolean editTextIsInFocus = editTextValue.hasFocus();
-                int mode = spinnerMode.getSelectedItemPosition();
-                for (String s : response_separated) {
-                    int val = 0;
-                    try {
-                        val = Integer.parseInt(s.substring(1));
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(MainActivity.this, "Da ist etwas mit der Antwort falsch! NFE", Toast.LENGTH_SHORT).show();
-                    }
-                    switch (s.charAt(0)) {
-                        case 'a':
-                            res_armed = val > 0;
-                            break;
-                        case 'u':
-                            res_voltage = val;
-                            break;
-                        case 't':
-                            res_throttle = val;
-                            if (mode == 0 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
-                                seekBarValue.setProgress(val);
-                            }
-                            break;
-                        case 'r':
-                            res_rps = val;
-                            if (mode == 1 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
-                                seekBarValue.setProgress(val);
-                            }
-                            break;
-                        case 's':
-                            res_slip = val;
-                            if (mode == 2 && !seekbarTouch && !editTextIsInFocus && !telemetryText.contains("o")){
-                                seekBarValue.setProgress(val);
-                            }
-                            break;
-                        case 'v':
-                            res_velocity1 = val;
-                            break;
-                        case 'w':
-                            res_velocity2 = val;
-                            break;
-                        case 'c':
-                            res_acceleration = val;
-                            break;
-                        case 'p':
-                            res_temp = val;
-                            break;
-                        case 'o':
-                            if (!editTextIsInFocus)
-                                editTextValue.setText("" + val);
-                            if (!seekbarTouch){
-                                seekBarValue.setProgress(val);
-                            }
-                            break;
-                        case 'q':
-                            if (!editTextIsInFocus){
-                                editTextValue.setText("" + val);
-                            }
-                            break;
-                        default:
-                            Toast.makeText(MainActivity.this, "Da stimmt was mit der Antwort nicht! Unbekanntes Attribut: " + s.charAt(0), Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-                }
-
-                textViewTelemetry.setText("Status: " + (res_armed ? "Armed" : "Disarmed") + "\nSpannung: " + ((float) res_voltage / 100) + " V\nThrottle: " + res_throttle
-                        + "\nRPS: " + res_rps + "\nSchlupf: " + res_slip + "%\nGeschwindigkeit (MPU): " + ((float) res_velocity1 / 1000.0) + " m/s\nGeschwindigkeit (Räder): "
-                        + ((float) res_velocity2 / 1000.0) + " m/s\nBeschleunigung: " + res_acceleration/1000.0 + " m/s²\nTemperatur: " + res_temp + "°C");
-            }
-            else if (txt.startsWith("MESSAGE ")) {
+            if (txt.startsWith("MESSAGE ")) {
                 Toast.makeText(getApplicationContext(), txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_SHORT).show();
             } else if (txt.startsWith("MESSAGEBEEP")){
                 Toast.makeText(getApplicationContext(), txt.substring(txt.indexOf(' ') + 1), Toast.LENGTH_SHORT).show();
@@ -677,94 +616,156 @@ public class MainActivity extends AppCompatActivity {
     void onWSBin(final ByteString bin) {
         runOnUiThread(() -> {
             byte[] bytes = bin.toByteArray();
-            for (int i = 0; i < LOG_FRAMES; i++){
-                throttle_log_0[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);
-                throttle_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 2 + 1]) << 8) & 0xFF) | (bytes[i * 2 + LOG_FRAMES * 2] & 0xFF);
-                erpm_log_0[i] = (((bytes[i * 2 + LOG_FRAMES * 4 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 4] & 0xFF);
-                erpm_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 6 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 6] & 0xFF);
-                voltage_log_0[i] = (((bytes[i * 2 + LOG_FRAMES * 8 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 8] & 0xFF);
-                voltage_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 10 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 10] & 0xFF);
-                temp_log_bmi[i] = (bytes[i + LOG_FRAMES * 12] & 0xFF);
-                temp_log_bmi[i] = (bytes[i + LOG_FRAMES * 13] & 0xFF);
-                acceleration_log[i] = (((bytes[i * 2 + LOG_FRAMES * 14 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 14] & 0xFF);
-                temp_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 16 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 16] & 0xFF);
-            }
 
-            try {
-                JSONObject output = new JSONObject();
-                JSONArray finalThrottle0Array = new JSONArray(throttle_log_0);
-                JSONArray finalThrottle1Array = new JSONArray(throttle_log_1);
-                JSONArray finalERPM0Array = new JSONArray(erpm_log_0);
-                JSONArray finalERPM1Array = new JSONArray(erpm_log_1);
-                JSONArray finalVoltage0Array = new JSONArray(voltage_log_0);
-                JSONArray finalVoltage1Array = new JSONArray(voltage_log_1);
-                JSONArray finalTemperature0Array = new JSONArray(temp_log_0);
-                JSONArray finalTemperature1Array = new JSONArray(temp_log_1);
-                JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
-                JSONArray finalTemperatureBMIArray = new JSONArray(temp_log_bmi);
-                output.put("throttle0", finalThrottle0Array);
-                output.put("throttle1", finalThrottle1Array);
-                output.put("erpm0", finalERPM0Array);
-                output.put("erpm1", finalERPM1Array);
-                output.put("voltage0", finalVoltage0Array);
-                output.put("voltage1", finalVoltage1Array);
-                output.put("temperature0", finalTemperature0Array);
-                output.put("temperature1", finalTemperature1Array);
-                output.put("acceleration", finalAccelerationArray);
-                output.put("temperatureBMI", finalTemperatureBMIArray);
-                String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
-                        + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
-                        + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
-                        + prefixZero(Calendar.getInstance().get(Calendar.SECOND), 2) + ".json";
-                File folder;
-                boolean permissionGranted = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-                if (permissionGranted) {
-                    folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
-                } else {
-                    folder = getExternalFilesDir("Formel-E-Logs");
+            if (bytes.length < 100) {
+                res_armed = bytes[0] > 0;
+                res_throttle0 = bytes[1] << 8 | bytes[2];
+                res_throttle1 = bytes[3] << 8 | bytes[4];
+                res_speed0 = bytes[5] << 8 | bytes[6];
+                res_speed1 = bytes[7] << 8 | bytes[8];
+                res_speed_bmi = bytes[9] << 8 | bytes[10];
+                res_rps0 = bytes[11] << 8 | bytes[12];
+                res_rps1 = bytes[13] << 8 | bytes[14];
+                res_temp0 = bytes[15];
+                res_temp1 = bytes[16];
+                res_temp_bmi = bytes[17];
+                res_temp_chip = bytes[18];
+                res_voltage0 = bytes[19] << 8 | bytes[20];
+                res_voltage1 = bytes[21] << 8 | bytes[22];
+                res_acceleration = bytes[23] << 8 | bytes[24];
+                res_raceModeThing = bytes[25] > 0;
+                res_reqValue = bytes[26] << 8 | bytes[27];
+                res_slip0 = 0; res_slip1 = 0;
+
+                if (res_speed0 != 0 && res_speed1 != 0){
+                    res_slip0 = (int)((float)(res_speed0 - res_speed_bmi) / res_speed0 * 100);
+                    res_slip1 = (int)((float)(res_speed1 - res_speed_bmi) / res_speed1 * 100);
                 }
-                if (!folder.exists()) {
-                    folder.mkdir();
+
+                boolean editTextIsInFocus = editTextValue.hasFocus();
+                int mode = spinnerMode.getSelectedItemPosition();
+                if (mode == 0 && !seekbarTouch && !editTextIsInFocus && !res_raceModeThing){
+                    seekBarValue.setProgress(res_throttle0);
                 }
-                File file = new File(folder, fileName);
-                if (file.exists()) {
-                    String p = file.getAbsolutePath();
-                    int i;
-                    for (i = 2; i < 100; i++) {
-                        if (!(new File(p + "_" + i).exists())) break;
+                if (mode == 1 && !seekbarTouch && !editTextIsInFocus && !res_raceModeThing){
+                    seekBarValue.setProgress((res_rps0 + res_rps1) / 2);
+                }
+                if (mode == 2 && !seekbarTouch && !editTextIsInFocus && !res_raceModeThing){
+                    seekBarValue.setProgress((res_slip0 + res_slip1) / 2);
+                }
+
+                if(res_raceModeThing) {
+                    if (!editTextIsInFocus)
+                        editTextValue.setText("" + res_reqValue);
+                    if (!seekbarTouch) {
+                        seekBarValue.setProgress(res_reqValue);
                     }
-                    if (i == 100) {
-                        file = null;
+                } else {
+                    if (!editTextIsInFocus){
+                        editTextValue.setText("" + res_reqValue);
+                    }
+                }
+
+                textViewTelemetry.setText(
+                        "Status: " + (res_armed ? "Armed" : "Disarmed")
+                        + "\nSpannung: " + (float) res_voltage0 / 100.0 + " V, " + (float) res_voltage1 / 100.0
+                        + " V\nThrottle: " + res_throttle0 + ", " + res_throttle1
+                        + "\nRPS: " + res_rps0 + ", " + res_rps1
+                        + "\nSchlupf: " + res_slip0 + " %, " + res_slip1
+                        + " %\nGeschwindigkeit: " + (float)res_speed0 / 1000.0 + " m/s, " + (float)res_speed1 / 1000.0 + " m/s, " + (float) res_speed_bmi / 1000.0
+                        + " m/s\nBeschleunigung: " + (float) (res_acceleration) / 1000.0
+                        + " m/s²\nTemperatur: " + res_temp0 + " °C, " + res_temp1 + " °C, " + res_temp_bmi + " °C, " + res_temp_chip + " °C"
+                );
+            } else {
+                for (int i = 0; i < LOG_FRAMES; i++) {
+                    throttle_log_0[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);
+                    throttle_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 2 + 1]) << 8) & 0xFF) | (bytes[i * 2 + LOG_FRAMES * 2] & 0xFF);
+                    erpm_log_0[i] = (((bytes[i * 2 + LOG_FRAMES * 4 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 4] & 0xFF);
+                    erpm_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 6 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 6] & 0xFF);
+                    voltage_log_0[i] = (((bytes[i * 2 + LOG_FRAMES * 8 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 8] & 0xFF);
+                    voltage_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 10 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 10] & 0xFF);
+                    temp_log_bmi[i] = (bytes[i + LOG_FRAMES * 12] & 0xFF);
+                    temp_log_bmi[i] = (bytes[i + LOG_FRAMES * 13] & 0xFF);
+                    acceleration_log[i] = (((bytes[i * 2 + LOG_FRAMES * 14 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 14] & 0xFF);
+                    temp_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 16 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 16] & 0xFF);
+                }
+
+                try {
+                    JSONObject output = new JSONObject();
+                    JSONArray finalThrottle0Array = new JSONArray(throttle_log_0);
+                    JSONArray finalThrottle1Array = new JSONArray(throttle_log_1);
+                    JSONArray finalERPM0Array = new JSONArray(erpm_log_0);
+                    JSONArray finalERPM1Array = new JSONArray(erpm_log_1);
+                    JSONArray finalVoltage0Array = new JSONArray(voltage_log_0);
+                    JSONArray finalVoltage1Array = new JSONArray(voltage_log_1);
+                    JSONArray finalTemperature0Array = new JSONArray(temp_log_0);
+                    JSONArray finalTemperature1Array = new JSONArray(temp_log_1);
+                    JSONArray finalAccelerationArray = new JSONArray(acceleration_log);
+                    JSONArray finalTemperatureBMIArray = new JSONArray(temp_log_bmi);
+                    output.put("throttle0", finalThrottle0Array);
+                    output.put("throttle1", finalThrottle1Array);
+                    output.put("erpm0", finalERPM0Array);
+                    output.put("erpm1", finalERPM1Array);
+                    output.put("voltage0", finalVoltage0Array);
+                    output.put("voltage1", finalVoltage1Array);
+                    output.put("temperature0", finalTemperature0Array);
+                    output.put("temperature1", finalTemperature1Array);
+                    output.put("acceleration", finalAccelerationArray);
+                    output.put("temperatureBMI", finalTemperatureBMIArray);
+                    String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
+                            + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
+                            + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
+                            + prefixZero(Calendar.getInstance().get(Calendar.SECOND), 2) + ".json";
+                    File folder;
+                    boolean permissionGranted = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                    if (permissionGranted) {
+                        folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
                     } else {
-                        file = new File(p + "_" + i);
+                        folder = getExternalFilesDir("Formel-E-Logs");
                     }
-                }
-                if (file != null) {
-                    FileOutputStream fos = new FileOutputStream(file);
-                    OutputStreamWriter osw = new OutputStreamWriter(fos);
-                    BufferedWriter bufferedWriter = new BufferedWriter(osw);
-                    bufferedWriter.write(output.toString());
-                    bufferedWriter.close();
-                    Toast.makeText(MainActivity.this, permissionGranted ? "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert" : "Da die Berechtigung nicht erteilt wurde, wurde der Log unter " + file.getAbsolutePath() + " gespeichert.", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
-                }
+                    if (!folder.exists()) {
+                        folder.mkdir();
+                    }
+                    File file = new File(folder, fileName);
+                    if (file.exists()) {
+                        String p = file.getAbsolutePath();
+                        int i;
+                        for (i = 2; i < 100; i++) {
+                            if (!(new File(p + "_" + i).exists())) break;
+                        }
+                        if (i == 100) {
+                            file = null;
+                        } else {
+                            file = new File(p + "_" + i);
+                        }
+                    }
+                    if (file != null) {
+                        FileOutputStream fos = new FileOutputStream(file);
+                        OutputStreamWriter osw = new OutputStreamWriter(fos);
+                        BufferedWriter bufferedWriter = new BufferedWriter(osw);
+                        bufferedWriter.write(output.toString());
+                        bufferedWriter.close();
+                        Toast.makeText(MainActivity.this, permissionGranted ? "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert" : "Da die Berechtigung nicht erteilt wurde, wurde der Log unter " + file.getAbsolutePath() + " gespeichert.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
+                    }
 
-                throttle_log_0 = new int[LOG_FRAMES];
-                throttle_log_1 = new int[LOG_FRAMES];
-                erpm_log_0 = new int[LOG_FRAMES];
-                erpm_log_1 = new int[LOG_FRAMES];
-                voltage_log_0 = new int[LOG_FRAMES];
-                voltage_log_1 = new int[LOG_FRAMES];
-                temp_log_0 = new int[LOG_FRAMES];
-                temp_log_1 = new int[LOG_FRAMES];
-                acceleration_log = new int[LOG_FRAMES];
-                temp_log_bmi = new int[LOG_FRAMES];
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
+                    throttle_log_0 = new int[LOG_FRAMES];
+                    throttle_log_1 = new int[LOG_FRAMES];
+                    erpm_log_0 = new int[LOG_FRAMES];
+                    erpm_log_1 = new int[LOG_FRAMES];
+                    voltage_log_0 = new int[LOG_FRAMES];
+                    voltage_log_1 = new int[LOG_FRAMES];
+                    temp_log_0 = new int[LOG_FRAMES];
+                    temp_log_1 = new int[LOG_FRAMES];
+                    acceleration_log = new int[LOG_FRAMES];
+                    temp_log_bmi = new int[LOG_FRAMES];
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
             }
         });
     }

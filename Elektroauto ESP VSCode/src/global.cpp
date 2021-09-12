@@ -58,7 +58,8 @@ uint16_t logPosition = 0;
 
 // accelerometer
 double distBMI = 0, speedBMI = 0, acceleration = 0;
-int16_t rawAccel = 0, bmiRawTemp;
+int16_t rawAccel = 0, bmiRawTemp = 0;
+int8_t bmiTemp = 0;
 bool calibrateFlag = false;
 
 // WiFi/WebSockets
