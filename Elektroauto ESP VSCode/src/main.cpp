@@ -219,6 +219,9 @@ void core0Code( void * parameter) {
  * - initates websocket server
  */
 void setup() {
+  pinMode(26, OUTPUT);
+  digitalWrite(26, HIGH); // enable BMI160
+
   //Serial setup
   Serial.begin(500000);
 
