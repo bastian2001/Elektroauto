@@ -22,34 +22,51 @@ hw_timer_t * timer = NULL;
 volatile unsigned long lastCore0 = 0;
 volatile unsigned long lastCore1 = 0;
 
+const char ERROR_OVERHEAT_MESSAGE[] = "MESSAGEBEEP Wegen Überhitzung disarmed\0";
+const char ERROR_CUTOFF_MESSAGE[] = "MESSAGEBEEP Cutoff-Spannung unterschritten\0";
+const char ERROR_TOO_FAST_MESSAGE[] = "MESSAGEBEEP Zu hohe Drehzahl\0";
+
 
 
 void onESCError(ESC * esc, uint8_t err){
   int pos = 0;
-  while (!broadcastQueue[pos].isEmpty())
+  while (actionQueue[pos].type != 0)
     pos++;
+  Action a;
   switch(err){
-    case ERROR_TOO_FAST:
-      broadcastQueue[pos] = "MESSAGEBEEP Wegen Überhitzung disarmed";
-      ESCs[0]->arm(false);
-      ESCs[1]->arm(false);
+    case ERROR_TOO_FAST: {
+      a.type = 1; //disarm
+      actionQueue[pos++] = a;
+      a.type = 2; //send too fast message
+      char * s = (char*)malloc(50);
+      strcpy(s, ERROR_TOO_FAST_MESSAGE);
+      a.payload = (int)s;
+      actionQueue[pos] = a;
       break;
-    case ERROR_VOLTAGE_LOW:
-      broadcastQueue[pos] = "MESSAGEBEEP Cutoff-Spannung unterschritten";
-      ESCs[0]->arm(false);
-      ESCs[1]->arm(false);
+    }
+    case ERROR_VOLTAGE_LOW: {
+      a.type = 1; //disarm
+      actionQueue[pos++] = a;
+      a.type = 2; //send too fast message
+      char * s = (char*)malloc(50);
+      strcpy(s, ERROR_CUTOFF_MESSAGE);
+      a.payload = (int)s;
+      actionQueue[pos] = a;
       break;
-    case ERROR_OVERHEAT:
-      broadcastQueue[pos] = "MESSAGEBEEP Zu hohe Drehzahl";
-      ESCs[0]->arm(false);
-      ESCs[1]->arm(false);
+    }
+    case ERROR_OVERHEAT: {
+      a.type = 1; //disarm
+      actionQueue[pos++] = a;
+      a.type = 2; //send too fast message
+      char * s = (char*)malloc(50);
+      strcpy(s, ERROR_OVERHEAT_MESSAGE);
+      a.payload = (int)s;
+      actionQueue[pos] = a;
       break;
+    }
   }
 }
 void onStatusChange(ESC * esc, uint8_t newStatus, uint8_t oldStatus){
-  int pos = 0;
-  while (!broadcastQueue[pos].isEmpty())
-    pos++;
   oldStatus ^= newStatus;
   if (oldStatus & CONNECTED_MASK){
     if (newStatus & CONNECTED_MASK){
@@ -64,14 +81,39 @@ void onStatusChange(ESC * esc, uint8_t newStatus, uint8_t oldStatus){
         Serial.println("Verbindung zum rechten ESC verloren");
     }
   }
+  Action a;
   if (oldStatus & RED_LED_MASK){
-    broadcastQueue[pos++] = String("SET REDLED ") + esc->getRedLED();
+    String s = "SET REDLED " + String(esc->getRedLED());
+    a.type = 2;
+    char * str = (char *)malloc(20);
+    s.toCharArray(str, 20);
+    a.payload = (int)str;
+    int pos = 0;
+    while (actionQueue[pos].type != 0)
+      pos++;
+    actionQueue[pos] = a;
   }
   if (oldStatus & GREEN_LED_MASK){
-    broadcastQueue[pos++] = String("SET GREENLED ") + esc->getGreenLED();
+    String s = "SET GREENLED " + String(esc->getGreenLED());
+    a.type = 2;
+    char * str = (char *)malloc(20);
+    s.toCharArray(str, 20);
+    a.payload = (int)str;
+    int pos = 0;
+    while (actionQueue[pos].type != 0)
+      pos++;
+    actionQueue[pos] = a;
   }
   if (oldStatus & BLUE_LED_MASK){
-    broadcastQueue[pos++] = String("SET BLUELED ") + esc->getBlueLED();
+    String s = "SET BLUELED " + String(esc->getBlueLED());
+    a.type = 2;
+    char * str = (char *)malloc(20);
+    s.toCharArray(str, 20);
+    a.payload = (int)str;
+    int pos = 0;
+    while (actionQueue[pos].type != 0)
+      pos++;
+    actionQueue[pos] = a;
   }
 }
 
@@ -111,6 +153,8 @@ void loop0() {
 
   handleWiFi();
   receiveSerial();
+
+  runActions();
 
   printSerial();
   delay(1);
@@ -175,6 +219,9 @@ void core0Code( void * parameter) {
  * - initates websocket server
  */
 void setup() {
+  //Serial setup
+  Serial.begin(500000);
+
   delay(100);
 
   //reading settings from EEPROM or writing them
@@ -196,9 +243,6 @@ void setup() {
   temp_log[1] = (uint8_t*)logData + 13 * LOG_FRAMES;
   acceleration_log = (int16_t *)logData + 14 * LOG_FRAMES;
   bmi_temp_log = (int16_t *)logData + 16 * LOG_FRAMES;
-
-  //Serial setup
-  Serial.begin(500000);
 
   //WiFi Setup
   WiFi.enableSTA(true);

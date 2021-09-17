@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
 MERGED from [com.google.android.material:material:1.4.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\0afbca5d75ed49db5552569b9dce4707\material-1.4.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.4] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\f05760a6ab320001c8b604d10d78ac7b\constraintlayout-2.0.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.preference:preference:1.1.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\89e713288e81efe7c948d16fb5ebb8ca\preference-1.1.1\AndroidManifest.xml:17:1-24:12
@@ -40,37 +40,37 @@ MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\bascs\.gradle\ca
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\b33061385d67b982bb885113b832fc1e\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.print:print:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\01df92b7300672a5ff8664dc3764ee51\print-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\8d11d86b037c681c007c37e744e988c0\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:17:1-24:12
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
 	package
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:3:5-32
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:3:5-32
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 	android:versionCode
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:1-31:12
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.WAKE_LOCK
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:5:5-68
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:5:5-68
 	android:name
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:5:22-65
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:5:22-65
 uses-permission#android.permission.INTERNET
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:6:5-67
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:6:5-67
 	android:name
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:6:22-64
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:6:22-64
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:7:5-81
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:7:5-81
 	android:name
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:7:22-78
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:7:22-78
 application
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:9:5-29:19
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:9:5-29:19
 MERGED from [com.google.android.material:material:1.4.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\0afbca5d75ed49db5552569b9dce4707\material-1.4.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.4.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\0afbca5d75ed49db5552569b9dce4707\material-1.4.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.4] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\f05760a6ab320001c8b604d10d78ac7b\constraintlayout-2.0.4\AndroidManifest.xml:9:5-20
@@ -80,47 +80,47 @@ MERGED from [androidx.core:core:1.5.0] C:\Users\bascs\.gradle\caches\transforms-
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\835e00338284d4507478e57f331e684a\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\835e00338284d4507478e57f331e684a\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
 	android:requestLegacyExternalStorage
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:13:9-52
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:13:9-52
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.5.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\07adfc08fe16d3453ab9291511ec05fe\core-1.5.0\AndroidManifest.xml:24:18-86
 	android:supportsRtl
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:15:9-35
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:15:9-35
 	android:label
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:12:9-41
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:12:9-41
 	android:roundIcon
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:14:9-56
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:14:9-56
 	android:icon
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:11:9-45
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:11:9-45
 	android:allowBackup
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:10:9-35
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:10:9-35
 	android:theme
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:16:9-40
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:16:9-40
 	android:usesCleartextTraffic
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:17:9-44
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:17:9-44
 activity#com.bastian.eauto.SettingsActivity
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:19:9-54
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:19:9-54
 	android:name
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:19:19-51
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:19:19-51
 activity#com.bastian.eauto.MainActivity
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:20:9-28:20
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:20:9-28:20
 	android:screenOrientation
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:22:13-55
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:22:13-55
 	android:name
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:21:13-41
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:21:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:23:13-27:29
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:23:13-27:29
 action#android.intent.action.MAIN
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:24:17-69
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:24:17-69
 	android:name
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:24:25-66
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:24:25-66
 category#android.intent.category.LAUNCHER
-ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:26:17-77
+ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:26:17-77
 	android:name
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:26:27-74
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml:26:27-74
 uses-sdk
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 MERGED from [com.google.android.material:material:1.4.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\0afbca5d75ed49db5552569b9dce4707\material-1.4.0\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.material:material:1.4.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\0afbca5d75ed49db5552569b9dce4707\material-1.4.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.4] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\f05760a6ab320001c8b604d10d78ac7b\constraintlayout-2.0.4\AndroidManifest.xml:5:5-7:41
@@ -193,13 +193,13 @@ MERGED from [androidx.print:print:1.0.0] C:\Users\bascs\.gradle\caches\transform
 MERGED from [androidx.print:print:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\01df92b7300672a5ff8664dc3764ee51\print-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\8d11d86b037c681c007c37e744e988c0\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\bascs\.gradle\caches\transforms-2\files-2.1\8d11d86b037c681c007c37e744e988c0\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:20:5-22:41
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		ADDED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
-		INJECTED from D:\Dokumente\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\bascs\Documents\Projekte\Elektroauto\ElektroautoFormelE\app\src\main\AndroidManifest.xml

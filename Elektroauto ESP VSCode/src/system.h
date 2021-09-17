@@ -43,6 +43,9 @@ double calcThrottle(int target, int was[], double currentThrottle, double master
 //! @brief reads the Serial0 port and processes the message using processMessage
 void receiveSerial();
 
+//! @brief processes Action objects
+void runActions();
+
 /**
  * @brief converts RPS to hERPM
  * 

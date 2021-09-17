@@ -94,6 +94,7 @@ bool ESC::loop(){
 bool ESC::isTelemetryComplete(){
     if (telemetry[0] > 1
         && get_crc8((uint8_t*)telemetry, 9) == telemetry[9]
+        && telemetry[2] > 1
         && telemetry[3] == 0
         && telemetry[4] == 0
         && telemetry[5] == 0

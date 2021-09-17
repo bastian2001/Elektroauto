@@ -66,7 +66,9 @@ bool calibrateFlag = false;
 WebSocketsServer webSocket = WebSocketsServer(80);
 uint8_t clients[MAX_WS_CONNECTIONS][2];
 uint8_t telemetryClientsCounter = 0;
-String broadcastQueue[10];
+
+// Action queue
+Action actionQueue[50];
 
 // ESCs
 ESC *ESCs[2];

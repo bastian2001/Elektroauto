@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     //constants
     private final int REQUEST_UPDATE_MS = 20;
-    private final int LOG_FRAMES = 5000;
+    private final int LOG_FRAMES = 3000;
     private final int PING_AMOUNT = 20;
 
     //SharedPrefs
@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     boolean seekbarTouch = false;
     private boolean firstStartup = true;
     private boolean redLED = false, greenLED = false, blueLED = false;
+    private boolean detailedTelemetry = false;
 
     //telemetry
     private boolean res_armed = false;
@@ -237,30 +238,33 @@ public class MainActivity extends AppCompatActivity {
             wsSend(editTextCommand.getText().toString());
         });
 
-        buttonForward.setOnClickListener(_v -> {sendRawData("00FF", 10);});
-        buttonBackward.setOnClickListener(_v -> {sendRawData("0110", 10);});
-        buttonDirectionOne.setOnClickListener(_v -> {sendRawData("029B", 10);});
-        buttonDirectionTwo.setOnClickListener(_v -> {sendRawData("02B9", 10);});
+        buttonForward.setOnClickListener(_v -> {sendRawData("014", 10);});
+        buttonBackward.setOnClickListener(_v -> {sendRawData("015", 10);});
+        buttonDirectionOne.setOnClickListener(_v -> {sendRawData("007", 10);});
+        buttonDirectionTwo.setOnClickListener(_v -> {sendRawData("008", 10);});
         buttonRed.setOnClickListener(_v -> {
             if(redLED)
-                sendRawData("001A", 1);
+                sendRawData("01A", 1);
             else
-                sendRawData("0016", 1);
+                sendRawData("016", 1);
         });//on: 02DF, off: 0356
         buttonGreen.setOnClickListener(_v -> {
             if(greenLED)
-                sendRawData("001B", 1);
+                sendRawData("01B", 1);
             else
-                sendRawData("0017", 1);
+                sendRawData("017", 1);
             //greenLED = !greenLED;
         });//on: 02FD, off: 0374
         buttonBlue.setOnClickListener(_v -> {
             if(blueLED)
-                sendRawData("001C", 1);
+                sendRawData("01C", 1);
             else
-                sendRawData("0018", 1);
+                sendRawData("018", 1);
             //blueLED = !blueLED;
         });//on: 0312, off: 0399
+        textViewTelemetry.setOnClickListener(_v -> {
+            detailedTelemetry = !detailedTelemetry;
+        });
 
         wsStart();
 
@@ -614,27 +618,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void onWSBin(final ByteString bin) {
+        gotTelemetry = true;
         runOnUiThread(() -> {
             byte[] bytes = bin.toByteArray();
 
             if (bytes.length < 100) {
                 res_armed = bytes[0] > 0;
-                res_throttle0 = bytes[1] << 8 | bytes[2];
-                res_throttle1 = bytes[3] << 8 | bytes[4];
-                res_speed0 = bytes[5] << 8 | bytes[6];
-                res_speed1 = bytes[7] << 8 | bytes[8];
-                res_speed_bmi = bytes[9] << 8 | bytes[10];
-                res_rps0 = bytes[11] << 8 | bytes[12];
-                res_rps1 = bytes[13] << 8 | bytes[14];
-                res_temp0 = bytes[15];
-                res_temp1 = bytes[16];
-                res_temp_bmi = bytes[17];
-                res_temp_chip = bytes[18];
-                res_voltage0 = bytes[19] << 8 | bytes[20];
-                res_voltage1 = bytes[21] << 8 | bytes[22];
-                res_acceleration = bytes[23] << 8 | bytes[24];
+                res_throttle0 = bytes[1] << 8 | Byte.toUnsignedInt(bytes[2]);
+                res_throttle1 = bytes[3] << 8 | Byte.toUnsignedInt(bytes[4]);
+                res_speed0 = bytes[5] << 8 | Byte.toUnsignedInt(bytes[6]);
+                res_speed1 = bytes[7] << 8 | Byte.toUnsignedInt(bytes[8]);
+                res_speed_bmi = bytes[9] << 8 | Byte.toUnsignedInt(bytes[10]);
+                res_rps0 = bytes[11] << 8 | Byte.toUnsignedInt(bytes[12]);
+                res_rps1 = bytes[13] << 8 | Byte.toUnsignedInt(bytes[14]);
+                res_temp0 = Byte.toUnsignedInt(bytes[15]);
+                res_temp1 = Byte.toUnsignedInt(bytes[16]);
+                res_temp_bmi = Byte.toUnsignedInt(bytes[17]);
+                res_temp_chip = Byte.toUnsignedInt(bytes[18]);
+                res_voltage0 = bytes[19] << 8 | Byte.toUnsignedInt(bytes[20]);
+                res_voltage1 = bytes[21] << 8 | Byte.toUnsignedInt(bytes[22]);
+                res_acceleration = bytes[23] << 8 | Byte.toUnsignedInt(bytes[24]);
                 res_raceModeThing = bytes[25] > 0;
-                res_reqValue = bytes[26] << 8 | bytes[27];
+                res_reqValue = bytes[26] << 8 | Byte.toUnsignedInt(bytes[27]);
                 res_slip0 = 0; res_slip1 = 0;
 
                 if (res_speed0 != 0 && res_speed1 != 0){
@@ -665,17 +670,40 @@ public class MainActivity extends AppCompatActivity {
                         editTextValue.setText("" + res_reqValue);
                     }
                 }
-
-                textViewTelemetry.setText(
-                        "Status: " + (res_armed ? "Armed" : "Disarmed")
-                        + "\nSpannung: " + (float) res_voltage0 / 100.0 + " V, " + (float) res_voltage1 / 100.0
-                        + " V\nThrottle: " + res_throttle0 + ", " + res_throttle1
-                        + "\nRPS: " + res_rps0 + ", " + res_rps1
-                        + "\nSchlupf: " + res_slip0 + " %, " + res_slip1
-                        + " %\nGeschwindigkeit: " + (float)res_speed0 / 1000.0 + " m/s, " + (float)res_speed1 / 1000.0 + " m/s, " + (float) res_speed_bmi / 1000.0
-                        + " m/s\nBeschleunigung: " + (float) (res_acceleration) / 1000.0
-                        + " m/s²\nTemperatur: " + res_temp0 + " °C, " + res_temp1 + " °C, " + res_temp_bmi + " °C, " + res_temp_chip + " °C"
-                );
+                if (detailedTelemetry) {
+                    textViewTelemetry.setText(
+                            "Status\n\t" + (res_armed ? "Armed" : "Disarmed")
+                                    + "\nSpannung (V)\n\tLinks:\t" + (float) res_voltage0 / 100.0 + "\n\tRechts:\t" + (float) res_voltage1 / 100.0
+                                    + "\nThrottle\n\tLinks:\t" + res_throttle0 + "\n\tRechts:\t" + res_throttle1
+                                    + "\nU/sek\n\tLinks:\t" + res_rps0 + "\n\tRechts:\t" + res_rps1
+                                    + "\nSchlupf (%)\n\tLinks:\t" + res_slip0 + "\n\tRechts:\t" + res_slip1
+                                    + "\nGeschwindigkeit (m/s)\n\tLinks:\t" + (float) res_speed0 / 1000.0 + "\n\tRechts:\t" + (float) res_speed1 / 1000.0 + "\n\tBMI160:\t" + (float) res_speed_bmi / 1000.0
+                                    + "\nBeschleunigung (m/s²)\n\t" + (float) (res_acceleration) / 1000.0
+                                    + "\nTemperatur (°C)\n\tLinks:\t" + res_temp0 + "\n\tRechts:\t" + res_temp1 + "\n\tBMI160:\t" + res_temp_bmi + "\n\tChip:\t" + res_temp_chip
+                    );
+                }
+                else {
+                    textViewTelemetry.setText(
+                            "Status: " + (res_armed ? "Armed" : "Disarmed")
+                                    + "\nSpannung: " + (float) (res_voltage0 + res_voltage1) / 200.0
+                                    + " V\nThrottle: " + (res_throttle0 + res_throttle1) / 2
+                                    + "\nU/sek: " + (res_rps0 + res_rps1) / 2
+                                    + "\nSchlupf: " + (res_slip0 + res_slip1) / 2
+                                    + " %\nGeschwindigkeit: " + (float) (res_speed0 + res_speed1) / 2000.0 + " m/s, " + (float) res_speed_bmi / 1000.0
+                                    + " m/s\nBeschleunigung: " + (float) (res_acceleration) / 1000.0
+                                    + " m/s²\nTemperatur: " + (res_temp0 + res_temp1) / 2 + " °C"
+                    );
+                    /*textViewTelemetry.setText(
+                            "Status: " + (res_armed ? "Armed" : "Disarmed")
+                                    + "\nSpannung (V): " + (float) res_voltage0 / 100.0 + ", " + (float) res_voltage1 / 100.0
+                                    + "\nThrottle: " + res_throttle0 + ", " + res_throttle1
+                                    + "\nU/sek: " + res_rps0 + ", " + res_rps1
+                                    + "\nSchlupf (%): " + res_slip0 + ", " + res_slip1
+                                    + "\nGeschwindigkeit (m/s): " + (float)res_speed0 / 1000.0 + ", " + (float)res_speed1 / 1000.0 + ", " + (float) res_speed_bmi / 1000.0
+                                    + "\nBeschleunigung (m/s²): " + (float) (res_acceleration) / 1000.0
+                                    + "\nTemperatur (°C): " + res_temp0 + ", " + res_temp1 + ", " + res_temp_bmi + ", " + res_temp_chip
+                    );*/
+                }
             } else {
                 for (int i = 0; i < LOG_FRAMES; i++) {
                     throttle_log_0[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);

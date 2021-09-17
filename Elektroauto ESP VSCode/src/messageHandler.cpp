@@ -154,26 +154,26 @@ void processMessage(String message, uint8_t from) {
   else if (command == "RAWDATA"){
     message = message.substring(dividerPos + 1);
     uint8_t length = message.length();
-    if (length % 5 != 4 || length > MAX_MANUAL_DATA * 5 - 1){
+    if (length % 4 != 3 || length > MAX_MANUAL_DATA * 4 - 1){
       sendWSMessage(from, F("MESSAGE Invalide Länge der Rohdaten!"));
     } else {
-      for (int i = 0; i < length; i+=5){
+      for (int i = 0; i < length; i+=4){
         uint16_t data = 0;
-        for (int n = 0; n < 4; n++){
+        for (int n = 0; n < 3; n++){
           char c = message.charAt(i + n);
           if (c >= 'A' && c <= 'F'){
-            data |= ((c - 55) << ((3-n) * 4));
+            data |= ((c - 55) << ((2-n) * 4));
           } else if (c >= 'a' && c <= 'f'){
-            data |= ((c - 87) << ((3-n) * 4));
+            data |= ((c - 87) << ((2-n) * 4));
           } else if (c >= '0' && c <= 'g'){
-            data |= ((c - '0') << ((3-n) * 4));
+            data |= ((c - '0') << ((2-n) * 4));
           }
         }
-        ESCs[0]->manualData11[i/5] = data;
-        ESCs[1]->manualData11[i/5] = data;
+        ESCs[0]->manualData11[i/4] = data;
+        ESCs[1]->manualData11[i/4] = data;
       }
-      ESCs[0]->manualDataAmount = length / 5 + 1;
-      ESCs[1]->manualDataAmount = length / 5 + 1;
+      ESCs[0]->manualDataAmount = length / 4 + 1;
+      ESCs[1]->manualDataAmount = length / 4 + 1;
     }
   }
 
@@ -234,6 +234,10 @@ void processMessage(String message, uint8_t from) {
   //   if (!message.endsWith("NOMESSAGE"))
   //     sendWSMessage(from, "MESSAGE Beschleunigungssensor wird kalibriert");
   // }
+
+  else if (command == "GETSPEED"){
+    sendWSMessage(from, String(speedBMI / 1000.0) + "m/s");
+  }
 
   else if (command == "REBOOT" || command == "RESTART"){
     ESP.restart();

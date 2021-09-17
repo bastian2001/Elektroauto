@@ -4,7 +4,7 @@
 #include "system.h"
 
 unsigned long lastTelemetry = 0;
-char telData[28];
+uint8_t telData[28];
 //armed, throttle0, throttle1, speed0, speed1, speedBMI, rps0, rps1, temp0, temp1, tempBMI, voltage0, voltage1, acceleration, raceModeThing, reqValue
 // 1      2          2          2       2       2         2     2     1      1      2        2         2         2             1              2        = 28
 
@@ -167,18 +167,10 @@ void sendTelemetry() {
   telData[26] = reqValue >> 8;
   telData[27] = reqValue & 0xFF;
 
-  
-  broadcastWSMessage(telData, true, 0, true);
+  broadcastWSBin(telData, 28, true, 0);
 }
 
 void handleWiFi() {
-  int i = 0;
-  for (; i < 10; i++){
-    if (broadcastQueue[i].isEmpty())
-      break;
-    broadcastWSMessage(broadcastQueue[i]);
-    broadcastQueue[i] = "";
-  }
   webSocket.loop();
   if (millis() > lastTelemetry + TELEMETRY_UPDATE_MS + TELEMETRY_UPDATE_ADD * telemetryClientsCounter) {
     lastTelemetry = millis();

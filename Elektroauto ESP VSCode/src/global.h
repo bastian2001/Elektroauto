@@ -59,11 +59,13 @@
 /// add ... ms to telemetry frequency for every connected client (1 client: Telemetry every TELEMETRY_UPDATE_MS + /TELEMETRY_UPDATE_ADD milliseconds)
 #define TELEMETRY_UPDATE_ADD 20
 /// The SSID
-#define ssid "Test"
+// #define ssid "Test"
 /// The password for wifi
-#define password "CaputDraconis"
-// #define ssid "POCO X3 NFC"
-// #define password "055fb39a4cc4"
+// #define password "CaputDraconis"
+#define ssid "POCO X3 NFC"
+#define password "055fb39a4cc4"
+// #define ssid "springernet"
+// #define password "CL7B1L609235"
 
 //debugging settings
 /// print setup info (e.g. IP-Address)
@@ -81,7 +83,7 @@
 
 //logging settings
 /// number of frames that are logged in race mode
-#define LOG_FRAMES 5000
+#define LOG_FRAMES 3000
 /// number of bytes needed per log frame
 #define BYTES_PER_LOG_FRAME 18
 /// bytes reserved for logging
@@ -93,6 +95,15 @@ enum Modes {
     MODE_RPS,
     MODE_SLIP
 };
+
+/// Action for disarm etc
+typedef struct Action{
+    uint8_t type = 0; //1 = setArmed, 2 = broadcast payload (char array) to all WS clients, 255 = own function
+    // void * fn;
+    int payload = 0; // payload or (int casted) payload pointer (for own function)
+    size_t payloadLength = 0; //payload length
+    unsigned long time = 0; //millis at which the action will be triggered, 0 for immediately
+} action;
 
 // rps control variables
 /// holds the master multiplier for RPS/slip control, default value is set here
@@ -177,7 +188,9 @@ extern bool calibrateFlag;
 extern WebSocketsServer webSocket;
 extern uint8_t clients[MAX_WS_CONNECTIONS][2]; //[device (disconnected, app, web)][telemetry (off, on)]
 extern uint8_t telemetryClientsCounter;
-extern String broadcastQueue[10];
+
+// Action queue
+extern Action actionQueue[50];
 
 // ESCs
 extern ESC *ESCs[2]; //0: left, 1: right

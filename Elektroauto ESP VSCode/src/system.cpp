@@ -8,7 +8,7 @@ uint8_t warningVoltageCount = 0;
 
 void setArmed (bool arm){
   if (arm != ((ESCs[0]->status & ARMED_MASK) > 0)){
-    Serial.print(arm);
+    // Serial.print(arm);
     if (!raceActive){
       reqValue = 0;
       targetERPM = 0;
@@ -16,8 +16,6 @@ void setArmed (bool arm){
     broadcastWSMessage((raceActive ? arm : arm || raceMode) ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
     ESCs[0]->arm(arm);
     ESCs[1]->arm(arm);
-    Serial.print(ESCs[0]->status, BIN);
-    Serial.print(ESCs[1]->status, BIN);
   }
 }
 
@@ -73,6 +71,44 @@ void receiveSerial() {
     String readout = Serial.readStringUntil('\n');
     processMessage(readout, 255);
   }
+}
+
+void runActions() {
+  for (uint8_t i = 0; i < 50;){
+    switch (actionQueue[i].type){
+      case 0:
+        goto exitRunActionsLoop;
+      case 1:
+        if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
+          setArmed(actionQueue[i].payload);
+          memmove(&(actionQueue[i]), &(actionQueue[i]) + sizeof(Action), (49 - i) * sizeof(Action));
+          actionQueue[49] = Action();
+        } else {
+          i++;
+        }
+        break;
+      case 2:
+        if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
+          Serial.println(actionQueue[i].payload);
+          broadcastWSMessage(String((char*)actionQueue[i].payload), false, 5, true);
+          free((void*)actionQueue[i].payload);
+          memmove(&(actionQueue[i]), &(actionQueue[i]) + sizeof(Action), (49 - i) * sizeof(Action));
+          actionQueue[49] = Action();
+        } else {
+          i++;
+        }
+        break;
+      // case 255:
+      //   if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
+      //     (*(actionQueue[i].fn))(actionQueue[i].payload, actionQueue[i].payloadLength);
+      //   } else {
+      //     i++;
+      //   }
+      //   break;
+    }
+  }
+  exitRunActionsLoop:;
+  return;
 }
 
 float rpsToErpm(float rps){
