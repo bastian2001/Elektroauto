@@ -8,7 +8,6 @@ uint8_t warningVoltageCount = 0;
 
 void setArmed (bool arm){
   if (arm != ((ESCs[0]->status & ARMED_MASK) > 0)){
-    // Serial.print(arm);
     if (!raceActive){
       reqValue = 0;
       targetERPM = 0;
