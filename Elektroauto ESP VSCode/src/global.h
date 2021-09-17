@@ -1,129 +1,214 @@
+//! @file global.h global functions and parameters
+
 #include <Arduino.h>
 #include <WebSocketsServer.h>
 #include "driver/rmt.h"
+#include <EEPROM.h>
+#include "WiFi.h"
+#include <esp_task_wdt.h>
+#include "BMI160Gen.h"
+#include "ESC.h"
 
 
-/*======================================================definitions======================================================*/
 
-//Pin numbers
-#define ESC_OUTPUT_PIN 25
-#define ESC_TRIGGER_PIN 33
-#define TRANSMISSION 23
+/// pin used for output to ESC1
+#define ESC1_OUTPUT_PIN 25
+/// pin used for input from ESC1
+#define ESC1_INPUT_PIN 21
+/// pin used for output to ESC2
+#define ESC2_OUTPUT_PIN 27
+/// pin used for input from ESC1
+#define ESC2_INPUT_PIN 16
+/// pin used for the transmission indicator
+#define TRANSMISSION_PIN 33
+/// pin of the built-in LED
 #define LED_BUILTIN 22
+/// pin used for MISO of the SPI driver
+#define SPI_MISO 19
+/// pin used for MOSI of the SPI driver
+#define SPI_MOSI 23
+/// pin used for CS/SS of the SPI driver
+#define SPI_CS 5
+/// pin used for SCL/SCK of the SPI driver
+#define SPI_SCL 18
 
-//ESC values
-#define ESC_FREQ 1000
-#define CLK_DIV 3 //DShot 150: 12, DShot 300: 6, DShot 600: 3
-#define TT 44 // total bit time
-#define T0H 17 // 0 bit high time
-#define T1H 33 // 1 bit high time
-#define T0L (TT - T0H) // 0 bit low time
-#define T1L (TT - T1H) // 1 bit low time
-#define T_RESET 21 // reset length in multiples of bit time
-#define TRANSMISSION_IND 1000
-// #define SEND_TRANSMISSION_IND //whether to enable or disable the transmission indicator overall
-#define ESC_BUFFER_ITEMS 16
 
-//motor and wheel properties
-#define TELEMETRY_DEBUG 3
-#define MAX_THROTTLE 2000
-#define MAX_TARGET_RPS 1500
-#define MAX_TARGET_SLIP 20
-// #define SEND_TRANSMISSION_IND
-#define ESC_BUFFER_ITEMS 16
-#define MOTOR_POLE_COUNT 12.0f
-#define WHEEL_DIAMETER 30.0f
-#define RPS_CONVERSION_FACTOR (1.6667f / (MOTOR_POLE_COUNT / 2.0f))
-#define ERPM_TO_MM_PER_SECOND (RPS_CONVERSION_FACTOR * WHEEL_DIAMETER * PI)
+///frequency of basically everything
+#define ESC_FREQ 800
+
+
+//ESC/DShot debugging settings
+/// transmission indicator every ... frames; 0 for disabled (recommended for final/semi-stable build)
+#define TRANSMISSION_IND 0
+/// Print telemetry from ESC out to Serial every ... frames; 0 for disabled (recommended for final/semi-stable build); use lower values with care
+#define TELEMETRY_DEBUG 0
+/// Print the throttle when printing the telemetry
+#define PRINT_TELEMETRY_THROTTLE
+/// Print the temperature of the ESC when printing the telemetry
+#define PRINT_TELEMETRY_TEMP
+/// Print the ERPM when printing the telemetry
+#define PRINT_TELEMETRY_ERPM
+/// Print the voltage when printing the telemetry
+#define PRINT_TELEMETRY_VOLTAGE
 
 //WiFi and WebSockets settings
+/// Maximum number of concurrent WebSocket connections
 #define MAX_WS_CONNECTIONS 5
-// #define ssid "Bloedfrauen und -maenner"
+/// send out telemetry to clients every ... ms
+#define TELEMETRY_UPDATE_MS 20
+/// add ... ms to telemetry frequency for every connected client (1 client: Telemetry every TELEMETRY_UPDATE_MS + /TELEMETRY_UPDATE_ADD milliseconds)
+#define TELEMETRY_UPDATE_ADD 20
+/// The SSID
+// #define ssid "Test"
+/// The password for wifi
 // #define password "CaputDraconis"
 #define ssid "POCO X3 NFC"
 #define password "055fb39a4cc4"
 // #define ssid "springernet"
 // #define password "CL7B1L609235"
-#define TELEMETRY_UPDATE_MS 20
-#define TELEMETRY_UPDATE_ADD 20
 
 //debugging settings
+/// print setup info (e.g. IP-Address)
 #define PRINT_SETUP
-// #define PRINT_TELEMETRY_THROTTLE
-// #define PRINT_TELEMETRY_TEMP
-// #define PRINT_TELEMETRY_ERPM
-// #define PRINT_TELEMETRY_VOLTAGE
+/// print info about WebSocket connections, e.g. new connections
 #define PRINT_WEBSOCKET_CONNECTIONS
+/// print incoming messages from WebSocket clients
 #define PRINT_INCOMING_MESSAGES
-#define PRINT_MEANINGS
+/// print broadcasts into the Serial connection
 #define PRINT_BROADCASTS
-// #define PRINT_SINGLE_OUTGOING_MESSAGES
-// #define PRINT_RACE_MODE_JSON
 
 //PID loop settings
-#define TREND_AMOUNT 5 //nur ungerade!!
-#define TA_DIV_2 2 //mit anpassen!!
+/// number of frames for RPS calculation, to be tested
+#define TREND_AMOUNT 5 //nur ungerade!! 
 
 //logging settings
-#define LOG_FRAMES 5000
+/// number of frames that are logged in race mode
+#define LOG_FRAMES 3000
+/// number of bytes needed per log frame
+#define BYTES_PER_LOG_FRAME 18
+/// bytes reserved for logging
+#define LOG_SIZE (LOG_FRAMES * BYTES_PER_LOG_FRAME)
 
-
-
-struct Action {
-    uint8_t action; //0 empty, 1 disarm, 2 arm
-    uint8_t payload;
-    uint32_t millis;
+/// defines modes
+enum Modes {
+    MODE_THROTTLE = 0,
+    MODE_RPS,
+    MODE_SLIP
 };
 
-//rps control variables
-extern int targetERPM;
-extern int previousERPM[TREND_AMOUNT];
+/// Action for disarm etc
+typedef struct Action{
+    uint8_t type = 0; //1 = setArmed, 2 = broadcast payload (char array) to all WS clients, 255 = own function
+    // void * fn;
+    int payload = 0; // payload or (int casted) payload pointer (for own function)
+    size_t payloadLength = 0; //payload length
+    unsigned long time = 0; //millis at which the action will be triggered, 0 for immediately
+} action;
+
+// rps control variables
+/// holds the master multiplier for RPS/slip control, default value is set here
 extern double pidMulti;
-extern double erpmA; //große Änderungen: zu viel -> overshooting bei großen Anpassungen, abwürgen. Zu wenig -> langsames Anpassen bei großen Änderungen
+/// additional multiplier for slip control
+extern double slipMulti;
+/// große Änderungen: zu viel -> overshooting bei großen Anpassungen, abwürgen. Zu wenig -> langsames Anpassen bei großen Änderungen; holds the third power value for RPS/slip control, default value is given here
+extern double erpmA;
+/// holds the second power value for RPS/slip control, default value is set here
 extern double erpmB;
-extern double erpmC; //responsiveness: zu viel -> schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -> langsames Anpassen bei kleinen Änderungen
+/// responsiveness: zu viel -> schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -> langsames Anpassen bei kleinen Änderungen; holds the linear factor for RPS/slip control, default value is set here
+extern double erpmC;
 
-//MPU variables
-//MPU6050 mpu;
-extern unsigned long lastMPUUpdate;
-extern int16_t counterMPU, MPUoffset, raw_accel;
-extern int16_t distMPU;
-extern double speedMPU, acceleration;
+// motor and wheel settings
+/// holds the maximum allowed throttle, default value is set here
+// extern uint16_t maxThrottle;
+/// holds the maximum allowed target RPS, default value is set here
+extern uint16_t maxTargetRPS;
+/// holds the maximum allowed target slip ratio, default value is set here
+extern uint8_t maxTargetSlip;
+/// holds the count of motor poles, default value is set here
+extern uint8_t motorPoleCount;
+/// holds the wheel diameter in mm, default value is set here
+extern uint8_t wheelDiameter;
+// don't change anything here, this makes conversions from rps to erpm and back easier
+extern float rpsConversionFactor;
+// don't change anything here, this makes conversions from erpm to mm/s and back easier
+extern float erpmToMMPerSecond;
+/// slip control: throttle at zero ERPM / starting throttle, default value is set here
+extern uint16_t zeroERPMOffset;
+/// slip control: point at which no more throttle is given than calculated, default value is set here
+extern uint16_t zeroOffsetAtThrottle;
 
-//slip variables
-extern int targetSlip;
-extern uint16_t speedWheel;
+// EEPROM
+/// don't change anything here, keeps track of whether/when to save the settings to EEPROM
+extern bool commitFlag;
 
-//system variables
-extern double throttle, nextThrottle;
-extern bool armed;
-extern int ctrlMode, reqValue;
-extern uint16_t escValue;
-extern uint16_t cutoffVoltage, voltageWarning;
-extern bool redLED, greenLED, blueLED;
-extern uint8_t newRedLED, newGreenLED, newBlueLED;
+// voltage settings
+/// holds the value for the cutoff voltage (no movement possible, car stops), default value is set here
+// extern uint16_t cutoffVoltage;
+/// holds the value for the warning voltage (user is warned of low voltage), default value is set here
+extern uint16_t warningVoltage;
 
-//WiFi/WebSockets variables
+// control variables
+extern int targetERPM, ctrlMode, reqValue, targetSlip;
+// extern uint16_t escValue; // telemetry needs to be on before first arm
+// extern bool armed;
+// extern double throttle, nextThrottle;
+
+// telemetry
+// extern uint16_t telemetryERPM, telemetryVoltage;
+// extern uint8_t telemetryTemp;
+// extern uint16_t speedWheel;
+
+// LEDs
+// extern bool redLED, greenLED, blueLED;
+// extern uint8_t newRedLED, newGreenLED, newBlueLED;
+
+// manual data
+// extern uint8_t manualDataAmount;
+// extern uint16_t manualData[20];
+
+// throttle calculation
+extern int previousERPM[2][TREND_AMOUNT];
+
+// race mode
+extern bool raceModeSendValues, raceMode, raceActive;
+extern uint16_t *logData;
+extern uint16_t *throttle_log[2], *erpm_log[2], *voltage_log[2];
+extern uint8_t *temp_log[2];
+extern int16_t *acceleration_log;
+extern int16_t *bmi_temp_log;
+extern uint16_t logPosition;
+
+// accelerometer
+extern double distBMI, speedBMI, acceleration;
+extern int16_t rawAccel, bmiRawTemp;
+extern int8_t bmiTemp;
+extern bool calibrateFlag;
+
+// WiFi/WebSockets
 extern WebSocketsServer webSocket;
 extern uint8_t clients[MAX_WS_CONNECTIONS][2]; //[device (disconnected, app, web)][telemetry (off, on)]
 extern uint8_t telemetryClientsCounter;
 
-//ESC variables
-extern uint16_t telemetryERPM;
-extern uint8_t telemetryTemp;
-extern uint16_t telemetryVoltage;
+// Action queue
+extern Action actionQueue[50];
+
+// ESCs
+extern ESC *ESCs[2]; //0: left, 1: right
+
+// error
 extern uint16_t errorCount;
-extern uint8_t manualDataAmount;
-extern uint16_t manualData[20];
-
-//race mode variables
-extern uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
-extern int acceleration_log[LOG_FRAMES];
-extern uint8_t temp_log[LOG_FRAMES];
-extern uint16_t logPosition;
-extern bool raceModeSendValues, raceMode, raceActive;
 
 
+/** 
+ * @brief add anything to the Serial string
+ * @param s the String to print
+ */
 void sPrint(String s);
+
+/** 
+ * @brief add a line to the Serial string
+ * @param s the String to print
+ */
 void sPrintln(String s);
+
 void printSerial();

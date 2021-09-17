@@ -5,8 +5,8 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="23"
-        android:targetSdkVersion="29" />
+        android:minSdkVersion="26"
+        android:targetSdkVersion="30" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -25,6 +25,7 @@
         android:testOnly="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true" >
+        <activity android:name="com.bastian.eauto.SettingsActivity" />
         <activity
             android:name="com.bastian.eauto.MainActivity"
             android:screenOrientation="sensorPortrait" >

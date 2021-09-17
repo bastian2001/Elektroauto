@@ -3,51 +3,23 @@
 #include "system.h"
 #include "messageHandler.h"
 
-double pidMulti = 1, erpmA = 0.0000000008, erpmB = 0.00000006, erpmC = 0.001;
-int escOutputCounter2 = 0;
-bool raceMode = false;
-extern bool armed;
-int targetERPM = 0, ctrlMode = 0, reqValue = 0, targetSlip = 0;
-uint16_t escValue = 0x0011;
-extern double throttle;
-bool redLED, greenLED, blueLED;
-
-//voltage warning
-uint16_t cutoffVoltage = 600, voltageWarning = 720;
 uint32_t nextCheck = 0;
-uint8_t voltageWarningCount = 0;
+uint8_t warningVoltageCount = 0;
 
-//raceMode
-uint16_t throttle_log[LOG_FRAMES], erpm_log[LOG_FRAMES], voltage_log[LOG_FRAMES];
-int acceleration_log[LOG_FRAMES];
-uint8_t temp_log[LOG_FRAMES];
-bool raceModeSendValues = false;
-
-void setArmed (bool arm, bool sendNoChangeBroadcast){
-  if (arm != armed){
+void setArmed (bool arm){
+  if (arm != ((ESCs[0]->status & ARMED_MASK) > 0)){
+    // Serial.print(arm);
     if (!raceActive){
       reqValue = 0;
       targetERPM = 0;
     }
     broadcastWSMessage((raceActive ? arm : arm || raceMode) ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
-    armed = arm;
-    setThrottle(0);
-    nextThrottle = 0;
-  } else if (sendNoChangeBroadcast){
-    broadcastWSMessage(arm ? "MESSAGE already armed" : "MESSAGE already disarmed");
+    ESCs[0]->arm(arm);
+    ESCs[1]->arm(arm);
   }
 }
 
-void setThrottle(double newThrottle) { //throttle value between 0 and 2000 --> esc value between 0 and 2047 with checksum
-  newThrottle = (newThrottle > 2000) ? 2000 : newThrottle;
-  newThrottle = (newThrottle < 0) ? 0 : newThrottle;
-  newThrottle = (newThrottle > MAX_THROTTLE) ? MAX_THROTTLE : newThrottle;
-  throttle = newThrottle;
-  newThrottle += (newThrottle == 0) ? 0 : 47;
-  escValue = appendChecksum(newThrottle);
-}
-
-uint16_t appendChecksum(uint16_t value, bool telemetryRequest) {
+uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest) {
   value &= 0x7FF;
   value = (value << 1) | telemetryRequest;
   int csum = 0, csum_data = value;
@@ -71,107 +43,158 @@ void startRace(){
   }
 }
 
-double calcThrottle(int target, int was[], double additionalMultiplier) {
+double calcThrottle(int target, int was[], double currentThrottle, double masterMultiplier) {
   double was_avg = 0;
   int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
   for (int i = 0; i < TREND_AMOUNT; i++) {
-    int t = i - TA_DIV_2;
+    int t = i - TREND_AMOUNT / 2;
     was_sum += was[i];
-    t_sq_sum += pow(t, 2);
+    t_sq_sum += t*t;
     t_multi_was_sum += t * was[i];
   }
   was_avg = (double)was_sum / TREND_AMOUNT;
 
   double m = (double)t_multi_was_sum / (double)t_sq_sum;
 
-  double prediction = m * ((double)TREND_AMOUNT - (double)TA_DIV_2) + (double)was_avg;
+  double prediction = m * ((double)TREND_AMOUNT - (double)(TREND_AMOUNT / 2)) + (double)was_avg;
   if (prediction < 0) prediction = 0;
   double deltaERPM = target - prediction;
-  double delta_throttle = erpmA * pow(deltaERPM, 3) + erpmB * pow(deltaERPM, 2) + erpmC * deltaERPM;
-  delta_throttle *= pidMulti * additionalMultiplier;
+  double delta_throttle = erpmA * deltaERPM*deltaERPM*deltaERPM + erpmB * deltaERPM*deltaERPM + erpmC * deltaERPM;
+  delta_throttle *= pidMulti * masterMultiplier;
 
-  return throttle + delta_throttle;
+  return currentThrottle + delta_throttle;
 }
 
 void receiveSerial() {
+  delay(1);
   if (Serial.available()) {
     String readout = Serial.readStringUntil('\n');
-    dealWithMessage(readout, 255);
+    processMessage(readout, 255);
   }
 }
 
-float rpsToErpm(float rps){
-  return (rps / RPS_CONVERSION_FACTOR + .5f);
+void runActions() {
+  for (uint8_t i = 0; i < 50;){
+    switch (actionQueue[i].type){
+      case 0:
+        goto exitRunActionsLoop;
+      case 1:
+        if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
+          setArmed(actionQueue[i].payload);
+          memmove(&(actionQueue[i]), &(actionQueue[i]) + sizeof(Action), (49 - i) * sizeof(Action));
+          actionQueue[49] = Action();
+        } else {
+          i++;
+        }
+        break;
+      case 2:
+        if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
+          Serial.println(actionQueue[i].payload);
+          broadcastWSMessage(String((char*)actionQueue[i].payload), false, 5, true);
+          free((void*)actionQueue[i].payload);
+          memmove(&(actionQueue[i]), &(actionQueue[i]) + sizeof(Action), (49 - i) * sizeof(Action));
+          actionQueue[49] = Action();
+        } else {
+          i++;
+        }
+        break;
+      // case 255:
+      //   if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
+      //     (*(actionQueue[i].fn))(actionQueue[i].payload, actionQueue[i].payloadLength);
+      //   } else {
+      //     i++;
+      //   }
+      //   break;
+    }
+  }
+  exitRunActionsLoop:;
+  return;
 }
+
+float rpsToErpm(float rps){
+  return (rps / rpsConversionFactor + .5f);
+}
+
 float erpmToRps(float erpm){
-  return (erpm * RPS_CONVERSION_FACTOR + .5f);
+  return (erpm * rpsConversionFactor + .5f);
 }
 
 void setNewTargetValue(){
   switch (ctrlMode) {
-    case 0:
-      nextThrottle = reqValue;
+    case MODE_THROTTLE:
+      ESCs[0]->setThrottle(reqValue);
+      ESCs[1]->setThrottle(reqValue);
       break;
-    case 1:
-      if (reqValue > MAX_TARGET_RPS)
-        reqValue = MAX_TARGET_RPS;
+    case MODE_RPS:
+      if (reqValue > maxTargetRPS)
+        reqValue = maxTargetRPS;
       targetERPM = rpsToErpm(reqValue);
       break;
-    case 2:
-      if (reqValue > MAX_TARGET_SLIP)
-        reqValue = MAX_TARGET_SLIP;
+    case MODE_SLIP:
+      if (reqValue > maxTargetSlip)
+        reqValue = maxTargetSlip;
       targetSlip = reqValue;
-      break;
-    default:
       break;
   }
 }
 
 void sendRaceLog(){
   raceModeSendValues = false;
-  uint8_t logData[LOG_FRAMES * 9];
-  memcpy(logData, throttle_log, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 2, acceleration_log, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 4, erpm_log, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 6, voltage_log, LOG_FRAMES * 2);
-  memcpy(logData + LOG_FRAMES * 8, temp_log, LOG_FRAMES);
   delay(2);
-  broadcastWSBin(logData, LOG_FRAMES * 9, true, 20);
-  Serial2.begin(115200);
+  broadcastWSBin((uint8_t*)logData, LOG_SIZE, true, 20);
 }
 
-void evaluateThrottle(){
-  if (armed) {
+void throttleRoutine(){
+  if ((ESCs[0]->status) & ARMED_MASK) {
     switch (ctrlMode) {
-      int addToTargetERPM;
-      case 0:
+      int addToTargetERPMLeft, addToTargetERPMRight;
+      case MODE_THROTTLE:
         break;
-      case 1:
-        nextThrottle = calcThrottle(targetERPM, previousERPM);
+      case MODE_RPS:
+        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM[0], ESCs[0]->currentThrottle));
+        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM[1], ESCs[1]->currentThrottle));
         break;
-      case 2:
-        addToTargetERPM = 40 - (throttle * .2);
-        if (addToTargetERPM < 0)
-          addToTargetERPM = 0;
-        targetERPM = ((0.0f - speedMPU) / ((float) targetSlip * .01f - 1)) / ERPM_TO_MM_PER_SECOND + addToTargetERPM;
-        nextThrottle = calcThrottle(targetERPM, previousERPM, .1);
-        break;
-      default:
+      case MODE_SLIP:
+        addToTargetERPMLeft = zeroERPMOffset - ((float)(ESCs[0]->currentThrottle) * (float) zeroERPMOffset / (float) zeroOffsetAtThrottle);
+        if (addToTargetERPMLeft < 0)
+          addToTargetERPMLeft = 0;
+        addToTargetERPMRight = zeroERPMOffset - ((float)(ESCs[0]->currentThrottle) * (float) zeroERPMOffset / (float) zeroOffsetAtThrottle);
+        if (addToTargetERPMRight < 0)
+          addToTargetERPMRight = 0;
+        
+        targetERPM = ((-(float)speedBMI) / ((float) targetSlip * .01f - 1)) / erpmToMMPerSecond + (addToTargetERPMLeft + addToTargetERPMRight) / 2;
+        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM[0], ESCs[0]->currentThrottle, slipMulti));
+        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM[1], ESCs[1]->currentThrottle, slipMulti));
         break;
     }
-  } 
+  }
 }
 
 void checkVoltage(){
   if (millis() > nextCheck){
     nextCheck += 10000;
-    if (telemetryVoltage < voltageWarning && telemetryVoltage != 0 && telemetryVoltage != 257){
-      voltageWarningCount++;
-      if (voltageWarningCount % 5 == 3){
-        broadcastWSMessage("MESSAGE Warnung! Spannung niedrig!", true, 0);
+    if (ESCs[0]->voltage < warningVoltage && ESCs[0]->voltage != 0 && ESCs[0]->status & CONNECTED_MASK){
+      warningVoltageCount++;
+      if (warningVoltageCount % 5 == 3){
+        broadcastWSMessage(F("MESSAGEBEEP Warnung! Spannung niedrig!"));
+        ESCs[0]->beep(ESC_BEEP_5);
+        ESCs[1]->beep(ESC_BEEP_5);
       }
     } else {
-      voltageWarningCount = 0;
+      warningVoltageCount = 0;
     }
+  }
+}
+
+uint16_t getMaxValue (int mode){
+  switch (mode){
+    case MODE_THROTTLE:
+      return ESC::getMaxThrottle();
+    case MODE_RPS:
+      return maxTargetRPS;
+    case MODE_SLIP:
+      return maxTargetSlip;
+    default:
+      return 0;
   }
 }
