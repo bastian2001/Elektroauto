@@ -118,8 +118,6 @@ extern double erpmB;
 extern double erpmC;
 
 // motor and wheel settings
-/// holds the maximum allowed throttle, default value is set here
-// extern uint16_t maxThrottle;
 /// holds the maximum allowed target RPS, default value is set here
 extern uint16_t maxTargetRPS;
 /// holds the maximum allowed target slip ratio, default value is set here
@@ -142,29 +140,11 @@ extern uint16_t zeroOffsetAtThrottle;
 extern bool commitFlag;
 
 // voltage settings
-/// holds the value for the cutoff voltage (no movement possible, car stops), default value is set here
-// extern uint16_t cutoffVoltage;
 /// holds the value for the warning voltage (user is warned of low voltage), default value is set here
 extern uint16_t warningVoltage;
 
 // control variables
 extern int targetERPM, ctrlMode, reqValue, targetSlip;
-// extern uint16_t escValue; // telemetry needs to be on before first arm
-// extern bool armed;
-// extern double throttle, nextThrottle;
-
-// telemetry
-// extern uint16_t telemetryERPM, telemetryVoltage;
-// extern uint8_t telemetryTemp;
-// extern uint16_t speedWheel;
-
-// LEDs
-// extern bool redLED, greenLED, blueLED;
-// extern uint8_t newRedLED, newGreenLED, newBlueLED;
-
-// manual data
-// extern uint8_t manualDataAmount;
-// extern uint16_t manualData[20];
 
 // throttle calculation
 extern int previousERPM[2][TREND_AMOUNT];

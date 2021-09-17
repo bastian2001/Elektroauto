@@ -9,6 +9,10 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('_e_s_c_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">ESC.h</div>  </div>
@@ -87,111 +103,141 @@ $(function() {
 <div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="_e_s_c_8h.html#a03e5d66497c5de80038cf08880bb7378">   22</a></span>&#160;<span class="preprocessor">#define ESC_BUFFER_ITEMS 16</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="_e_s_c_8h.html#a0421f559f421e5e767afcee6218b9bbd">   24</a></span>&#160;<span class="preprocessor">#define MAX_MANUAL_DATA 256</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define ARMED_MASK      (uint8_t)0b00100000</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define ENABLED_MASK    (uint8_t)0b00010000</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define CONNECTED_MASK  (uint8_t)0b00001000</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#define RED_LED_MASK    (uint8_t)0b00000100</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#define GREEN_LED_MASK  (uint8_t)0b00000010</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#define BLUE_LED_MASK   (uint8_t)0b00000001</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#define DEFAULT_STATUS  (ENABLED_MASK | RED_LED_MASK | GREEN_LED_MASK | BLUE_LED_MASK)</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">enum</span> {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    CMD_MOTOR_STOP = 0,</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    CMD_BEACON1,</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    CMD_BEACON2,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    CMD_BEACON3,</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    CMD_BEACON4,</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    CMD_BEACON5,</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    CMD_ESC_INFO, <span class="comment">// V2 includes settings</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    CMD_SPIN_DIRECTION_1,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    CMD_SPIN_DIRECTION_2,</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    CMD_3D_MODE_OFF,</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    CMD_3D_MODE_ON,</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    CMD_SETTINGS_REQUEST, <span class="comment">// Currently not implemented</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    CMD_SAVE_SETTINGS,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    CMD_SPIN_DIRECTION_NORMAL = 20,</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    CMD_SPIN_DIRECTION_REVERSED = 21,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    CMD_LED0_ON, <span class="comment">// BLHeli32 only</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    CMD_LED1_ON, <span class="comment">// BLHeli32 only</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    CMD_LED2_ON, <span class="comment">// BLHeli32 only</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    CMD_LED3_ON, <span class="comment">// BLHeli32 only</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    CMD_LED0_OFF, <span class="comment">// BLHeli32 only</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    CMD_LED1_OFF, <span class="comment">// BLHeli32 only</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    CMD_LED2_OFF, <span class="comment">// BLHeli32 only</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    CMD_LED3_OFF, <span class="comment">// BLHeli32 only</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    CMD_MAX = 47</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">enum</span>{</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    ERROR_OVERHEAT = 0,</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    ERROR_TOO_FAST,</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    ERROR_VOLTAGE_LOW</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;};</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">enum</span>{</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    ESC_BEEP_1 = 1,</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    ESC_BEEP_2,</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    ESC_BEEP_3,</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    ESC_BEEP_4,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    ESC_BEEP_5</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;};</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="class_e_s_c.html">   75</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_e_s_c.html">ESC</a> {</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">bool</span> isTelemetryComplete();</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    HardwareSerial *telemetryStream;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    uint8_t telemetryPin;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    rmt_channel_t dmaChannel;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    void (*onESCError) (<a class="code" href="class_e_s_c.html">ESC</a> *esc, uint8_t errorCode);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    void (*onStatusChange) (<a class="code" href="class_e_s_c.html">ESC</a> *esc, uint8_t newStatus, uint8_t oldStatus);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    uint16_t noTelemetryCounter = 0;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    uint8_t pStatus = DEFAULT_STATUS;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">char</span> telemetry[10];</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    rmt_item32_t dataBuffer[<a class="code" href="_e_s_c_8h.html#a03e5d66497c5de80038cf08880bb7378">ESC_BUFFER_ITEMS</a>];</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">double</span> nextThrottle = 0;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keyword">static</span> uint16_t maxThrottle;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <a class="code" href="class_e_s_c.html">ESC</a>(HardwareSerial *telemetryStream, int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannel, <span class="keywordtype">void</span> (*onError) (<a class="code" href="class_e_s_c.html">ESC</a> *esc, uint8_t errorCode), <span class="keywordtype">void</span> (*onStatusChange) (<a class="code" href="class_e_s_c.html">ESC</a> *esc, uint8_t newStatus, uint8_t oldStatus));</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    ~<a class="code" href="class_e_s_c.html">ESC</a>();</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">bool</span> loop();</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordtype">void</span> pause();</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">void</span> resume();</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">void</span> arm(<span class="keywordtype">bool</span> arm);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">void</span> beep(uint8_t level, <span class="keywordtype">bool</span> pauseBefore = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> setThrottle(<span class="keywordtype">double</span> newThrottle);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordtype">void</span> IRAM_ATTR send();</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordtype">void</span> IRAM_ATTR sendThrottle(uint16_t throttleValue);</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">void</span> IRAM_ATTR sendRaw11(uint16_t rawValueWithoutChecksum);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> IRAM_ATTR sendFullRaw(uint16_t rawValueWithChecksum);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">bool</span> getRedLED();</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordtype">bool</span> getGreenLED();</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">bool</span> getBlueLED();</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> setMaxThrottle (uint16_t maxThrottle);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keyword">static</span> uint16_t getMaxThrottle ();</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keyword">static</span> uint16_t appendChecksum(uint16_t value);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> lastTelemetry = 0;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    uint16_t voltage = 0;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    uint16_t heRPM = 0;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    uint16_t speed = 0;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    uint8_t temperature = 0;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    uint8_t status = DEFAULT_STATUS;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    uint16_t manualData11[<a class="code" href="_e_s_c_8h.html#a0421f559f421e5e767afcee6218b9bbd">MAX_MANUAL_DATA</a>];</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    uint16_t manualDataAmount = 0;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordtype">double</span> currentThrottle = 0;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keyword">static</span> uint16_t cutoffVoltage;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;};</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="_e_s_c_8h.html#adf16c95ea777e8f4a83e34a835bda47c">   27</a></span>&#160;<span class="preprocessor">#define ARMED_MASK      (uint8_t)0b00100000</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="_e_s_c_8h.html#a246297f96abca9835c00e143ca8a7f3c">   29</a></span>&#160;<span class="preprocessor">#define ENABLED_MASK    (uint8_t)0b00010000</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="_e_s_c_8h.html#a913aa6553b1a8858db2293c73a904a9c">   31</a></span>&#160;<span class="preprocessor">#define CONNECTED_MASK  (uint8_t)0b00001000</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="_e_s_c_8h.html#a2de27af622c55526783a345c21cec42e">   33</a></span>&#160;<span class="preprocessor">#define RED_LED_MASK    (uint8_t)0b00000100</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="_e_s_c_8h.html#a102cef24f52add2a38ee01eccbf27bcb">   35</a></span>&#160;<span class="preprocessor">#define GREEN_LED_MASK  (uint8_t)0b00000010</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="_e_s_c_8h.html#a6f2788e548d65bbb864b965c72a7bf56">   37</a></span>&#160;<span class="preprocessor">#define BLUE_LED_MASK   (uint8_t)0b00000001</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#define DEFAULT_STATUS  (ENABLED_MASK | RED_LED_MASK | GREEN_LED_MASK | BLUE_LED_MASK)</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    CMD_MOTOR_STOP = 0,</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    CMD_BEACON1,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    CMD_BEACON2,</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    CMD_BEACON3,</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    CMD_BEACON4,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    CMD_BEACON5,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    CMD_ESC_INFO, <span class="comment">// V2 includes settings</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    CMD_SPIN_DIRECTION_1,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    CMD_SPIN_DIRECTION_2,</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    CMD_3D_MODE_OFF,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    CMD_3D_MODE_ON,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    CMD_SETTINGS_REQUEST, <span class="comment">// Currently not implemented</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    CMD_SAVE_SETTINGS,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    CMD_SPIN_DIRECTION_NORMAL = 20,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    CMD_SPIN_DIRECTION_REVERSED = 21,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    CMD_LED0_ON, <span class="comment">// BLHeli32 only</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    CMD_LED1_ON, <span class="comment">// BLHeli32 only</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    CMD_LED2_ON, <span class="comment">// BLHeli32 only</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    CMD_LED3_ON, <span class="comment">// BLHeli32 only</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    CMD_LED0_OFF, <span class="comment">// BLHeli32 only</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    CMD_LED1_OFF, <span class="comment">// BLHeli32 only</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    CMD_LED2_OFF, <span class="comment">// BLHeli32 only</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    CMD_LED3_OFF, <span class="comment">// BLHeli32 only</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    CMD_MAX = 47</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;};</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keyword">enum</span>{</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    ERROR_OVERHEAT = 0,</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    ERROR_TOO_FAST,</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    ERROR_VOLTAGE_LOW</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;};</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">enum</span>{</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    ESC_BEEP_1 = 1,</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    ESC_BEEP_2,</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    ESC_BEEP_3,</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    ESC_BEEP_4,</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    ESC_BEEP_5</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;};</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="class_e_s_c.html">   89</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_e_s_c.html">ESC</a> {</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">bool</span> isTelemetryComplete();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    HardwareSerial *telemetryStream;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    uint8_t telemetryPin;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    rmt_channel_t dmaChannel;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    void (*onESCError) (<a class="code" href="class_e_s_c.html">ESC</a> *esc, uint8_t errorCode);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    void (*onStatusChange) (<a class="code" href="class_e_s_c.html">ESC</a> *esc, uint8_t newStatus, uint8_t oldStatus);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    uint16_t noTelemetryCounter = 0;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    uint8_t pStatus = DEFAULT_STATUS;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">char</span> telemetry[10];</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    rmt_item32_t dataBuffer[<a class="code" href="_e_s_c_8h.html#a03e5d66497c5de80038cf08880bb7378">ESC_BUFFER_ITEMS</a>];</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">double</span> nextThrottle = 0;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keyword">static</span> uint16_t maxThrottle;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <a class="code" href="class_e_s_c.html#a476998d16bf22b5c931d7d42bdc0c93d">ESC</a>(HardwareSerial *telemetryStream, int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannel, <span class="keywordtype">void</span> (*onError) (<a class="code" href="class_e_s_c.html">ESC</a> *esc, uint8_t errorCode), <span class="keywordtype">void</span> (*onStatusChange) (<a class="code" href="class_e_s_c.html">ESC</a> *esc, uint8_t newStatus, uint8_t oldStatus));</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <a class="code" href="class_e_s_c.html#a10d714b554056a06898779430307a8c6">~ESC</a>();</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_e_s_c.html#aef21cba5993a747da3599b4950d08d56">loop</a>();</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_e_s_c.html#a30e930ad98862b5fddc4063361a3e25a">pause</a>();</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_e_s_c.html#a43e00ea892a02019c02c5cb874cff08b">resume</a>();</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_e_s_c.html#a11f4a7d7884ef3dafcdaea23ebdde821">arm</a>(<span class="keywordtype">bool</span> <a class="code" href="class_e_s_c.html#a11f4a7d7884ef3dafcdaea23ebdde821">arm</a>);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_e_s_c.html#acaf53ccc4575757a52c56e6587904930">beep</a>(uint8_t level, <span class="keywordtype">bool</span> pauseBefore = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_e_s_c.html#acb01b31db9875c29276e2a54f5014901">setThrottle</a>(<span class="keywordtype">double</span> newThrottle);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keywordtype">void</span> IRAM_ATTR <a class="code" href="class_e_s_c.html#ab91c8f0a9383edd0bb9d9269034dc1e4">send</a>();</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keywordtype">void</span> IRAM_ATTR <a class="code" href="class_e_s_c.html#acc10ccd2bb3817780367405694d5f19b">sendThrottle</a>(uint16_t throttleValue);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordtype">void</span> IRAM_ATTR <a class="code" href="class_e_s_c.html#a1b81812c740ec8ee93e908916d461983">sendRaw11</a>(uint16_t rawValueWithoutChecksum);</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <span class="keywordtype">void</span> IRAM_ATTR <a class="code" href="class_e_s_c.html#a137b2260bbdcad4ea02316138a6c2305">sendFullRaw</a>(uint16_t rawValueWithChecksum);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_e_s_c.html#af0d4c5865918af76369f77adb747b920">getRedLED</a>();</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_e_s_c.html#aafad0895ed29000929ee25fb718a1516">getGreenLED</a>();</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_e_s_c.html#a30d325a9265ae9523b19a20fab37796b">getBlueLED</a>();</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_e_s_c.html#a26cc5b2661c8619a1ead109a1ad7725f">setMaxThrottle</a> (uint16_t maxThrottle);</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <span class="keyword">static</span> uint16_t <a class="code" href="class_e_s_c.html#a71933ad5f293b6becbda102b245bedd6">getMaxThrottle</a> ();</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="keyword">static</span> uint16_t <a class="code" href="class_e_s_c.html#a635b90b7679a812b404fe0b5a87ed2d2">appendChecksum</a>(uint16_t value);</div>
+<div class="line"><a name="l00224"></a><span class="lineno"><a class="line" href="class_e_s_c.html#ada6272c9022ad55276a9141191e7e94c">  224</a></span>&#160;    uint16_t <a class="code" href="class_e_s_c.html#ada6272c9022ad55276a9141191e7e94c">voltage</a> = 0;</div>
+<div class="line"><a name="l00226"></a><span class="lineno"><a class="line" href="class_e_s_c.html#af02e4a7ecc94edbb5f5031381844c332">  226</a></span>&#160;    uint16_t <a class="code" href="class_e_s_c.html#af02e4a7ecc94edbb5f5031381844c332">heRPM</a> = 0;</div>
+<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="class_e_s_c.html#a3335165f947f4aafd831369e014ce3af">  228</a></span>&#160;    uint16_t <a class="code" href="class_e_s_c.html#a3335165f947f4aafd831369e014ce3af">speed</a> = 0;</div>
+<div class="line"><a name="l00230"></a><span class="lineno"><a class="line" href="class_e_s_c.html#a4429c2a74cdb70ba7866478f2d3201a1">  230</a></span>&#160;    uint8_t <a class="code" href="class_e_s_c.html#a4429c2a74cdb70ba7866478f2d3201a1">temperature</a> = 0;</div>
+<div class="line"><a name="l00232"></a><span class="lineno"><a class="line" href="class_e_s_c.html#ab429a4c931d9d677899556f286e4746b">  232</a></span>&#160;    uint8_t <a class="code" href="class_e_s_c.html#ab429a4c931d9d677899556f286e4746b">status</a> = DEFAULT_STATUS;</div>
+<div class="line"><a name="l00234"></a><span class="lineno"><a class="line" href="class_e_s_c.html#a4fa86bbc7e09a353d37f8ea881335fba">  234</a></span>&#160;    uint16_t <a class="code" href="class_e_s_c.html#a4fa86bbc7e09a353d37f8ea881335fba">manualData11</a>[<a class="code" href="_e_s_c_8h.html#a0421f559f421e5e767afcee6218b9bbd">MAX_MANUAL_DATA</a>];</div>
+<div class="line"><a name="l00236"></a><span class="lineno"><a class="line" href="class_e_s_c.html#acea17e6585b19b4cf02b62636c48f476">  236</a></span>&#160;    uint16_t <a class="code" href="class_e_s_c.html#acea17e6585b19b4cf02b62636c48f476">manualDataAmount</a> = 0;</div>
+<div class="line"><a name="l00238"></a><span class="lineno"><a class="line" href="class_e_s_c.html#a81cb2ee30ec8b84f458c25c2f89b0678">  238</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="class_e_s_c.html#a81cb2ee30ec8b84f458c25c2f89b0678">currentThrottle</a> = 0;</div>
+<div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="class_e_s_c.html#a14a5dab94b444b991216bfe099efcb73">  240</a></span>&#160;    <span class="keyword">static</span> uint16_t <a class="code" href="class_e_s_c.html#a14a5dab94b444b991216bfe099efcb73">cutoffVoltage</a>;</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;};</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="a_e_s_c_8h_html_a03e5d66497c5de80038cf08880bb7378"><div class="ttname"><a href="_e_s_c_8h.html#a03e5d66497c5de80038cf08880bb7378">ESC_BUFFER_ITEMS</a></div><div class="ttdeci">#define ESC_BUFFER_ITEMS</div><div class="ttdoc">number of bits sent out via DShot</div><div class="ttdef"><b>Definition:</b> ESC.h:22</div></div>
 <div class="ttc" id="a_e_s_c_8h_html_a0421f559f421e5e767afcee6218b9bbd"><div class="ttname"><a href="_e_s_c_8h.html#a0421f559f421e5e767afcee6218b9bbd">MAX_MANUAL_DATA</a></div><div class="ttdeci">#define MAX_MANUAL_DATA</div><div class="ttdoc">maximum amount of manual data</div><div class="ttdef"><b>Definition:</b> ESC.h:24</div></div>
-<div class="ttc" id="aclass_e_s_c_html"><div class="ttname"><a href="class_e_s_c.html">ESC</a></div><div class="ttdef"><b>Definition:</b> ESC.h:75</div></div>
+<div class="ttc" id="aclass_e_s_c_html"><div class="ttname"><a href="class_e_s_c.html">ESC</a></div><div class="ttdoc">represents one ESC/motor combo</div><div class="ttdef"><b>Definition:</b> ESC.h:89</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a10d714b554056a06898779430307a8c6"><div class="ttname"><a href="class_e_s_c.html#a10d714b554056a06898779430307a8c6">ESC::~ESC</a></div><div class="ttdeci">~ESC()</div><div class="ttdoc">destroys the ESC object</div><div class="ttdef"><b>Definition:</b> ESC.cpp:34</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a11f4a7d7884ef3dafcdaea23ebdde821"><div class="ttname"><a href="class_e_s_c.html#a11f4a7d7884ef3dafcdaea23ebdde821">ESC::arm</a></div><div class="ttdeci">void arm(bool arm)</div><div class="ttdoc">arms the ESC (throttle is set to 0)</div><div class="ttdef"><b>Definition:</b> ESC.cpp:123</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a137b2260bbdcad4ea02316138a6c2305"><div class="ttname"><a href="class_e_s_c.html#a137b2260bbdcad4ea02316138a6c2305">ESC::sendFullRaw</a></div><div class="ttdeci">void IRAM_ATTR sendFullRaw(uint16_t rawValueWithChecksum)</div><div class="ttdoc">sends a 16 bit raw value immediately, no checks, telemetry bit is set by user</div><div class="ttdef"><b>Definition:</b> ESC.cpp:197</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a14a5dab94b444b991216bfe099efcb73"><div class="ttname"><a href="class_e_s_c.html#a14a5dab94b444b991216bfe099efcb73">ESC::cutoffVoltage</a></div><div class="ttdeci">static uint16_t cutoffVoltage</div><div class="ttdoc">voltage at which all ESCs will fire a VOLTAGE_LOW error</div><div class="ttdef"><b>Definition:</b> ESC.h:240</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a1b81812c740ec8ee93e908916d461983"><div class="ttname"><a href="class_e_s_c.html#a1b81812c740ec8ee93e908916d461983">ESC::sendRaw11</a></div><div class="ttdeci">void IRAM_ATTR sendRaw11(uint16_t rawValueWithoutChecksum)</div><div class="ttdoc">sends an 11 bit raw value immediately, no checks, but telemetry request</div><div class="ttdef"><b>Definition:</b> ESC.cpp:192</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a26cc5b2661c8619a1ead109a1ad7725f"><div class="ttname"><a href="class_e_s_c.html#a26cc5b2661c8619a1ead109a1ad7725f">ESC::setMaxThrottle</a></div><div class="ttdeci">static void setMaxThrottle(uint16_t maxThrottle)</div><div class="ttdoc">Set the maximum throttle of all ESCs.</div><div class="ttdef"><b>Definition:</b> ESC.cpp:244</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a30d325a9265ae9523b19a20fab37796b"><div class="ttname"><a href="class_e_s_c.html#a30d325a9265ae9523b19a20fab37796b">ESC::getBlueLED</a></div><div class="ttdeci">bool getBlueLED()</div><div class="ttdoc">check if blue LED is on</div><div class="ttdef"><b>Definition:</b> ESC.cpp:240</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a30e930ad98862b5fddc4063361a3e25a"><div class="ttname"><a href="class_e_s_c.html#a30e930ad98862b5fddc4063361a3e25a">ESC::pause</a></div><div class="ttdeci">void pause()</div><div class="ttdoc">disables ESC temporarily</div><div class="ttdef"><b>Definition:</b> ESC.cpp:110</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a3335165f947f4aafd831369e014ce3af"><div class="ttname"><a href="class_e_s_c.html#a3335165f947f4aafd831369e014ce3af">ESC::speed</a></div><div class="ttdeci">uint16_t speed</div><div class="ttdoc">speed (calculated by using wheel diameter and pole count, not implemented yet)</div><div class="ttdef"><b>Definition:</b> ESC.h:228</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a43e00ea892a02019c02c5cb874cff08b"><div class="ttname"><a href="class_e_s_c.html#a43e00ea892a02019c02c5cb874cff08b">ESC::resume</a></div><div class="ttdeci">void resume()</div><div class="ttdoc">enables ESC after it was paused</div><div class="ttdef"><b>Definition:</b> ESC.cpp:116</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a4429c2a74cdb70ba7866478f2d3201a1"><div class="ttname"><a href="class_e_s_c.html#a4429c2a74cdb70ba7866478f2d3201a1">ESC::temperature</a></div><div class="ttdeci">uint8_t temperature</div><div class="ttdoc">temperature as supplied by telemetry</div><div class="ttdef"><b>Definition:</b> ESC.h:230</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a476998d16bf22b5c931d7d42bdc0c93d"><div class="ttname"><a href="class_e_s_c.html#a476998d16bf22b5c931d7d42bdc0c93d">ESC::ESC</a></div><div class="ttdeci">ESC(HardwareSerial *telemetryStream, int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannel, void(*onError)(ESC *esc, uint8_t errorCode), void(*onStatusChange)(ESC *esc, uint8_t newStatus, uint8_t oldStatus))</div><div class="ttdoc">registers a new ESC</div><div class="ttdef"><b>Definition:</b> ESC.cpp:10</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a4fa86bbc7e09a353d37f8ea881335fba"><div class="ttname"><a href="class_e_s_c.html#a4fa86bbc7e09a353d37f8ea881335fba">ESC::manualData11</a></div><div class="ttdeci">uint16_t manualData11[MAX_MANUAL_DATA]</div><div class="ttdoc">manual data array, put data here and set manualDataAmount</div><div class="ttdef"><b>Definition:</b> ESC.h:234</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a635b90b7679a812b404fe0b5a87ed2d2"><div class="ttname"><a href="class_e_s_c.html#a635b90b7679a812b404fe0b5a87ed2d2">ESC::appendChecksum</a></div><div class="ttdeci">static uint16_t appendChecksum(uint16_t value)</div><div class="ttdoc">shifts a uint16_t 4 bits left and appends the CRC checksum</div><div class="ttdef"><b>Definition:</b> ESC.cpp:258</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a71933ad5f293b6becbda102b245bedd6"><div class="ttname"><a href="class_e_s_c.html#a71933ad5f293b6becbda102b245bedd6">ESC::getMaxThrottle</a></div><div class="ttdeci">static uint16_t getMaxThrottle()</div><div class="ttdoc">Get the maximum throttle of all ESCs.</div><div class="ttdef"><b>Definition:</b> ESC.cpp:253</div></div>
+<div class="ttc" id="aclass_e_s_c_html_a81cb2ee30ec8b84f458c25c2f89b0678"><div class="ttname"><a href="class_e_s_c.html#a81cb2ee30ec8b84f458c25c2f89b0678">ESC::currentThrottle</a></div><div class="ttdeci">double currentThrottle</div><div class="ttdoc">currentThrottle (read only)</div><div class="ttdef"><b>Definition:</b> ESC.h:238</div></div>
+<div class="ttc" id="aclass_e_s_c_html_aafad0895ed29000929ee25fb718a1516"><div class="ttname"><a href="class_e_s_c.html#aafad0895ed29000929ee25fb718a1516">ESC::getGreenLED</a></div><div class="ttdeci">bool getGreenLED()</div><div class="ttdoc">check if green LED is on</div><div class="ttdef"><b>Definition:</b> ESC.cpp:235</div></div>
+<div class="ttc" id="aclass_e_s_c_html_ab429a4c931d9d677899556f286e4746b"><div class="ttname"><a href="class_e_s_c.html#ab429a4c931d9d677899556f286e4746b">ESC::status</a></div><div class="ttdeci">uint8_t status</div><div class="ttdoc">status byte (read using masks)</div><div class="ttdef"><b>Definition:</b> ESC.h:232</div></div>
+<div class="ttc" id="aclass_e_s_c_html_ab91c8f0a9383edd0bb9d9269034dc1e4"><div class="ttname"><a href="class_e_s_c.html#ab91c8f0a9383edd0bb9d9269034dc1e4">ESC::send</a></div><div class="ttdeci">void IRAM_ATTR send()</div><div class="ttdoc">This method will write the newThrottle to currentThrottle and send the newThrottle to the ESC.</div><div class="ttdef"><b>Definition:</b> ESC.cpp:168</div></div>
+<div class="ttc" id="aclass_e_s_c_html_acaf53ccc4575757a52c56e6587904930"><div class="ttname"><a href="class_e_s_c.html#acaf53ccc4575757a52c56e6587904930">ESC::beep</a></div><div class="ttdeci">void beep(uint8_t level, bool pauseBefore=false)</div><div class="ttdoc">beeps the ESC once</div><div class="ttdef"><b>Definition:</b> ESC.cpp:134</div></div>
+<div class="ttc" id="aclass_e_s_c_html_acb01b31db9875c29276e2a54f5014901"><div class="ttname"><a href="class_e_s_c.html#acb01b31db9875c29276e2a54f5014901">ESC::setThrottle</a></div><div class="ttdeci">void setThrottle(double newThrottle)</div><div class="ttdoc">set new Throttle (0...2000)</div><div class="ttdef"><b>Definition:</b> ESC.cpp:163</div></div>
+<div class="ttc" id="aclass_e_s_c_html_acc10ccd2bb3817780367405694d5f19b"><div class="ttname"><a href="class_e_s_c.html#acc10ccd2bb3817780367405694d5f19b">ESC::sendThrottle</a></div><div class="ttdeci">void IRAM_ATTR sendThrottle(uint16_t throttleValue)</div><div class="ttdoc">sends a throttle value immediately, no checks, no telemetry request</div><div class="ttdef"><b>Definition:</b> ESC.cpp:186</div></div>
+<div class="ttc" id="aclass_e_s_c_html_acea17e6585b19b4cf02b62636c48f476"><div class="ttname"><a href="class_e_s_c.html#acea17e6585b19b4cf02b62636c48f476">ESC::manualDataAmount</a></div><div class="ttdeci">uint16_t manualDataAmount</div><div class="ttdoc">last useful index of manualData11 +1, so for 3 manual data packets, write 3 here</div><div class="ttdef"><b>Definition:</b> ESC.h:236</div></div>
+<div class="ttc" id="aclass_e_s_c_html_ada6272c9022ad55276a9141191e7e94c"><div class="ttname"><a href="class_e_s_c.html#ada6272c9022ad55276a9141191e7e94c">ESC::voltage</a></div><div class="ttdeci">uint16_t voltage</div><div class="ttdoc">voltage as supplied by telemetry, in cV</div><div class="ttdef"><b>Definition:</b> ESC.h:224</div></div>
+<div class="ttc" id="aclass_e_s_c_html_aef21cba5993a747da3599b4950d08d56"><div class="ttname"><a href="class_e_s_c.html#aef21cba5993a747da3599b4950d08d56">ESC::loop</a></div><div class="ttdeci">bool loop()</div><div class="ttdoc">checks for telemetry</div><div class="ttdef"><b>Definition:</b> ESC.cpp:39</div></div>
+<div class="ttc" id="aclass_e_s_c_html_af02e4a7ecc94edbb5f5031381844c332"><div class="ttname"><a href="class_e_s_c.html#af02e4a7ecc94edbb5f5031381844c332">ESC::heRPM</a></div><div class="ttdeci">uint16_t heRPM</div><div class="ttdoc">heRPM as supplied by telemetry</div><div class="ttdef"><b>Definition:</b> ESC.h:226</div></div>
+<div class="ttc" id="aclass_e_s_c_html_af0d4c5865918af76369f77adb747b920"><div class="ttname"><a href="class_e_s_c.html#af0d4c5865918af76369f77adb747b920">ESC::getRedLED</a></div><div class="ttdeci">bool getRedLED()</div><div class="ttdoc">check if red LED is on</div><div class="ttdef"><b>Definition:</b> ESC.cpp:230</div></div>
 </div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li><li class="navelem"><a class="el" href="_e_s_c_8h.html">ESC.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

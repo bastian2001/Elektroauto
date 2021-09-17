@@ -9,6 +9,10 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('_e_s_c_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
@@ -86,6 +102,7 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html">ESC</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">represents one ESC/motor combo  <a href="class_e_s_c.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
@@ -123,25 +140,31 @@ Macros</h2></td></tr>
 <tr class="memdesc:a0421f559f421e5e767afcee6218b9bbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">maximum amount of manual data <br /></td></tr>
 <tr class="separator:a0421f559f421e5e767afcee6218b9bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf16c95ea777e8f4a83e34a835bda47c"><td class="memItemLeft" align="right" valign="top"><a id="adf16c95ea777e8f4a83e34a835bda47c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ARMED_MASK</b>&#160;&#160;&#160;(uint8_t)0b00100000</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_e_s_c_8h.html#adf16c95ea777e8f4a83e34a835bda47c">ARMED_MASK</a>&#160;&#160;&#160;(uint8_t)0b00100000</td></tr>
+<tr class="memdesc:adf16c95ea777e8f4a83e34a835bda47c"><td class="mdescLeft">&#160;</td><td class="mdescRight">status bit armed <br /></td></tr>
 <tr class="separator:adf16c95ea777e8f4a83e34a835bda47c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a246297f96abca9835c00e143ca8a7f3c"><td class="memItemLeft" align="right" valign="top"><a id="a246297f96abca9835c00e143ca8a7f3c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>ENABLED_MASK</b>&#160;&#160;&#160;(uint8_t)0b00010000</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_e_s_c_8h.html#a246297f96abca9835c00e143ca8a7f3c">ENABLED_MASK</a>&#160;&#160;&#160;(uint8_t)0b00010000</td></tr>
+<tr class="memdesc:a246297f96abca9835c00e143ca8a7f3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">status bit <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> enabled <br /></td></tr>
 <tr class="separator:a246297f96abca9835c00e143ca8a7f3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a913aa6553b1a8858db2293c73a904a9c"><td class="memItemLeft" align="right" valign="top"><a id="a913aa6553b1a8858db2293c73a904a9c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>CONNECTED_MASK</b>&#160;&#160;&#160;(uint8_t)0b00001000</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_e_s_c_8h.html#a913aa6553b1a8858db2293c73a904a9c">CONNECTED_MASK</a>&#160;&#160;&#160;(uint8_t)0b00001000</td></tr>
+<tr class="memdesc:a913aa6553b1a8858db2293c73a904a9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">status bit <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> connected (based on telemetry) <br /></td></tr>
 <tr class="separator:a913aa6553b1a8858db2293c73a904a9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2de27af622c55526783a345c21cec42e"><td class="memItemLeft" align="right" valign="top"><a id="a2de27af622c55526783a345c21cec42e"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>RED_LED_MASK</b>&#160;&#160;&#160;(uint8_t)0b00000100</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_e_s_c_8h.html#a2de27af622c55526783a345c21cec42e">RED_LED_MASK</a>&#160;&#160;&#160;(uint8_t)0b00000100</td></tr>
+<tr class="memdesc:a2de27af622c55526783a345c21cec42e"><td class="mdescLeft">&#160;</td><td class="mdescRight">red LED on? <br /></td></tr>
 <tr class="separator:a2de27af622c55526783a345c21cec42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a102cef24f52add2a38ee01eccbf27bcb"><td class="memItemLeft" align="right" valign="top"><a id="a102cef24f52add2a38ee01eccbf27bcb"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>GREEN_LED_MASK</b>&#160;&#160;&#160;(uint8_t)0b00000010</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_e_s_c_8h.html#a102cef24f52add2a38ee01eccbf27bcb">GREEN_LED_MASK</a>&#160;&#160;&#160;(uint8_t)0b00000010</td></tr>
+<tr class="memdesc:a102cef24f52add2a38ee01eccbf27bcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">green LED on? <br /></td></tr>
 <tr class="separator:a102cef24f52add2a38ee01eccbf27bcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f2788e548d65bbb864b965c72a7bf56"><td class="memItemLeft" align="right" valign="top"><a id="a6f2788e548d65bbb864b965c72a7bf56"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>BLUE_LED_MASK</b>&#160;&#160;&#160;(uint8_t)0b00000001</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_e_s_c_8h.html#a6f2788e548d65bbb864b965c72a7bf56">BLUE_LED_MASK</a>&#160;&#160;&#160;(uint8_t)0b00000001</td></tr>
+<tr class="memdesc:a6f2788e548d65bbb864b965c72a7bf56"><td class="mdescLeft">&#160;</td><td class="mdescRight">blue LED on? <br /></td></tr>
 <tr class="separator:a6f2788e548d65bbb864b965c72a7bf56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a188ce67e515b427589d4c363d1132018"><td class="memItemLeft" align="right" valign="top"><a id="a188ce67e515b427589d4c363d1132018"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEFAULT_STATUS</b>&#160;&#160;&#160;(ENABLED_MASK | RED_LED_MASK | GREEN_LED_MASK | BLUE_LED_MASK)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEFAULT_STATUS</b>&#160;&#160;&#160;(<a class="el" href="_e_s_c_8h.html#a246297f96abca9835c00e143ca8a7f3c">ENABLED_MASK</a> | <a class="el" href="_e_s_c_8h.html#a2de27af622c55526783a345c21cec42e">RED_LED_MASK</a> | <a class="el" href="_e_s_c_8h.html#a102cef24f52add2a38ee01eccbf27bcb">GREEN_LED_MASK</a> | <a class="el" href="_e_s_c_8h.html#a6f2788e548d65bbb864b965c72a7bf56">BLUE_LED_MASK</a>)</td></tr>
 <tr class="separator:a188ce67e515b427589d4c363d1132018"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
@@ -178,11 +201,13 @@ Enumerations</h2></td></tr>
 , <b>CMD_MAX</b> = 47
 <br />
  }</td></tr>
+<tr class="memdesc:a06fc87d81c62e9abb8790b6e5713c55b"><td class="mdescLeft">&#160;</td><td class="mdescRight">special commands <br /></td></tr>
 <tr class="separator:a06fc87d81c62e9abb8790b6e5713c55b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf764cbdea00d65edcd07bb9953ad2b7"><td class="memItemLeft" align="right" valign="top"><a id="adf764cbdea00d65edcd07bb9953ad2b7"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>ERROR_OVERHEAT</b> = 0
 , <b>ERROR_TOO_FAST</b>
 , <b>ERROR_VOLTAGE_LOW</b>
  }</td></tr>
+<tr class="memdesc:adf764cbdea00d65edcd07bb9953ad2b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">error codes <br /></td></tr>
 <tr class="separator:adf764cbdea00d65edcd07bb9953ad2b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99fb83031ce9923c84392b4e92f956b5"><td class="memItemLeft" align="right" valign="top"><a id="a99fb83031ce9923c84392b4e92f956b5"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
 &#160;&#160;<b>ESC_BEEP_1</b> = 1
@@ -193,14 +218,19 @@ Enumerations</h2></td></tr>
 &#160;&#160;<b>ESC_BEEP_5</b>
 <br />
  }</td></tr>
+<tr class="memdesc:a99fb83031ce9923c84392b4e92f956b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">beep codes <br /></td></tr>
 <tr class="separator:a99fb83031ce9923c84392b4e92f956b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Driver for DShot ESCs. </p>
 </div></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li><li class="navelem"><a class="el" href="_e_s_c_8h.html">ESC.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

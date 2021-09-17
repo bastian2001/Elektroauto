@@ -9,6 +9,10 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('global_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,14 +82,11 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -90,6 +108,12 @@ $(function() {
 </div>
 <p><a href="global_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_action.html">Action</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="struct_action.html" title="Action for disarm etc.">Action</a> for disarm etc.  <a href="struct_action.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a562e25786029d92dff2a890a7d02c3a2"><td class="memItemLeft" align="right" valign="top"><a id="a562e25786029d92dff2a890a7d02c3a2"></a>
@@ -133,7 +157,7 @@ Macros</h2></td></tr>
 <tr class="memdesc:a2a4476ae47f5d5a8fc7957242f61710b"><td class="mdescLeft">&#160;</td><td class="mdescRight">pin used for SCL/SCK of the SPI driver <br /></td></tr>
 <tr class="separator:a2a4476ae47f5d5a8fc7957242f61710b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80c5db6627af198f27aeba2efd397f65"><td class="memItemLeft" align="right" valign="top"><a id="a80c5db6627af198f27aeba2efd397f65"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a80c5db6627af198f27aeba2efd397f65">ESC_FREQ</a>&#160;&#160;&#160;1600</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a80c5db6627af198f27aeba2efd397f65">ESC_FREQ</a>&#160;&#160;&#160;800</td></tr>
 <tr class="memdesc:a80c5db6627af198f27aeba2efd397f65"><td class="mdescLeft">&#160;</td><td class="mdescRight">frequency of basically everything <br /></td></tr>
 <tr class="separator:a80c5db6627af198f27aeba2efd397f65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a237cf6d05ca8467dea7399045ca9d6a3"><td class="memItemLeft" align="right" valign="top"><a id="a237cf6d05ca8467dea7399045ca9d6a3"></a>
@@ -142,7 +166,7 @@ Macros</h2></td></tr>
 <tr class="separator:a237cf6d05ca8467dea7399045ca9d6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b79d48b6cabc261f17b4933e379d5ad"><td class="memItemLeft" align="right" valign="top"><a id="a8b79d48b6cabc261f17b4933e379d5ad"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a8b79d48b6cabc261f17b4933e379d5ad">TELEMETRY_DEBUG</a>&#160;&#160;&#160;0</td></tr>
-<tr class="memdesc:a8b79d48b6cabc261f17b4933e379d5ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print telemetry from <a class="el" href="class_e_s_c.html">ESC</a> out to Serial every ... frames; 0 for disabled (recommended for final/semi-stable build); use lower values with care. <br /></td></tr>
+<tr class="memdesc:a8b79d48b6cabc261f17b4933e379d5ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print telemetry from <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> out to Serial every ... frames; 0 for disabled (recommended for final/semi-stable build); use lower values with care. <br /></td></tr>
 <tr class="separator:a8b79d48b6cabc261f17b4933e379d5ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13ab435552e77175e45358dd829439b9"><td class="memItemLeft" align="right" valign="top"><a id="a13ab435552e77175e45358dd829439b9"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a13ab435552e77175e45358dd829439b9">PRINT_TELEMETRY_THROTTLE</a></td></tr>
@@ -150,7 +174,7 @@ Macros</h2></td></tr>
 <tr class="separator:a13ab435552e77175e45358dd829439b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb765ba3aad67611651f569b7cd1ab6a"><td class="memItemLeft" align="right" valign="top"><a id="afb765ba3aad67611651f569b7cd1ab6a"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#afb765ba3aad67611651f569b7cd1ab6a">PRINT_TELEMETRY_TEMP</a></td></tr>
-<tr class="memdesc:afb765ba3aad67611651f569b7cd1ab6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the temperature of the <a class="el" href="class_e_s_c.html">ESC</a> when printing the telemetry. <br /></td></tr>
+<tr class="memdesc:afb765ba3aad67611651f569b7cd1ab6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print the temperature of the <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> when printing the telemetry. <br /></td></tr>
 <tr class="separator:afb765ba3aad67611651f569b7cd1ab6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90e815192367808af30e7a3c4ecbbb54"><td class="memItemLeft" align="right" valign="top"><a id="a90e815192367808af30e7a3c4ecbbb54"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a90e815192367808af30e7a3c4ecbbb54">PRINT_TELEMETRY_ERPM</a></td></tr>
@@ -172,13 +196,11 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a74e7c521a14c93055d37dfc37305c7d2">TELEMETRY_UPDATE_ADD</a>&#160;&#160;&#160;20</td></tr>
 <tr class="memdesc:a74e7c521a14c93055d37dfc37305c7d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">add ... ms to telemetry frequency for every connected client (1 client: Telemetry every TELEMETRY_UPDATE_MS + /TELEMETRY_UPDATE_ADD milliseconds) <br /></td></tr>
 <tr class="separator:a74e7c521a14c93055d37dfc37305c7d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd15b8fcd3b82c2827693b9fd882a206"><td class="memItemLeft" align="right" valign="top"><a id="abd15b8fcd3b82c2827693b9fd882a206"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#abd15b8fcd3b82c2827693b9fd882a206">ssid</a>&#160;&#160;&#160;&quot;Test&quot;</td></tr>
-<tr class="memdesc:abd15b8fcd3b82c2827693b9fd882a206"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SSID. <br /></td></tr>
+<tr class="memitem:abd15b8fcd3b82c2827693b9fd882a206"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#abd15b8fcd3b82c2827693b9fd882a206">ssid</a>&#160;&#160;&#160;&quot;POCO X3 NFC&quot;</td></tr>
+<tr class="memdesc:abd15b8fcd3b82c2827693b9fd882a206"><td class="mdescLeft">&#160;</td><td class="mdescRight">The SSID.  <a href="global_8h.html#abd15b8fcd3b82c2827693b9fd882a206">More...</a><br /></td></tr>
 <tr class="separator:abd15b8fcd3b82c2827693b9fd882a206"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae59dfb8ffddb9128834034516c45e7ce"><td class="memItemLeft" align="right" valign="top"><a id="ae59dfb8ffddb9128834034516c45e7ce"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#ae59dfb8ffddb9128834034516c45e7ce">password</a>&#160;&#160;&#160;&quot;CaputDraconis&quot;</td></tr>
-<tr class="memdesc:ae59dfb8ffddb9128834034516c45e7ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">The password for wifi. <br /></td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>password</b>&#160;&#160;&#160;&quot;055fb39a4cc4&quot;</td></tr>
 <tr class="separator:ae59dfb8ffddb9128834034516c45e7ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b38a37a964164495735576800012b10"><td class="memItemLeft" align="right" valign="top"><a id="a8b38a37a964164495735576800012b10"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a8b38a37a964164495735576800012b10">PRINT_SETUP</a></td></tr>
@@ -201,17 +223,24 @@ Macros</h2></td></tr>
 <tr class="memdesc:a7db45444f58d4ef5a2387d71bf2eb6cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of frames for RPS calculation, to be tested <br /></td></tr>
 <tr class="separator:a7db45444f58d4ef5a2387d71bf2eb6cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3460ce031b29d4c8b4b58440832bfae"><td class="memItemLeft" align="right" valign="top"><a id="aa3460ce031b29d4c8b4b58440832bfae"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#aa3460ce031b29d4c8b4b58440832bfae">LOG_FRAMES</a>&#160;&#160;&#160;5000</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#aa3460ce031b29d4c8b4b58440832bfae">LOG_FRAMES</a>&#160;&#160;&#160;3000</td></tr>
 <tr class="memdesc:aa3460ce031b29d4c8b4b58440832bfae"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of frames that are logged in race mode <br /></td></tr>
 <tr class="separator:aa3460ce031b29d4c8b4b58440832bfae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38301c11f5925cdd0cdd937368adf97c"><td class="memItemLeft" align="right" valign="top"><a id="a38301c11f5925cdd0cdd937368adf97c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a38301c11f5925cdd0cdd937368adf97c">BYTES_PER_LOG_FRAME</a>&#160;&#160;&#160;9</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a38301c11f5925cdd0cdd937368adf97c">BYTES_PER_LOG_FRAME</a>&#160;&#160;&#160;18</td></tr>
 <tr class="memdesc:a38301c11f5925cdd0cdd937368adf97c"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of bytes needed per log frame <br /></td></tr>
 <tr class="separator:a38301c11f5925cdd0cdd937368adf97c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a609a6de2c7ff0a69b55d3b3c5e260cc5"><td class="memItemLeft" align="right" valign="top"><a id="a609a6de2c7ff0a69b55d3b3c5e260cc5"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a609a6de2c7ff0a69b55d3b3c5e260cc5">LOG_SIZE</a>&#160;&#160;&#160;(<a class="el" href="global_8h.html#aa3460ce031b29d4c8b4b58440832bfae">LOG_FRAMES</a> * <a class="el" href="global_8h.html#a38301c11f5925cdd0cdd937368adf97c">BYTES_PER_LOG_FRAME</a>)</td></tr>
 <tr class="memdesc:a609a6de2c7ff0a69b55d3b3c5e260cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">bytes reserved for logging <br /></td></tr>
 <tr class="separator:a609a6de2c7ff0a69b55d3b3c5e260cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a8c9f2add829a43d5e90f43271b1330e0"><td class="memItemLeft" align="right" valign="top"><a id="a8c9f2add829a43d5e90f43271b1330e0"></a>
+typedef struct <a class="el" href="struct_action.html">Action</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a8c9f2add829a43d5e90f43271b1330e0">action</a></td></tr>
+<tr class="memdesc:a8c9f2add829a43d5e90f43271b1330e0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="struct_action.html" title="Action for disarm etc.">Action</a> for disarm etc. <br /></td></tr>
+<tr class="separator:a8c9f2add829a43d5e90f43271b1330e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -257,8 +286,9 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a9eb2a6de3e4d21d3195ec36a590cdc7b">erpmC</a></td></tr>
 <tr class="memdesc:a9eb2a6de3e4d21d3195ec36a590cdc7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">responsiveness: zu viel -&gt; schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -&gt; langsames Anpassen bei kleinen Änderungen; holds the linear factor for RPS/slip control, default value is set here <br /></td></tr>
 <tr class="separator:a9eb2a6de3e4d21d3195ec36a590cdc7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6d0762f775c0ff335fa744a677d2015"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#ac6d0762f775c0ff335fa744a677d2015">maxTargetRPS</a></td></tr>
-<tr class="memdesc:ac6d0762f775c0ff335fa744a677d2015"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the maximum allowed throttle, default value is set here  <a href="global_8h.html#ac6d0762f775c0ff335fa744a677d2015">More...</a><br /></td></tr>
+<tr class="memitem:ac6d0762f775c0ff335fa744a677d2015"><td class="memItemLeft" align="right" valign="top"><a id="ac6d0762f775c0ff335fa744a677d2015"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#ac6d0762f775c0ff335fa744a677d2015">maxTargetRPS</a></td></tr>
+<tr class="memdesc:ac6d0762f775c0ff335fa744a677d2015"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the maximum allowed target RPS, default value is set here <br /></td></tr>
 <tr class="separator:ac6d0762f775c0ff335fa744a677d2015"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a830a7932532dbb50469279dec065ac2a"><td class="memItemLeft" align="right" valign="top"><a id="a830a7932532dbb50469279dec065ac2a"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a830a7932532dbb50469279dec065ac2a">maxTargetSlip</a></td></tr>
@@ -290,8 +320,9 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a00d209d466b20a672654d85ba6b33a9e">commitFlag</a></td></tr>
 <tr class="memdesc:a00d209d466b20a672654d85ba6b33a9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">don't change anything here, keeps track of whether/when to save the settings to EEPROM <br /></td></tr>
 <tr class="separator:a00d209d466b20a672654d85ba6b33a9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc">warningVoltage</a></td></tr>
-<tr class="memdesc:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the value for the cutoff voltage (no movement possible, car stops), default value is set here  <a href="global_8h.html#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc">More...</a><br /></td></tr>
+<tr class="memitem:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="memItemLeft" align="right" valign="top"><a id="a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"></a>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global_8h.html#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc">warningVoltage</a></td></tr>
+<tr class="memdesc:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">holds the value for the warning voltage (user is warned of low voltage), default value is set here <br /></td></tr>
 <tr class="separator:a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae23951bd8593a2989cc852b02275a1b1"><td class="memItemLeft" align="right" valign="top"><a id="ae23951bd8593a2989cc852b02275a1b1"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>targetERPM</b></td></tr>
@@ -320,21 +351,24 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>raceActive</b></td></
 <tr class="memitem:a3545d5500a3aae06ed9a4c388e8ea168"><td class="memItemLeft" align="right" valign="top"><a id="a3545d5500a3aae06ed9a4c388e8ea168"></a>
 uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>logData</b></td></tr>
 <tr class="separator:a3545d5500a3aae06ed9a4c388e8ea168"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3252691477374fd8250bdc3d4b4f3147"><td class="memItemLeft" align="right" valign="top"><a id="a3252691477374fd8250bdc3d4b4f3147"></a>
-uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>throttle_log</b></td></tr>
-<tr class="separator:a3252691477374fd8250bdc3d4b4f3147"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8dde6213a71d22e6844055114d29a953"><td class="memItemLeft" align="right" valign="top"><a id="a8dde6213a71d22e6844055114d29a953"></a>
-uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>erpm_log</b></td></tr>
-<tr class="separator:a8dde6213a71d22e6844055114d29a953"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8700b953a6aab079474d345e71d295a"><td class="memItemLeft" align="right" valign="top"><a id="ae8700b953a6aab079474d345e71d295a"></a>
-uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>voltage_log</b></td></tr>
-<tr class="separator:ae8700b953a6aab079474d345e71d295a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb63dee3f2234b91c524bc9710cb9639"><td class="memItemLeft" align="right" valign="top"><a id="acb63dee3f2234b91c524bc9710cb9639"></a>
+uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>throttle_log</b> [2]</td></tr>
+<tr class="separator:acb63dee3f2234b91c524bc9710cb9639"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec42a593ccbaa571b85bf9acb7c81bb0"><td class="memItemLeft" align="right" valign="top"><a id="aec42a593ccbaa571b85bf9acb7c81bb0"></a>
+uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>erpm_log</b> [2]</td></tr>
+<tr class="separator:aec42a593ccbaa571b85bf9acb7c81bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40f802bf1d0d58903781c14e9f888356"><td class="memItemLeft" align="right" valign="top"><a id="a40f802bf1d0d58903781c14e9f888356"></a>
+uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>voltage_log</b> [2]</td></tr>
+<tr class="separator:a40f802bf1d0d58903781c14e9f888356"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acec09b881d09698689e759b63b42a1cf"><td class="memItemLeft" align="right" valign="top"><a id="acec09b881d09698689e759b63b42a1cf"></a>
+uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>temp_log</b> [2]</td></tr>
+<tr class="separator:acec09b881d09698689e759b63b42a1cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd9fe67f3116cca989ad0e7fd59c64ed"><td class="memItemLeft" align="right" valign="top"><a id="abd9fe67f3116cca989ad0e7fd59c64ed"></a>
 int16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>acceleration_log</b></td></tr>
 <tr class="separator:abd9fe67f3116cca989ad0e7fd59c64ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8863054859aab1dd1bc84abb264b3e5d"><td class="memItemLeft" align="right" valign="top"><a id="a8863054859aab1dd1bc84abb264b3e5d"></a>
-uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>temp_log</b></td></tr>
-<tr class="separator:a8863054859aab1dd1bc84abb264b3e5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedddfc7cf6fff3a970a257e1d9c05031"><td class="memItemLeft" align="right" valign="top"><a id="aedddfc7cf6fff3a970a257e1d9c05031"></a>
+int16_t *&#160;</td><td class="memItemRight" valign="bottom"><b>bmi_temp_log</b></td></tr>
+<tr class="separator:aedddfc7cf6fff3a970a257e1d9c05031"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bcf7b6642ac34dbd8a5421045cdd275"><td class="memItemLeft" align="right" valign="top"><a id="a9bcf7b6642ac34dbd8a5421045cdd275"></a>
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>logPosition</b></td></tr>
 <tr class="separator:a9bcf7b6642ac34dbd8a5421045cdd275"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -350,6 +384,12 @@ double&#160;</td><td class="memItemRight" valign="bottom"><b>acceleration</b></t
 <tr class="memitem:a6fe8481b1eb531bad4b39b731ee251a7"><td class="memItemLeft" align="right" valign="top"><a id="a6fe8481b1eb531bad4b39b731ee251a7"></a>
 int16_t&#160;</td><td class="memItemRight" valign="bottom"><b>rawAccel</b></td></tr>
 <tr class="separator:a6fe8481b1eb531bad4b39b731ee251a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a825a11f1e91de38502caaa87e33123d0"><td class="memItemLeft" align="right" valign="top"><a id="a825a11f1e91de38502caaa87e33123d0"></a>
+int16_t&#160;</td><td class="memItemRight" valign="bottom"><b>bmiRawTemp</b></td></tr>
+<tr class="separator:a825a11f1e91de38502caaa87e33123d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac576f8f170c26236a1ac26bf1960a5eb"><td class="memItemLeft" align="right" valign="top"><a id="ac576f8f170c26236a1ac26bf1960a5eb"></a>
+int8_t&#160;</td><td class="memItemRight" valign="bottom"><b>bmiTemp</b></td></tr>
+<tr class="separator:ac576f8f170c26236a1ac26bf1960a5eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a426b74b367ea29feddfe90380b3aa9b3"><td class="memItemLeft" align="right" valign="top"><a id="a426b74b367ea29feddfe90380b3aa9b3"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>calibrateFlag</b></td></tr>
 <tr class="separator:a426b74b367ea29feddfe90380b3aa9b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -362,9 +402,9 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>clients</b> [<a cl
 <tr class="memitem:aa41a9d138204b963a89a32e9218a31fe"><td class="memItemLeft" align="right" valign="top"><a id="aa41a9d138204b963a89a32e9218a31fe"></a>
 uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>telemetryClientsCounter</b></td></tr>
 <tr class="separator:aa41a9d138204b963a89a32e9218a31fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f9da6ab58d87124f947e5302d55d769"><td class="memItemLeft" align="right" valign="top"><a id="a8f9da6ab58d87124f947e5302d55d769"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>broadcastQueue</b> [10]</td></tr>
-<tr class="separator:a8f9da6ab58d87124f947e5302d55d769"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea2a21f65a19ec70c92ca1f32e074f04"><td class="memItemLeft" align="right" valign="top"><a id="aea2a21f65a19ec70c92ca1f32e074f04"></a>
+<a class="el" href="struct_action.html">Action</a>&#160;</td><td class="memItemRight" valign="bottom"><b>actionQueue</b> [50]</td></tr>
+<tr class="separator:aea2a21f65a19ec70c92ca1f32e074f04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c95490a642dca93aa868ac6f250469e"><td class="memItemLeft" align="right" valign="top"><a id="a8c95490a642dca93aa868ac6f250469e"></a>
 <a class="el" href="class_e_s_c.html">ESC</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>ESCs</b> [2]</td></tr>
 <tr class="separator:a8c95490a642dca93aa868ac6f250469e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -374,7 +414,25 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>errorCount</b></t
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>global functions and parameters </p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="abd15b8fcd3b82c2827693b9fd882a206"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd15b8fcd3b82c2827693b9fd882a206">&#9670;&nbsp;</a></span>ssid</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define ssid&#160;&#160;&#160;&quot;POCO X3 NFC&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The SSID. </p>
+<p>The password for wifi </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="aeaa07ee96f76e3cef2560526a0245cd2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeaa07ee96f76e3cef2560526a0245cd2">&#9670;&nbsp;</a></span>sPrint()</h2>
 
@@ -427,61 +485,14 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>errorCount</b></t
 
 </div>
 </div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="ac6d0762f775c0ff335fa744a677d2015"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6d0762f775c0ff335fa744a677d2015">&#9670;&nbsp;</a></span>maxTargetRPS</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint16_t maxTargetRPS</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>holds the maximum allowed throttle, default value is set here </p>
-<p>holds the maximum allowed target RPS, default value is set here </p>
-
-</div>
-</div>
-<a id="a0a7e8bd8b1675e9d4cc4a0d6d0aedffc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a7e8bd8b1675e9d4cc4a0d6d0aedffc">&#9670;&nbsp;</a></span>warningVoltage</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint16_t warningVoltage</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>holds the value for the cutoff voltage (no movement possible, car stops), default value is set here </p>
-<p>holds the value for the warning voltage (user is warned of low voltage), default value is set here </p>
-
-</div>
-</div>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li><li class="navelem"><a class="el" href="global_8h.html">global.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

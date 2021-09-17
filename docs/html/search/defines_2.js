@@ -1,9 +1,5 @@
 var searchData=
 [
-  ['esc1_5finput_5fpin_170',['ESC1_INPUT_PIN',['../global_8h.html#a0127c52c779f27a9a6305633ef906dde',1,'global.h']]],
-  ['esc1_5foutput_5fpin_171',['ESC1_OUTPUT_PIN',['../global_8h.html#a562e25786029d92dff2a890a7d02c3a2',1,'global.h']]],
-  ['esc2_5finput_5fpin_172',['ESC2_INPUT_PIN',['../global_8h.html#a0c30d163d4a0a2842f8553a58d62ac19',1,'global.h']]],
-  ['esc2_5foutput_5fpin_173',['ESC2_OUTPUT_PIN',['../global_8h.html#ad9c30cba4673dc09321583857198fad7',1,'global.h']]],
-  ['esc_5fbuffer_5fitems_174',['ESC_BUFFER_ITEMS',['../_e_s_c_8h.html#a03e5d66497c5de80038cf08880bb7378',1,'ESC.h']]],
-  ['esc_5ffreq_175',['ESC_FREQ',['../global_8h.html#a80c5db6627af198f27aeba2efd397f65',1,'global.h']]]
+  ['clk_5fdiv_227',['CLK_DIV',['../_e_s_c_8h.html#ac9be9d353e7467e5f6cd20f68bd912dc',1,'ESC.h']]],
+  ['connected_5fmask_228',['CONNECTED_MASK',['../_e_s_c_8h.html#a913aa6553b1a8858db2293c73a904a9c',1,'ESC.h']]]
 ];

@@ -8,7 +8,6 @@ double erpmB = 0.0000006;
 double erpmC = 0.01;
 
 // motor and wheel settings
-// uint16_t maxThrottle = 2000;
 uint16_t maxTargetRPS = 1500;
 uint8_t maxTargetSlip = 20;
 uint8_t motorPoleCount = 12;
@@ -22,27 +21,10 @@ uint16_t zeroOffsetAtThrottle = 200;
 bool commitFlag = false;
 
 // voltage settings
-// uint16_t cutoffVoltage = 640;
 uint16_t warningVoltage = 740;
 
 // control variables
 int targetERPM = 0, ctrlMode = MODE_THROTTLE, reqValue = 0, targetSlip = 0;
-// uint16_t escValue = 0x0011; // telemetry needs to be on before first arm
-// bool armed = false;
-// double throttle = 0, nextThrottle = 0;
-
-// telemetry
-// uint16_t telemetryERPM = 0, telemetryVoltage = 0;
-// uint8_t telemetryTemp = 0;
-// uint16_t speedWheel = 0;
-
-// LEDs
-// bool redLED, greenLED, blueLED;
-// uint8_t newRedLED, newBlueLED, newGreenLED;
-
-// manual data
-// uint8_t manualDataAmount = 0;
-// uint16_t manualData[MAX_MANUAL_DATA];
 
 // throttle calculation
 int previousERPM[2][TREND_AMOUNT];

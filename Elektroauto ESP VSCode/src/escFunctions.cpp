@@ -2,20 +2,20 @@
 #include "accelerometerFunctions.h"
 
 void IRAM_ATTR escIR() {
-  // #if TRANSMISSION_IND != 0
-  // escOutputCounter = (escOutputCounter == TRANSMISSION_IND - 1) ? 0 : escOutputCounter + 1;
-  // if (escOutputCounter == 0)
-  //   digitalWrite(TRANSMISSION_PIN, LOW);
-  // delayMicroseconds(20);
-  // #endif
+  #if TRANSMISSION_IND != 0
+  escOutputCounter = (escOutputCounter == TRANSMISSION_IND - 1) ? 0 : escOutputCounter + 1;
+  if (escOutputCounter == 0)
+    digitalWrite(TRANSMISSION_PIN, LOW);
+  delayMicroseconds(20);
+  #endif
 
   ESCs[0]->send();
   ESCs[1]->send();
   
-  // #if TRANSMISSION_IND != 0
-  // if (escOutputCounter == 0)
-  //   digitalWrite(TRANSMISSION_PIN, HIGH);
-  // #endif
+  #if TRANSMISSION_IND != 0
+  if (escOutputCounter == 0)
+    digitalWrite(TRANSMISSION_PIN, HIGH);
+  #endif
 
   // record new previousERPM value
   for (int i = 0; i < TREND_AMOUNT - 1; i++) {
@@ -29,30 +29,30 @@ void IRAM_ATTR escIR() {
   readBMI();
 
   // print debug telemetry over Serial
-  // #if TELEMETRY_DEBUG != 0
-  // escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG - 1) ? 0 : escOutputCounter3 + 1;
-  // if (escOutputCounter3 == 0){ 
-  //   #ifdef PRINT_TELEMETRY_THROTTLE
-  //     sPrint((String)((int)throttle));
-  //     sPrint("\t");
-  //   #endif
-  //   #ifdef PRINT_TELEMETRY_TEMP
-  //     sPrint((String)telemetryTemp);
-  //     sPrint("\t");
-  //   #endif
-  //   #ifdef PRINT_TELEMETRY_VOLTAGE
-  //     sPrint((String)telemetryVoltage);
-  //     sPrint("\t");
-  //   #endif
-  //   #ifdef PRINT_TELEMETRY_ERPM
-  //     sPrint((String)telemetryERPM);
-  //     sPrint("\t");
-  //   #endif
-  //   #if defined(PRINT_TELEMETRY_THROTTLE) || defined(PRINT_TELEMETRY_TEMP) || defined(PRINT_TELEMETRY_VOLTAGE) || defined(PRINT_TELEMETRY_ERPM)
-  //     sPrintln("");
-  //   #endif
-  // }
-  // #endif
+  #if TELEMETRY_DEBUG != 0
+  escOutputCounter3 = (escOutputCounter3 == TELEMETRY_DEBUG - 1) ? 0 : escOutputCounter3 + 1;
+  if (escOutputCounter3 == 0){ 
+    #ifdef PRINT_TELEMETRY_THROTTLE
+      sPrint((String)((int)throttle));
+      sPrint("\t");
+    #endif
+    #ifdef PRINT_TELEMETRY_TEMP
+      sPrint((String)telemetryTemp);
+      sPrint("\t");
+    #endif
+    #ifdef PRINT_TELEMETRY_VOLTAGE
+      sPrint((String)telemetryVoltage);
+      sPrint("\t");
+    #endif
+    #ifdef PRINT_TELEMETRY_ERPM
+      sPrint((String)telemetryERPM);
+      sPrint("\t");
+    #endif
+    #if defined(PRINT_TELEMETRY_THROTTLE) || defined(PRINT_TELEMETRY_TEMP) || defined(PRINT_TELEMETRY_VOLTAGE) || defined(PRINT_TELEMETRY_ERPM)
+      sPrintln("");
+    #endif
+  }
+  #endif
 
   // logging, if race is active
   if (raceActive){

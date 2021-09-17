@@ -1,14 +1,11 @@
 var searchData=
 [
-  ['t0h_195',['T0H',['../_e_s_c_8h.html#a1b15781780446cc96c3529e67ffd155b',1,'ESC.h']]],
-  ['t0l_196',['T0L',['../_e_s_c_8h.html#aaa6df9b03f5c83a82da353df9bb19a60',1,'ESC.h']]],
-  ['t1h_197',['T1H',['../_e_s_c_8h.html#ae0de4e06e642a9dfa3d6f273a5c8e23b',1,'ESC.h']]],
-  ['t1l_198',['T1L',['../_e_s_c_8h.html#aad296a317c61b4367f690d958fb2ee12',1,'ESC.h']]],
-  ['t_5freset_199',['T_RESET',['../_e_s_c_8h.html#a2200db6bd258037917b0a5a4bbbedcce',1,'ESC.h']]],
-  ['telemetry_5fdebug_200',['TELEMETRY_DEBUG',['../global_8h.html#a8b79d48b6cabc261f17b4933e379d5ad',1,'global.h']]],
-  ['telemetry_5fupdate_5fadd_201',['TELEMETRY_UPDATE_ADD',['../global_8h.html#a74e7c521a14c93055d37dfc37305c7d2',1,'global.h']]],
-  ['telemetry_5fupdate_5fms_202',['TELEMETRY_UPDATE_MS',['../global_8h.html#af1c0c52c645fd381e3af2b4e08ef93f1',1,'global.h']]],
-  ['transmission_5find_203',['TRANSMISSION_IND',['../global_8h.html#a237cf6d05ca8467dea7399045ca9d6a3',1,'global.h']]],
-  ['transmission_5fpin_204',['TRANSMISSION_PIN',['../global_8h.html#a88f0ba4dd699fa716fc32f44a6b566d6',1,'global.h']]],
-  ['trend_5famount_205',['TREND_AMOUNT',['../global_8h.html#a7db45444f58d4ef5a2387d71bf2eb6cd',1,'global.h']]]
+  ['print_5fbroadcasts_242',['PRINT_BROADCASTS',['../global_8h.html#afd5bf2deb5d6d237d4fb10a1fa456b61',1,'global.h']]],
+  ['print_5fincoming_5fmessages_243',['PRINT_INCOMING_MESSAGES',['../global_8h.html#a70b3cf25785f95703df04eba8e4ff8b6',1,'global.h']]],
+  ['print_5fsetup_244',['PRINT_SETUP',['../global_8h.html#a8b38a37a964164495735576800012b10',1,'global.h']]],
+  ['print_5ftelemetry_5ferpm_245',['PRINT_TELEMETRY_ERPM',['../global_8h.html#a90e815192367808af30e7a3c4ecbbb54',1,'global.h']]],
+  ['print_5ftelemetry_5ftemp_246',['PRINT_TELEMETRY_TEMP',['../global_8h.html#afb765ba3aad67611651f569b7cd1ab6a',1,'global.h']]],
+  ['print_5ftelemetry_5fthrottle_247',['PRINT_TELEMETRY_THROTTLE',['../global_8h.html#a13ab435552e77175e45358dd829439b9',1,'global.h']]],
+  ['print_5ftelemetry_5fvoltage_248',['PRINT_TELEMETRY_VOLTAGE',['../global_8h.html#ace0f50546da4a069988d5c11966c9525',1,'global.h']]],
+  ['print_5fwebsocket_5fconnections_249',['PRINT_WEBSOCKET_CONNECTIONS',['../global_8h.html#aa1a6b0162f07825f614a073c9bd96ab9',1,'global.h']]]
 ];

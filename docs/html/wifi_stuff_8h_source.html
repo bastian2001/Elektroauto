@@ -9,6 +9,10 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('wifi_stuff_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">wifiStuff.h</div>  </div>
@@ -94,20 +110,24 @@ $(function() {
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#a8f9fa76a93541264f22c8f23f3fc1631">sendTelemetry</a>();</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keywordtype">void</span> <a class="code" href="wifi_stuff_8h.html#aef11d16b4d8e760671e3487b2106b6b2">handleWiFi</a>();</div>
-<div class="ttc" id="awifi_stuff_8h_html_a09a7bd50efe5e976aeeb835590943894"><div class="ttname"><a href="wifi_stuff_8h.html#a09a7bd50efe5e976aeeb835590943894">addClient</a></div><div class="ttdeci">void addClient(int spot)</div><div class="ttdoc">routine after a client connects</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:71</div></div>
-<div class="ttc" id="awifi_stuff_8h_html_a3571c82344bafb0db9aaf62e0b7f2c85"><div class="ttname"><a href="wifi_stuff_8h.html#a3571c82344bafb0db9aaf62e0b7f2c85">sendWSMessage</a></div><div class="ttdeci">void sendWSMessage(uint8_t spot, String text)</div><div class="ttdoc">send a message to a WebSocket client</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:98</div></div>
-<div class="ttc" id="awifi_stuff_8h_html_a4bcd6ce7d04c38f8c4ff908d1fc50f86"><div class="ttname"><a href="wifi_stuff_8h.html#a4bcd6ce7d04c38f8c4ff908d1fc50f86">reconnect</a></div><div class="ttdeci">void reconnect()</div><div class="ttdoc">reconnect to wifi</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:106</div></div>
-<div class="ttc" id="awifi_stuff_8h_html_a74a22e72263dac736c8664225f9c707a"><div class="ttname"><a href="wifi_stuff_8h.html#a74a22e72263dac736c8664225f9c707a">broadcastWSBin</a></div><div class="ttdeci">void broadcastWSBin(uint8_t *data, size_t length, bool justActive=false, int del=0)</div><div class="ttdoc">broadcasting binary data to multiple devices</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:35</div></div>
-<div class="ttc" id="awifi_stuff_8h_html_a774efd774e406746809c21e65ca16031"><div class="ttname"><a href="wifi_stuff_8h.html#a774efd774e406746809c21e65ca16031">broadcastWSMessage</a></div><div class="ttdeci">void broadcastWSMessage(String text, bool justActive=false, int del=0, bool noPrint=false)</div><div class="ttdoc">broadcast a message to all connected WebSocket clients</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:9</div></div>
-<div class="ttc" id="awifi_stuff_8h_html_a81e23b809a48aa88b1e1679a163c5c64"><div class="ttname"><a href="wifi_stuff_8h.html#a81e23b809a48aa88b1e1679a163c5c64">removeClient</a></div><div class="ttdeci">void removeClient(int spot)</div><div class="ttdoc">routine after a client disconnects</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:62</div></div>
-<div class="ttc" id="awifi_stuff_8h_html_a8f9fa76a93541264f22c8f23f3fc1631"><div class="ttname"><a href="wifi_stuff_8h.html#a8f9fa76a93541264f22c8f23f3fc1631">sendTelemetry</a></div><div class="ttdeci">void sendTelemetry()</div><div class="ttdoc">sends the telemetry to all connected phones</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:130</div></div>
-<div class="ttc" id="awifi_stuff_8h_html_aadfb6ad34995b55f37c18e59c0735345"><div class="ttname"><a href="wifi_stuff_8h.html#aadfb6ad34995b55f37c18e59c0735345">onWebSocketEvent</a></div><div class="ttdeci">void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t *payload, size_t length)</div><div class="ttdoc">function to be called on a WebSocket event</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:46</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a09a7bd50efe5e976aeeb835590943894"><div class="ttname"><a href="wifi_stuff_8h.html#a09a7bd50efe5e976aeeb835590943894">addClient</a></div><div class="ttdeci">void addClient(int spot)</div><div class="ttdoc">routine after a client connects</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:73</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a3571c82344bafb0db9aaf62e0b7f2c85"><div class="ttname"><a href="wifi_stuff_8h.html#a3571c82344bafb0db9aaf62e0b7f2c85">sendWSMessage</a></div><div class="ttdeci">void sendWSMessage(uint8_t spot, String text)</div><div class="ttdoc">send a message to a WebSocket client</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:100</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a4bcd6ce7d04c38f8c4ff908d1fc50f86"><div class="ttname"><a href="wifi_stuff_8h.html#a4bcd6ce7d04c38f8c4ff908d1fc50f86">reconnect</a></div><div class="ttdeci">void reconnect()</div><div class="ttdoc">reconnect to wifi</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:108</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a74a22e72263dac736c8664225f9c707a"><div class="ttname"><a href="wifi_stuff_8h.html#a74a22e72263dac736c8664225f9c707a">broadcastWSBin</a></div><div class="ttdeci">void broadcastWSBin(uint8_t *data, size_t length, bool justActive=false, int del=0)</div><div class="ttdoc">broadcasting binary data to multiple devices</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:37</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a774efd774e406746809c21e65ca16031"><div class="ttname"><a href="wifi_stuff_8h.html#a774efd774e406746809c21e65ca16031">broadcastWSMessage</a></div><div class="ttdeci">void broadcastWSMessage(String text, bool justActive=false, int del=0, bool noPrint=false)</div><div class="ttdoc">broadcast a message to all connected WebSocket clients</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:11</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a81e23b809a48aa88b1e1679a163c5c64"><div class="ttname"><a href="wifi_stuff_8h.html#a81e23b809a48aa88b1e1679a163c5c64">removeClient</a></div><div class="ttdeci">void removeClient(int spot)</div><div class="ttdoc">routine after a client disconnects</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:64</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_a8f9fa76a93541264f22c8f23f3fc1631"><div class="ttname"><a href="wifi_stuff_8h.html#a8f9fa76a93541264f22c8f23f3fc1631">sendTelemetry</a></div><div class="ttdeci">void sendTelemetry()</div><div class="ttdoc">sends the telemetry to all connected phones</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:132</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_aadfb6ad34995b55f37c18e59c0735345"><div class="ttname"><a href="wifi_stuff_8h.html#aadfb6ad34995b55f37c18e59c0735345">onWebSocketEvent</a></div><div class="ttdeci">void onWebSocketEvent(uint8_t clientNo, WStype_t type, uint8_t *payload, size_t length)</div><div class="ttdoc">function to be called on a WebSocket event</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:48</div></div>
 <div class="ttc" id="awifi_stuff_8h_html_ab81dd8fc3c237db5a4ebd1b7a30d012a"><div class="ttname"><a href="wifi_stuff_8h.html#ab81dd8fc3c237db5a4ebd1b7a30d012a">checkLEDs</a></div><div class="ttdeci">void checkLEDs()</div><div class="ttdoc">checks the LED status</div></div>
-<div class="ttc" id="awifi_stuff_8h_html_aef11d16b4d8e760671e3487b2106b6b2"><div class="ttname"><a href="wifi_stuff_8h.html#aef11d16b4d8e760671e3487b2106b6b2">handleWiFi</a></div><div class="ttdeci">void handleWiFi()</div><div class="ttdoc">handles the wifi loop</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:143</div></div>
+<div class="ttc" id="awifi_stuff_8h_html_aef11d16b4d8e760671e3487b2106b6b2"><div class="ttname"><a href="wifi_stuff_8h.html#aef11d16b4d8e760671e3487b2106b6b2">handleWiFi</a></div><div class="ttdeci">void handleWiFi()</div><div class="ttdoc">handles the wifi loop</div><div class="ttdef"><b>Definition:</b> wifiStuff.cpp:173</div></div>
 </div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_8d445dc32da3b4746a89a66061cd679d.html">Elektroauto ESP VSCode</a></li><li class="navelem"><a class="el" href="dir_b5821ba2e4e592b0f69e50b90a19b18a.html">src</a></li><li class="navelem"><a class="el" href="wifi_stuff_8h.html">wifiStuff.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>

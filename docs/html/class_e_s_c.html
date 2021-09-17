@@ -9,6 +9,10 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -47,6 +51,23 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('class_e_s_c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,7 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
@@ -73,108 +93,539 @@ $(function() {
 <div class="title">ESC Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>represents one ESC/motor combo  
+ <a href="class_e_s_c.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_e_s_c_8h_source.html">ESC.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a476998d16bf22b5c931d7d42bdc0c93d"><td class="memItemLeft" align="right" valign="top"><a id="a476998d16bf22b5c931d7d42bdc0c93d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ESC</b> (HardwareSerial *telemetryStream, int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannel, void(*onError)(<a class="el" href="class_e_s_c.html">ESC</a> *esc, uint8_t errorCode), void(*onStatusChange)(<a class="el" href="class_e_s_c.html">ESC</a> *esc, uint8_t newStatus, uint8_t oldStatus))</td></tr>
+<tr class="memitem:a476998d16bf22b5c931d7d42bdc0c93d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a476998d16bf22b5c931d7d42bdc0c93d">ESC</a> (HardwareSerial *telemetryStream, int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannel, void(*onError)(<a class="el" href="class_e_s_c.html">ESC</a> *esc, uint8_t errorCode), void(*onStatusChange)(<a class="el" href="class_e_s_c.html">ESC</a> *esc, uint8_t newStatus, uint8_t oldStatus))</td></tr>
+<tr class="memdesc:a476998d16bf22b5c931d7d42bdc0c93d"><td class="mdescLeft">&#160;</td><td class="mdescRight">registers a new <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a>  <a href="class_e_s_c.html#a476998d16bf22b5c931d7d42bdc0c93d">More...</a><br /></td></tr>
 <tr class="separator:a476998d16bf22b5c931d7d42bdc0c93d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef21cba5993a747da3599b4950d08d56"><td class="memItemLeft" align="right" valign="top"><a id="aef21cba5993a747da3599b4950d08d56"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>loop</b> ()</td></tr>
+<tr class="memitem:a10d714b554056a06898779430307a8c6"><td class="memItemLeft" align="right" valign="top"><a id="a10d714b554056a06898779430307a8c6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a10d714b554056a06898779430307a8c6">~ESC</a> ()</td></tr>
+<tr class="memdesc:a10d714b554056a06898779430307a8c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">destroys the <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> object <br /></td></tr>
+<tr class="separator:a10d714b554056a06898779430307a8c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef21cba5993a747da3599b4950d08d56"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#aef21cba5993a747da3599b4950d08d56">loop</a> ()</td></tr>
+<tr class="memdesc:aef21cba5993a747da3599b4950d08d56"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks for telemetry  <a href="class_e_s_c.html#aef21cba5993a747da3599b4950d08d56">More...</a><br /></td></tr>
 <tr class="separator:aef21cba5993a747da3599b4950d08d56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30e930ad98862b5fddc4063361a3e25a"><td class="memItemLeft" align="right" valign="top"><a id="a30e930ad98862b5fddc4063361a3e25a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>pause</b> ()</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a30e930ad98862b5fddc4063361a3e25a">pause</a> ()</td></tr>
+<tr class="memdesc:a30e930ad98862b5fddc4063361a3e25a"><td class="mdescLeft">&#160;</td><td class="mdescRight">disables <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> temporarily <br /></td></tr>
 <tr class="separator:a30e930ad98862b5fddc4063361a3e25a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43e00ea892a02019c02c5cb874cff08b"><td class="memItemLeft" align="right" valign="top"><a id="a43e00ea892a02019c02c5cb874cff08b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>resume</b> ()</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a43e00ea892a02019c02c5cb874cff08b">resume</a> ()</td></tr>
+<tr class="memdesc:a43e00ea892a02019c02c5cb874cff08b"><td class="mdescLeft">&#160;</td><td class="mdescRight">enables <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> after it was paused <br /></td></tr>
 <tr class="separator:a43e00ea892a02019c02c5cb874cff08b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11f4a7d7884ef3dafcdaea23ebdde821"><td class="memItemLeft" align="right" valign="top"><a id="a11f4a7d7884ef3dafcdaea23ebdde821"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>arm</b> (bool arm)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a11f4a7d7884ef3dafcdaea23ebdde821">arm</a> (bool arm)</td></tr>
+<tr class="memdesc:a11f4a7d7884ef3dafcdaea23ebdde821"><td class="mdescLeft">&#160;</td><td class="mdescRight">arms the <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> (throttle is set to 0) <br /></td></tr>
 <tr class="separator:a11f4a7d7884ef3dafcdaea23ebdde821"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acaf53ccc4575757a52c56e6587904930"><td class="memItemLeft" align="right" valign="top"><a id="acaf53ccc4575757a52c56e6587904930"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>beep</b> (uint8_t level, bool pauseBefore=false)</td></tr>
+<tr class="memitem:acaf53ccc4575757a52c56e6587904930"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#acaf53ccc4575757a52c56e6587904930">beep</a> (uint8_t level, bool pauseBefore=false)</td></tr>
+<tr class="memdesc:acaf53ccc4575757a52c56e6587904930"><td class="mdescLeft">&#160;</td><td class="mdescRight">beeps the <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> once  <a href="class_e_s_c.html#acaf53ccc4575757a52c56e6587904930">More...</a><br /></td></tr>
 <tr class="separator:acaf53ccc4575757a52c56e6587904930"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb01b31db9875c29276e2a54f5014901"><td class="memItemLeft" align="right" valign="top"><a id="acb01b31db9875c29276e2a54f5014901"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setThrottle</b> (double newThrottle)</td></tr>
+<tr class="memitem:acb01b31db9875c29276e2a54f5014901"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#acb01b31db9875c29276e2a54f5014901">setThrottle</a> (double newThrottle)</td></tr>
+<tr class="memdesc:acb01b31db9875c29276e2a54f5014901"><td class="mdescLeft">&#160;</td><td class="mdescRight">set new Throttle (0...2000)  <a href="class_e_s_c.html#acb01b31db9875c29276e2a54f5014901">More...</a><br /></td></tr>
 <tr class="separator:acb01b31db9875c29276e2a54f5014901"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab91c8f0a9383edd0bb9d9269034dc1e4"><td class="memItemLeft" align="right" valign="top"><a id="ab91c8f0a9383edd0bb9d9269034dc1e4"></a>
-void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><b>send</b> ()</td></tr>
+<tr class="memitem:ab91c8f0a9383edd0bb9d9269034dc1e4"><td class="memItemLeft" align="right" valign="top">void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#ab91c8f0a9383edd0bb9d9269034dc1e4">send</a> ()</td></tr>
+<tr class="memdesc:ab91c8f0a9383edd0bb9d9269034dc1e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method will write the newThrottle to currentThrottle and send the newThrottle to the <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a>.  <a href="class_e_s_c.html#ab91c8f0a9383edd0bb9d9269034dc1e4">More...</a><br /></td></tr>
 <tr class="separator:ab91c8f0a9383edd0bb9d9269034dc1e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc10ccd2bb3817780367405694d5f19b"><td class="memItemLeft" align="right" valign="top"><a id="acc10ccd2bb3817780367405694d5f19b"></a>
-void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><b>sendThrottle</b> (uint16_t throttleValue)</td></tr>
+<tr class="memitem:acc10ccd2bb3817780367405694d5f19b"><td class="memItemLeft" align="right" valign="top">void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#acc10ccd2bb3817780367405694d5f19b">sendThrottle</a> (uint16_t throttleValue)</td></tr>
+<tr class="memdesc:acc10ccd2bb3817780367405694d5f19b"><td class="mdescLeft">&#160;</td><td class="mdescRight">sends a throttle value immediately, no checks, no telemetry request  <a href="class_e_s_c.html#acc10ccd2bb3817780367405694d5f19b">More...</a><br /></td></tr>
 <tr class="separator:acc10ccd2bb3817780367405694d5f19b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b81812c740ec8ee93e908916d461983"><td class="memItemLeft" align="right" valign="top"><a id="a1b81812c740ec8ee93e908916d461983"></a>
-void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><b>sendRaw11</b> (uint16_t rawValueWithoutChecksum)</td></tr>
+<tr class="memitem:a1b81812c740ec8ee93e908916d461983"><td class="memItemLeft" align="right" valign="top">void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a1b81812c740ec8ee93e908916d461983">sendRaw11</a> (uint16_t rawValueWithoutChecksum)</td></tr>
+<tr class="memdesc:a1b81812c740ec8ee93e908916d461983"><td class="mdescLeft">&#160;</td><td class="mdescRight">sends an 11 bit raw value immediately, no checks, but telemetry request  <a href="class_e_s_c.html#a1b81812c740ec8ee93e908916d461983">More...</a><br /></td></tr>
 <tr class="separator:a1b81812c740ec8ee93e908916d461983"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a137b2260bbdcad4ea02316138a6c2305"><td class="memItemLeft" align="right" valign="top"><a id="a137b2260bbdcad4ea02316138a6c2305"></a>
-void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><b>sendFullRaw</b> (uint16_t rawValueWithChecksum)</td></tr>
+<tr class="memitem:a137b2260bbdcad4ea02316138a6c2305"><td class="memItemLeft" align="right" valign="top">void IRAM_ATTR&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a137b2260bbdcad4ea02316138a6c2305">sendFullRaw</a> (uint16_t rawValueWithChecksum)</td></tr>
+<tr class="memdesc:a137b2260bbdcad4ea02316138a6c2305"><td class="mdescLeft">&#160;</td><td class="mdescRight">sends a 16 bit raw value immediately, no checks, telemetry bit is set by user  <a href="class_e_s_c.html#a137b2260bbdcad4ea02316138a6c2305">More...</a><br /></td></tr>
 <tr class="separator:a137b2260bbdcad4ea02316138a6c2305"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0d4c5865918af76369f77adb747b920"><td class="memItemLeft" align="right" valign="top"><a id="af0d4c5865918af76369f77adb747b920"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getRedLED</b> ()</td></tr>
+<tr class="memitem:af0d4c5865918af76369f77adb747b920"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#af0d4c5865918af76369f77adb747b920">getRedLED</a> ()</td></tr>
+<tr class="memdesc:af0d4c5865918af76369f77adb747b920"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if red LED is on  <a href="class_e_s_c.html#af0d4c5865918af76369f77adb747b920">More...</a><br /></td></tr>
 <tr class="separator:af0d4c5865918af76369f77adb747b920"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafad0895ed29000929ee25fb718a1516"><td class="memItemLeft" align="right" valign="top"><a id="aafad0895ed29000929ee25fb718a1516"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getGreenLED</b> ()</td></tr>
+<tr class="memitem:aafad0895ed29000929ee25fb718a1516"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#aafad0895ed29000929ee25fb718a1516">getGreenLED</a> ()</td></tr>
+<tr class="memdesc:aafad0895ed29000929ee25fb718a1516"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if green LED is on  <a href="class_e_s_c.html#aafad0895ed29000929ee25fb718a1516">More...</a><br /></td></tr>
 <tr class="separator:aafad0895ed29000929ee25fb718a1516"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30d325a9265ae9523b19a20fab37796b"><td class="memItemLeft" align="right" valign="top"><a id="a30d325a9265ae9523b19a20fab37796b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getBlueLED</b> ()</td></tr>
+<tr class="memitem:a30d325a9265ae9523b19a20fab37796b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a30d325a9265ae9523b19a20fab37796b">getBlueLED</a> ()</td></tr>
+<tr class="memdesc:a30d325a9265ae9523b19a20fab37796b"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if blue LED is on  <a href="class_e_s_c.html#a30d325a9265ae9523b19a20fab37796b">More...</a><br /></td></tr>
 <tr class="separator:a30d325a9265ae9523b19a20fab37796b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a26cc5b2661c8619a1ead109a1ad7725f"><td class="memItemLeft" align="right" valign="top"><a id="a26cc5b2661c8619a1ead109a1ad7725f"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>setMaxThrottle</b> (uint16_t maxThrottle)</td></tr>
+<tr class="memitem:a26cc5b2661c8619a1ead109a1ad7725f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a26cc5b2661c8619a1ead109a1ad7725f">setMaxThrottle</a> (uint16_t maxThrottle)</td></tr>
+<tr class="memdesc:a26cc5b2661c8619a1ead109a1ad7725f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the maximum throttle of all ESCs.  <a href="class_e_s_c.html#a26cc5b2661c8619a1ead109a1ad7725f">More...</a><br /></td></tr>
 <tr class="separator:a26cc5b2661c8619a1ead109a1ad7725f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71933ad5f293b6becbda102b245bedd6"><td class="memItemLeft" align="right" valign="top"><a id="a71933ad5f293b6becbda102b245bedd6"></a>
-static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>getMaxThrottle</b> ()</td></tr>
+<tr class="memitem:a71933ad5f293b6becbda102b245bedd6"><td class="memItemLeft" align="right" valign="top">static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a71933ad5f293b6becbda102b245bedd6">getMaxThrottle</a> ()</td></tr>
+<tr class="memdesc:a71933ad5f293b6becbda102b245bedd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the maximum throttle of all ESCs.  <a href="class_e_s_c.html#a71933ad5f293b6becbda102b245bedd6">More...</a><br /></td></tr>
 <tr class="separator:a71933ad5f293b6becbda102b245bedd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a635b90b7679a812b404fe0b5a87ed2d2"><td class="memItemLeft" align="right" valign="top"><a id="a635b90b7679a812b404fe0b5a87ed2d2"></a>
-static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>appendChecksum</b> (uint16_t value)</td></tr>
+<tr class="memitem:a635b90b7679a812b404fe0b5a87ed2d2"><td class="memItemLeft" align="right" valign="top">static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a635b90b7679a812b404fe0b5a87ed2d2">appendChecksum</a> (uint16_t value)</td></tr>
+<tr class="memdesc:a635b90b7679a812b404fe0b5a87ed2d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">shifts a uint16_t 4 bits left and appends the CRC checksum  <a href="class_e_s_c.html#a635b90b7679a812b404fe0b5a87ed2d2">More...</a><br /></td></tr>
 <tr class="separator:a635b90b7679a812b404fe0b5a87ed2d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a2da76c83b09d7f1465bb9c760fa76f7e"><td class="memItemLeft" align="right" valign="top"><a id="a2da76c83b09d7f1465bb9c760fa76f7e"></a>
-unsigned long&#160;</td><td class="memItemRight" valign="bottom"><b>lastTelemetry</b> = 0</td></tr>
-<tr class="separator:a2da76c83b09d7f1465bb9c760fa76f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada6272c9022ad55276a9141191e7e94c"><td class="memItemLeft" align="right" valign="top"><a id="ada6272c9022ad55276a9141191e7e94c"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>voltage</b> = 0</td></tr>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#ada6272c9022ad55276a9141191e7e94c">voltage</a> = 0</td></tr>
+<tr class="memdesc:ada6272c9022ad55276a9141191e7e94c"><td class="mdescLeft">&#160;</td><td class="mdescRight">voltage as supplied by telemetry, in cV <br /></td></tr>
 <tr class="separator:ada6272c9022ad55276a9141191e7e94c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af02e4a7ecc94edbb5f5031381844c332"><td class="memItemLeft" align="right" valign="top"><a id="af02e4a7ecc94edbb5f5031381844c332"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>heRPM</b> = 0</td></tr>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#af02e4a7ecc94edbb5f5031381844c332">heRPM</a> = 0</td></tr>
+<tr class="memdesc:af02e4a7ecc94edbb5f5031381844c332"><td class="mdescLeft">&#160;</td><td class="mdescRight">heRPM as supplied by telemetry <br /></td></tr>
 <tr class="separator:af02e4a7ecc94edbb5f5031381844c332"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3335165f947f4aafd831369e014ce3af"><td class="memItemLeft" align="right" valign="top"><a id="a3335165f947f4aafd831369e014ce3af"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>speed</b> = 0</td></tr>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a3335165f947f4aafd831369e014ce3af">speed</a> = 0</td></tr>
+<tr class="memdesc:a3335165f947f4aafd831369e014ce3af"><td class="mdescLeft">&#160;</td><td class="mdescRight">speed (calculated by using wheel diameter and pole count, not implemented yet) <br /></td></tr>
 <tr class="separator:a3335165f947f4aafd831369e014ce3af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4429c2a74cdb70ba7866478f2d3201a1"><td class="memItemLeft" align="right" valign="top"><a id="a4429c2a74cdb70ba7866478f2d3201a1"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>temperature</b> = 0</td></tr>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a4429c2a74cdb70ba7866478f2d3201a1">temperature</a> = 0</td></tr>
+<tr class="memdesc:a4429c2a74cdb70ba7866478f2d3201a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">temperature as supplied by telemetry <br /></td></tr>
 <tr class="separator:a4429c2a74cdb70ba7866478f2d3201a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab429a4c931d9d677899556f286e4746b"><td class="memItemLeft" align="right" valign="top"><a id="ab429a4c931d9d677899556f286e4746b"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>status</b> = DEFAULT_STATUS</td></tr>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#ab429a4c931d9d677899556f286e4746b">status</a> = DEFAULT_STATUS</td></tr>
+<tr class="memdesc:ab429a4c931d9d677899556f286e4746b"><td class="mdescLeft">&#160;</td><td class="mdescRight">status byte (read using masks) <br /></td></tr>
 <tr class="separator:ab429a4c931d9d677899556f286e4746b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fa86bbc7e09a353d37f8ea881335fba"><td class="memItemLeft" align="right" valign="top"><a id="a4fa86bbc7e09a353d37f8ea881335fba"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualData11</b> [<a class="el" href="_e_s_c_8h.html#a0421f559f421e5e767afcee6218b9bbd">MAX_MANUAL_DATA</a>]</td></tr>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a4fa86bbc7e09a353d37f8ea881335fba">manualData11</a> [<a class="el" href="_e_s_c_8h.html#a0421f559f421e5e767afcee6218b9bbd">MAX_MANUAL_DATA</a>]</td></tr>
+<tr class="memdesc:a4fa86bbc7e09a353d37f8ea881335fba"><td class="mdescLeft">&#160;</td><td class="mdescRight">manual data array, put data here and set manualDataAmount <br /></td></tr>
 <tr class="separator:a4fa86bbc7e09a353d37f8ea881335fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acea17e6585b19b4cf02b62636c48f476"><td class="memItemLeft" align="right" valign="top"><a id="acea17e6585b19b4cf02b62636c48f476"></a>
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>manualDataAmount</b> = 0</td></tr>
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#acea17e6585b19b4cf02b62636c48f476">manualDataAmount</a> = 0</td></tr>
+<tr class="memdesc:acea17e6585b19b4cf02b62636c48f476"><td class="mdescLeft">&#160;</td><td class="mdescRight">last useful index of manualData11 +1, so for 3 manual data packets, write 3 here <br /></td></tr>
 <tr class="separator:acea17e6585b19b4cf02b62636c48f476"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81cb2ee30ec8b84f458c25c2f89b0678"><td class="memItemLeft" align="right" valign="top"><a id="a81cb2ee30ec8b84f458c25c2f89b0678"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>currentThrottle</b> = 0</td></tr>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a81cb2ee30ec8b84f458c25c2f89b0678">currentThrottle</a> = 0</td></tr>
+<tr class="memdesc:a81cb2ee30ec8b84f458c25c2f89b0678"><td class="mdescLeft">&#160;</td><td class="mdescRight">currentThrottle (read only) <br /></td></tr>
 <tr class="separator:a81cb2ee30ec8b84f458c25c2f89b0678"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a14a5dab94b444b991216bfe099efcb73"><td class="memItemLeft" align="right" valign="top"><a id="a14a5dab94b444b991216bfe099efcb73"></a>
-static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>cutoffVoltage</b> = 640</td></tr>
+static uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_e_s_c.html#a14a5dab94b444b991216bfe099efcb73">cutoffVoltage</a> = 640</td></tr>
+<tr class="memdesc:a14a5dab94b444b991216bfe099efcb73"><td class="mdescLeft">&#160;</td><td class="mdescRight">voltage at which all ESCs will fire a VOLTAGE_LOW error <br /></td></tr>
 <tr class="separator:a14a5dab94b444b991216bfe099efcb73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>represents one ESC/motor combo </p>
+<p>use methods to read and write data, call <a class="el" href="class_e_s_c.html#aef21cba5993a747da3599b4950d08d56" title="checks for telemetry">loop()</a> regularly to receive telemetry </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a476998d16bf22b5c931d7d42bdc0c93d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a476998d16bf22b5c931d7d42bdc0c93d">&#9670;&nbsp;</a></span>ESC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ESC::ESC </td>
+          <td>(</td>
+          <td class="paramtype">HardwareSerial *&#160;</td>
+          <td class="paramname"><em>telemetryStream</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>signalPin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int8_t&#160;</td>
+          <td class="paramname"><em>telemetryPin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">rmt_channel_t&#160;</td>
+          <td class="paramname"><em>dmaChannel</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void(*)(<a class="el" href="class_e_s_c.html">ESC</a> *esc, uint8_t errorCode)&#160;</td>
+          <td class="paramname"><em>onError</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void(*)(<a class="el" href="class_e_s_c.html">ESC</a> *esc, uint8_t newStatus, uint8_t oldStatus)&#160;</td>
+          <td class="paramname"><em>onStatusChange</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>registers a new <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">telemetryStream</td><td>stream for telemetry acquisition </td></tr>
+    <tr><td class="paramname">signalPin</td><td>pin for data output (DShot) </td></tr>
+    <tr><td class="paramname">telemetryPin</td><td>pin for telemetry reception (Baud 115200) </td></tr>
+    <tr><td class="paramname">dmaChannel</td><td>dmaChannel for sending the packets </td></tr>
+    <tr><td class="paramname">onError</td><td>callback method when an error occurs, takes an <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> pointer and an error code </td></tr>
+    <tr><td class="paramname">onStatusChange</td><td>callback method when the status changes (fired at <a class="el" href="class_e_s_c.html#aef21cba5993a747da3599b4950d08d56" title="checks for telemetry">loop()</a>), takes an <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> pointer, the old and the new status </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a635b90b7679a812b404fe0b5a87ed2d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a635b90b7679a812b404fe0b5a87ed2d2">&#9670;&nbsp;</a></span>appendChecksum()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t IRAM_ATTR ESC::appendChecksum </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>shifts a uint16_t 4 bits left and appends the CRC checksum </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>the (right aligned) value (12 bit) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>uint16_t the final bit array that can be sent to the <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> </dd></dl>
+
+</div>
+</div>
+<a id="acaf53ccc4575757a52c56e6587904930"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acaf53ccc4575757a52c56e6587904930">&#9670;&nbsp;</a></span>beep()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ESC::beep </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>level</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>pauseBefore</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>beeps the <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> once </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">level</td><td>the beeping level (from enum) </td></tr>
+    <tr><td class="paramname">pauseBefore</td><td>whether to pause for some ms before beeping </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a30d325a9265ae9523b19a20fab37796b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30d325a9265ae9523b19a20fab37796b">&#9670;&nbsp;</a></span>getBlueLED()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ESC::getBlueLED </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>check if blue LED is on </p>
+<dl class="section return"><dt>Returns</dt><dd>true (1) if LED is on </dd></dl>
+
+</div>
+</div>
+<a id="aafad0895ed29000929ee25fb718a1516"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafad0895ed29000929ee25fb718a1516">&#9670;&nbsp;</a></span>getGreenLED()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ESC::getGreenLED </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>check if green LED is on </p>
+<dl class="section return"><dt>Returns</dt><dd>true (1) if LED is on </dd></dl>
+
+</div>
+</div>
+<a id="a71933ad5f293b6becbda102b245bedd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71933ad5f293b6becbda102b245bedd6">&#9670;&nbsp;</a></span>getMaxThrottle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t ESC::getMaxThrottle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the maximum throttle of all ESCs. </p>
+<dl class="section return"><dt>Returns</dt><dd>uint16_t maximum throttle </dd></dl>
+
+</div>
+</div>
+<a id="af0d4c5865918af76369f77adb747b920"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0d4c5865918af76369f77adb747b920">&#9670;&nbsp;</a></span>getRedLED()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ESC::getRedLED </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>check if red LED is on </p>
+<dl class="section return"><dt>Returns</dt><dd>true (1) if LED is on </dd></dl>
+
+</div>
+</div>
+<a id="aef21cba5993a747da3599b4950d08d56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef21cba5993a747da3599b4950d08d56">&#9670;&nbsp;</a></span>loop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ESC::loop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>checks for telemetry </p>
+<p>reads errors (onError), supplies telemetry to telemetry variables, checks if <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a> is connected, checks for status change (onStatusChange) </p><dl class="section return"><dt>Returns</dt><dd>true if new telemetry </dd></dl>
+
+</div>
+</div>
+<a id="ab91c8f0a9383edd0bb9d9269034dc1e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab91c8f0a9383edd0bb9d9269034dc1e4">&#9670;&nbsp;</a></span>send()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void IRAM_ATTR ESC::send </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This method will write the newThrottle to currentThrottle and send the newThrottle to the <a class="el" href="class_e_s_c.html" title="represents one ESC/motor combo">ESC</a>. </p>
+<p>If manual data is present, it will send manualData instead, until it is empty<br  />
+implements safety measures like cutoffVoltage </p>
+
+</div>
+</div>
+<a id="a137b2260bbdcad4ea02316138a6c2305"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a137b2260bbdcad4ea02316138a6c2305">&#9670;&nbsp;</a></span>sendFullRaw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void IRAM_ATTR ESC::sendFullRaw </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>rawValueWithChecksum</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>sends a 16 bit raw value immediately, no checks, telemetry bit is set by user </p>
+<p>DO NOT USE THIS FOR NORMAL OPERATION. USE <a class="el" href="class_e_s_c.html#ab91c8f0a9383edd0bb9d9269034dc1e4" title="This method will write the newThrottle to currentThrottle and send the newThrottle to the ESC.">send()</a> and <a class="el" href="class_e_s_c.html#acb01b31db9875c29276e2a54f5014901" title="set new Throttle (0...2000)">setThrottle()</a>/manualData INSTEAD, UNLESS TELEMETRY BIT DOESN'T ALLOW. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rawValueWithChecksum</td><td>raw 16 bit value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1b81812c740ec8ee93e908916d461983"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b81812c740ec8ee93e908916d461983">&#9670;&nbsp;</a></span>sendRaw11()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void IRAM_ATTR ESC::sendRaw11 </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>rawValueWithoutChecksum</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>sends an 11 bit raw value immediately, no checks, but telemetry request </p>
+<p>DO NOT USE THIS FOR NORMAL OPERATION. USE <a class="el" href="class_e_s_c.html#ab91c8f0a9383edd0bb9d9269034dc1e4" title="This method will write the newThrottle to currentThrottle and send the newThrottle to the ESC.">send()</a> and <a class="el" href="class_e_s_c.html#acb01b31db9875c29276e2a54f5014901" title="set new Throttle (0...2000)">setThrottle()</a>/manualData INSTEAD. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rawValueWithoutChecksum</td><td>raw 11 bit value (right aligned) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acc10ccd2bb3817780367405694d5f19b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc10ccd2bb3817780367405694d5f19b">&#9670;&nbsp;</a></span>sendThrottle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void IRAM_ATTR ESC::sendThrottle </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>throttleValue</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>sends a throttle value immediately, no checks, no telemetry request </p>
+<p>DO NOT USE THIS FOR NORMAL OPERATION. USE <a class="el" href="class_e_s_c.html#ab91c8f0a9383edd0bb9d9269034dc1e4" title="This method will write the newThrottle to currentThrottle and send the newThrottle to the ESC.">send()</a> and <a class="el" href="class_e_s_c.html#acb01b31db9875c29276e2a54f5014901" title="set new Throttle (0...2000)">setThrottle()</a> INSTEAD. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">throttleValue</td><td>the throttle value (0...2000) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a26cc5b2661c8619a1ead109a1ad7725f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26cc5b2661c8619a1ead109a1ad7725f">&#9670;&nbsp;</a></span>setMaxThrottle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ESC::setMaxThrottle </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>maxThrottle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the maximum throttle of all ESCs. </p>
+<p>limits maxThrottle to 2000 </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">maxThrottle</td><td>new maximum Throttle </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acb01b31db9875c29276e2a54f5014901"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb01b31db9875c29276e2a54f5014901">&#9670;&nbsp;</a></span>setThrottle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ESC::setThrottle </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>newThrottle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set new Throttle (0...2000) </p>
+<p>use this method for normal control. Use <a class="el" href="class_e_s_c.html#ab91c8f0a9383edd0bb9d9269034dc1e4" title="This method will write the newThrottle to currentThrottle and send the newThrottle to the ESC.">send()</a> every cycle. This method also checks for too high throttle (ESC::maxThrottle) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newThrottle</td><td>the new throttle value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Elektroauto ESP VSCode/src/<a class="el" href="_e_s_c_8h_source.html">ESC.h</a></li>
 <li>Elektroauto ESP VSCode/src/ESC.cpp</li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="class_e_s_c.html">ESC</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
 </body>
 </html>
