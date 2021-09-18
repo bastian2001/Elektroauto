@@ -185,7 +185,7 @@ void IRAM_ATTR ESC::send(){
 
 void IRAM_ATTR ESC::sendThrottle(uint16_t throttleValue){
     if (throttleValue) throttleValue += 47;
-    sendFullRaw(appendChecksum(throttleValue << 1 | false));
+    sendFullRaw(appendChecksum(throttleValue << 1 | true));
 }
 
 
