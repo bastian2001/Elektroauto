@@ -64,8 +64,8 @@ void IRAM_ATTR escIR() {
     voltage_log[1][logPosition] = ESCs[1]->voltage;
     temp_log[0][logPosition] = ESCs[0]->temperature;
     temp_log[1][logPosition] = ESCs[1]->temperature;
-    acceleration_log[logPosition] = rawAccel;
-    bmi_temp_log[logPosition] = bmiRawTemp;
+    acceleration_log[0/**/] = rawAccel;
+    bmi_temp_log[0/**/] = bmiRawTemp;
     logPosition++;
     if (logPosition == LOG_FRAMES){
       raceActive = false;

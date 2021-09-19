@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     //constants
     private final int REQUEST_UPDATE_MS = 20;
-    private final int LOG_FRAMES = 3000;
+    private final int LOG_FRAMES = 6000;
     private final int PING_AMOUNT = 20;
 
     //SharedPrefs
@@ -103,12 +103,12 @@ public class MainActivity extends AppCompatActivity {
     private int[] pingArray = new int[PING_AMOUNT];
 
     //log variables
-    private int[] throttle_log_0 = new int[LOG_FRAMES], throttle_log_1 = new int[LOG_FRAMES],
-            erpm_log_0 = new int[LOG_FRAMES], erpm_log_1 = new int[LOG_FRAMES],
-            voltage_log_0 = new int[LOG_FRAMES], voltage_log_1 = new int[LOG_FRAMES],
-            temp_log_0 = new int[LOG_FRAMES], temp_log_1 = new int[LOG_FRAMES],
-            acceleration_log = new int[LOG_FRAMES],
-            temp_log_bmi = new int[LOG_FRAMES];
+    private int[] throttle_log_0 = new int[3000], throttle_log_1 = new int[3000],
+            erpm_log_0 = new int[3000], erpm_log_1 = new int[3000],
+            voltage_log_0 = new int[3000], voltage_log_1 = new int[3000],
+            temp_log_0 = new int[3000], temp_log_1 = new int[3000],
+            acceleration_log = new int[3000],
+            temp_log_bmi = new int[3000];
 
     private static TaskHandle setTimeout(final Runnable r, long delay) {
         final Handler h = new Handler();
@@ -705,17 +705,19 @@ public class MainActivity extends AppCompatActivity {
                     );*/
                 }
             } else {
-                for (int i = 0; i < LOG_FRAMES; i++) {
-                    throttle_log_0[i] = (((bytes[i * 2 + 1]) & 0xFF) << 8) | (bytes[i * 2] & 0xFF);
-                    throttle_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 2 + 1]) << 8) & 0xFF) | (bytes[i * 2 + LOG_FRAMES * 2] & 0xFF);
-                    erpm_log_0[i] = (((bytes[i * 2 + LOG_FRAMES * 4 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 4] & 0xFF);
-                    erpm_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 6 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 6] & 0xFF);
-                    voltage_log_0[i] = (((bytes[i * 2 + LOG_FRAMES * 8 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 8] & 0xFF);
-                    voltage_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 10 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 10] & 0xFF);
-                    temp_log_bmi[i] = (bytes[i + LOG_FRAMES * 12] & 0xFF);
-                    temp_log_bmi[i] = (bytes[i + LOG_FRAMES * 13] & 0xFF);
-                    acceleration_log[i] = (((bytes[i * 2 + LOG_FRAMES * 14 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 14] & 0xFF);
-                    temp_log_1[i] = (((bytes[i * 2 + LOG_FRAMES * 16 + 1]) & 0xFF) << 8) | (bytes[i * 2 + LOG_FRAMES * 16] & 0xFF);
+                for (int i = 0; i < 3000; i++) {
+                    try {
+                        throttle_log_0[i] = (Byte.toUnsignedInt(bytes[i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2]);
+                        throttle_log_1[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 2 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 2]);
+                        erpm_log_0[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 4 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 4]);
+                        erpm_log_1[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 6 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 6]);
+                        voltage_log_0[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 8 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 8]);
+                        voltage_log_1[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 10 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 10]);
+                        temp_log_0[i] = Byte.toUnsignedInt(bytes[i + LOG_FRAMES * 12]);
+                        temp_log_1[i] = Byte.toUnsignedInt(bytes[i + LOG_FRAMES * 13]);
+                        acceleration_log[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 14 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 14]);
+                        temp_log_bmi[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 16 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 16]);
+                    } catch (Exception e){}
                 }
 
                 try {

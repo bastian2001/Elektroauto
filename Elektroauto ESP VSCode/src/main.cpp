@@ -235,13 +235,12 @@ void setup() {
     readEEPROM();
 
   //logData initialization
-  logData = (uint16_t *)malloc(LOG_SIZE);
-  throttle_log[0] = logData + 0 * LOG_FRAMES;
-  throttle_log[1] = logData + 2 * LOG_FRAMES;
-  erpm_log[0] = logData + 4 * LOG_FRAMES;
-  erpm_log[1] = logData + 6 * LOG_FRAMES;
-  voltage_log[0] = logData + 8 * LOG_FRAMES;
-  voltage_log[1] = logData + 10 * LOG_FRAMES;
+  throttle_log[0] = (uint16_t *)logData + 0 * LOG_FRAMES;
+  throttle_log[1] = (uint16_t *)logData + 2 * LOG_FRAMES;
+  erpm_log[0] = (uint16_t *)logData + 4 * LOG_FRAMES;
+  erpm_log[1] = (uint16_t *)logData + 6 * LOG_FRAMES;
+  voltage_log[0] = (uint16_t *)logData + 8 * LOG_FRAMES;
+  voltage_log[1] = (uint16_t *)logData + 10 * LOG_FRAMES;
   temp_log[0] = (uint8_t*)logData + 12 * LOG_FRAMES;
   temp_log[1] = (uint8_t*)logData + 13 * LOG_FRAMES;
   acceleration_log = (int16_t *)logData + 14 * LOG_FRAMES;

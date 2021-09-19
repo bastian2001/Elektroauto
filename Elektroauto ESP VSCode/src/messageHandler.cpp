@@ -148,7 +148,8 @@ void processMessage(String message, uint8_t from) {
   }
 
   else if (command == "RECONNECT"){
-    reconnect();
+    // reconnect();
+    sendWSMessage(from, String(throttle_log[1][2000]));
   }
 
   else if (command == "RAWDATA"){

@@ -19,8 +19,8 @@ readdir('input').then(files => {
             }
             for (let i = 0; i < zeroPoint; i++){
                 const accelerationBMI = data.acceleration[i] / 16384
-                speedMPU += accelerationBMI / frequency
-                distMPU += speedMPU / frequency
+                speedBMI += accelerationBMI / frequency
+                distBMI += speedBMI / frequency
 
                 for (let i = 0; i < 19; i++){
                     heRPM[0][i] = heRPM[0][i+1]

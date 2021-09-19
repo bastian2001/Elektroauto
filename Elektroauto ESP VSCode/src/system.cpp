@@ -12,7 +12,7 @@ void setArmed (bool arm){
       reqValue = 0;
       targetERPM = 0;
     }
-    broadcastWSMessage((raceActive ? arm : arm || raceMode) ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
+    broadcastWSMessage((raceActive ? arm : (arm || raceMode)) ? "UNBLOCK VALUE" : "BLOCK VALUE 0");
     ESCs[0]->arm(arm);
     ESCs[1]->arm(arm);
   }
