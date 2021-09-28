@@ -1,9 +1,9 @@
-#Sun Sep 19 03:58:30 CEST 2021
-base.2=C\:\\Users\\bascs\\Documents\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\15\\classes.dex
+#Wed Sep 29 00:26:28 CEST 2021
+base.2=D\:\\Dokumente\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\15\\classes.dex
 path.2=15/classes.dex
-base.1=C\:\\Users\\bascs\\Documents\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.1=D\:\\Dokumente\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 path.1=0/classes.dex
-base.0=C\:\\Users\\bascs\\Documents\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.0=D\:\\Dokumente\\Projekte\\Elektroauto\\ElektroautoFormelE\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex

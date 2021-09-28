@@ -56,16 +56,16 @@ void IRAM_ATTR escIR() {
 
   // logging, if race is active
   if (raceActive){
-    throttle_log[0][logPosition] = ESCs[0]->currentThrottle + .5;
-    throttle_log[1][logPosition] = ESCs[1]->currentThrottle + .5;
-    erpm_log[0][logPosition] = ESCs[0]->heRPM;
-    erpm_log[1][logPosition] = ESCs[1]->heRPM;
-    voltage_log[0][logPosition] = ESCs[0]->voltage;
-    voltage_log[1][logPosition] = ESCs[1]->voltage;
-    temp_log[0][logPosition] = ESCs[0]->temperature;
-    temp_log[1][logPosition] = ESCs[1]->temperature;
-    acceleration_log[0/**/] = rawAccel;
-    bmi_temp_log[0/**/] = bmiRawTemp;
+    throttle_log0[logPosition] = ESCs[0]->currentThrottle + .5;
+    throttle_log1[logPosition] = ESCs[1]->currentThrottle + .5;
+    erpm_log0[logPosition] = ESCs[0]->heRPM;
+    erpm_log1[logPosition] = ESCs[1]->heRPM;
+    voltage_log0[logPosition] = ESCs[0]->voltage;
+    voltage_log1[logPosition] = ESCs[1]->voltage;
+    temp_log0[logPosition] = ESCs[0]->temperature;
+    temp_log1[logPosition] = ESCs[1]->temperature;
+    acceleration_log[logPosition] = rawAccel;
+    bmi_temp_log[logPosition] = bmiRawTemp;
     logPosition++;
     if (logPosition == LOG_FRAMES){
       raceActive = false;

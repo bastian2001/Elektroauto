@@ -59,7 +59,7 @@
 /// add ... ms to telemetry frequency for every connected client (1 client: Telemetry every TELEMETRY_UPDATE_MS + /TELEMETRY_UPDATE_ADD milliseconds)
 #define TELEMETRY_UPDATE_ADD 20
 /// The SSID
-// #define ssid "Test"
+// #define ssid "Bloedfrauen und -maenner"
 /// The password for wifi
 // #define password "CaputDraconis"
 #define ssid "POCO X3 NFC"
@@ -151,9 +151,9 @@ extern int previousERPM[2][TREND_AMOUNT];
 
 // race mode
 extern bool raceModeSendValues, raceMode, raceActive;
-extern uint8_t logData[LOG_SIZE];
-extern uint16_t *throttle_log[2], *erpm_log[2], *voltage_log[2];
-extern uint8_t *temp_log[2];
+extern uint8_t *logData;
+extern uint16_t *throttle_log0, *throttle_log1, *erpm_log0, *erpm_log1, *voltage_log0, *voltage_log1;
+extern uint8_t *temp_log0, *temp_log1;
 extern int16_t *acceleration_log;
 extern int16_t *bmi_temp_log;
 extern uint16_t logPosition;

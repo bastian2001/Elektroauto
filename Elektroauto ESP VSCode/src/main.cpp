@@ -19,8 +19,8 @@ bool c1ready = false, c0ready = false;
 
 hw_timer_t * timer = NULL;
 
-volatile unsigned long lastCore0 = 0;
-volatile unsigned long lastCore1 = 0;
+// volatile unsigned long lastCore0 = 0;
+// volatile unsigned long lastCore1 = 0;
 
 const char ERROR_OVERHEAT_MESSAGE[] = "MESSAGEBEEP Wegen Überhitzung disarmed\0";
 const char ERROR_CUTOFF_MESSAGE[] = "MESSAGEBEEP Cutoff-Spannung unterschritten\0";
@@ -137,14 +137,14 @@ void onStatusChange(ESC * esc, uint8_t newStatus, uint8_t oldStatus){
 void loop0() {
   if (WiFi.status() != WL_CONNECTED) {
     disableCore0WDT();
-    lastCore0 = millis() + 5000;
+    // lastCore0 = millis() + 5000;
     reconnect();
     delay(1);
     enableCore0WDT();
   }
   if (raceModeSendValues){
     raceMode = false;
-    lastCore0 = millis() + 2000;
+    // lastCore0 = millis() + 2000;
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
     sendRaceLog();
     logPosition = 0;
@@ -158,11 +158,11 @@ void loop0() {
 
   printSerial();
   delay(1);
-  lastCore0 = millis();
-  if (lastCore1 + (timerAlarmEnabled(timer) ? 5 : 500) < millis() && lastCore1 != 0 && millis() > 5000){
-    Serial.println(String("Restarting because of Core 1 ") + lastCore0);
-    // ESP.restart();
-  }
+  // lastCore0 = millis();
+  // if (lastCore1 + (timerAlarmEnabled(timer) ? 5 : 500) < millis() && lastCore1 != 0 && millis() > 5000){
+  //   Serial.println(String("Restarting because of Core 1 ") + lastCore0);
+  //   // ESP.restart();
+  // }
 }
 
 /**
@@ -190,11 +190,11 @@ void loop() {
     calibrateFlag = false;
     timerAlarmEnable(timer);
   }
-  lastCore1 = millis();
-  if (lastCore0 + 200 < millis() && lastCore0 != 0 && millis() > 5000){
-    // Serial.println(String("Restarting because of Core 0 ") + lastCore0);
-    // ESP.restart();
-  }
+  // lastCore1 = millis();
+  // if (lastCore0 + 200 < millis() && lastCore0 != 0 && millis() > 5000){
+  //   // Serial.println(String("Restarting because of Core 0 ") + lastCore0);
+  //   // ESP.restart();
+  // }
 }
 
 //! @brief Task for core 0, creates loop0
@@ -202,7 +202,7 @@ void core0Code( void * parameter) {
   c0ready = true;
   while (!c1ready) {
     delay(1);
-    lastCore0 = millis();
+    // lastCore0 = millis();
   }
   while (true) {
     loop0();
@@ -235,16 +235,17 @@ void setup() {
     readEEPROM();
 
   //logData initialization
-  throttle_log[0] = (uint16_t *)logData + 0 * LOG_FRAMES;
-  throttle_log[1] = (uint16_t *)logData + 2 * LOG_FRAMES;
-  erpm_log[0] = (uint16_t *)logData + 4 * LOG_FRAMES;
-  erpm_log[1] = (uint16_t *)logData + 6 * LOG_FRAMES;
-  voltage_log[0] = (uint16_t *)logData + 8 * LOG_FRAMES;
-  voltage_log[1] = (uint16_t *)logData + 10 * LOG_FRAMES;
-  temp_log[0] = (uint8_t*)logData + 12 * LOG_FRAMES;
-  temp_log[1] = (uint8_t*)logData + 13 * LOG_FRAMES;
-  acceleration_log = (int16_t *)logData + 14 * LOG_FRAMES;
-  bmi_temp_log = (int16_t *)logData + 16 * LOG_FRAMES;
+  logData = (uint8_t*)malloc(LOG_SIZE);
+  throttle_log0 = (uint16_t *)(logData + 0 * LOG_FRAMES);
+  throttle_log1 = (uint16_t *)(logData + 2 * LOG_FRAMES);
+  erpm_log0 = (uint16_t *)(logData + 4 * LOG_FRAMES);
+  erpm_log1 = (uint16_t *)(logData + 6 * LOG_FRAMES);
+  voltage_log0 = (uint16_t *)(logData + 8 * LOG_FRAMES);
+  voltage_log1 = (uint16_t *)(logData + 10 * LOG_FRAMES);
+  temp_log0 = (uint8_t*)(logData + 12 * LOG_FRAMES);
+  temp_log1 = (uint8_t*)(logData + 13 * LOG_FRAMES);
+  acceleration_log = (int16_t *)(logData + 14 * LOG_FRAMES);
+  bmi_temp_log = (int16_t *)(logData + 16 * LOG_FRAMES);
 
   //WiFi Setup
   WiFi.enableSTA(true);
@@ -317,10 +318,10 @@ void setup() {
     Serial.println();
   #endif
   #endif
-  lastCore1 = millis();
+  // lastCore1 = millis();
   c1ready = true;
   while (!c0ready) {
     delay(1);
-    lastCore1 = millis();
+    // lastCore1 = millis();
   }
 }

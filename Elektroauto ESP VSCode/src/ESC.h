@@ -103,7 +103,7 @@ private:
     void (*onStatusChange) (ESC *esc, uint8_t newStatus, uint8_t oldStatus);
 
     /// counter for no received telemetry
-    uint16_t noTelemetryCounter = 0;
+    unsigned long disconnectedAt = 0;
     /// the previous status (used for status change detection)
     uint8_t pStatus = DEFAULT_STATUS;
     /// telemetry storage

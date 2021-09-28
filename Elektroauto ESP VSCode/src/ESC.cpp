@@ -39,17 +39,16 @@ ESC::~ESC(){
 bool ESC::loop(){
     bool newTelemetry = false;
 
-    if (noTelemetryCounter > 50 && (status & CONNECTED_MASK) && (status & ENABLED_MASK)){
+    if (this->disconnectedAt < millis() && (status & CONNECTED_MASK) && (status & ENABLED_MASK)){
         status &= ((uint8_t) 0xFF - CONNECTED_MASK);
     }
-    // Serial.print('1');
     while (this->telemetryStream->available()){
         for (uint8_t i = 0; i < 9; i++){
             telemetry[i] = telemetry[i+1];
         }
         telemetry[9] = (char) telemetryStream->read();
         if (isTelemetryComplete()){
-            noTelemetryCounter = 0;
+            this->disconnectedAt = millis() + 50;
 
             if (!(status & CONNECTED_MASK)){
                 for (uint8_t i = 0; i < 17; i++){
@@ -115,7 +114,7 @@ void ESC::pause(){
 
 void ESC::resume(){
     telemetryStream->begin(115200, SERIAL_8N1, telemetryPin);
-    noTelemetryCounter = 0;
+    disconnectedAt = millis() + 50;
     status |= ENABLED_MASK;
 }
 

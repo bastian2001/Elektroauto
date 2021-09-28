@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     //constants
     private final int REQUEST_UPDATE_MS = 20;
-    private final int LOG_FRAMES = 6000;
+    private final int LOG_FRAMES = 3000;
     private final int PING_AMOUNT = 20;
 
     //SharedPrefs
@@ -103,12 +103,12 @@ public class MainActivity extends AppCompatActivity {
     private int[] pingArray = new int[PING_AMOUNT];
 
     //log variables
-    private int[] throttle_log_0 = new int[3000], throttle_log_1 = new int[3000],
-            erpm_log_0 = new int[3000], erpm_log_1 = new int[3000],
-            voltage_log_0 = new int[3000], voltage_log_1 = new int[3000],
-            temp_log_0 = new int[3000], temp_log_1 = new int[3000],
-            acceleration_log = new int[3000],
-            temp_log_bmi = new int[3000];
+    private int[] throttle_log_0 = new int[LOG_FRAMES], throttle_log_1 = new int[LOG_FRAMES],
+            erpm_log_0 = new int[LOG_FRAMES], erpm_log_1 = new int[LOG_FRAMES],
+            voltage_log_0 = new int[LOG_FRAMES], voltage_log_1 = new int[LOG_FRAMES],
+            temp_log_0 = new int[LOG_FRAMES], temp_log_1 = new int[LOG_FRAMES],
+            acceleration_log = new int[LOG_FRAMES],
+            temp_log_bmi = new int[LOG_FRAMES];
 
     private static TaskHandle setTimeout(final Runnable r, long delay) {
         final Handler h = new Handler();
@@ -587,7 +587,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final class EchoWebSocketListener extends WebSocketListener {
-        private static final int NORMAL_CLOSURE_STATUS = 1000;
         @Override
         public void onOpen(WebSocket _webSocket, okhttp3.Response response) {
             runOnUiThread(() -> {
@@ -705,7 +704,7 @@ public class MainActivity extends AppCompatActivity {
                     );*/
                 }
             } else {
-                for (int i = 0; i < 3000; i++) {
+                for (int i = 0; i < LOG_FRAMES; i++) {
                     try {
                         throttle_log_0[i] = (Byte.toUnsignedInt(bytes[i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2]);
                         throttle_log_1[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 2 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 2]);
@@ -716,7 +715,11 @@ public class MainActivity extends AppCompatActivity {
                         temp_log_0[i] = Byte.toUnsignedInt(bytes[i + LOG_FRAMES * 12]);
                         temp_log_1[i] = Byte.toUnsignedInt(bytes[i + LOG_FRAMES * 13]);
                         acceleration_log[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 14 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 14]);
+                        if (acceleration_log[i] > 32767)
+                            acceleration_log[i] -= 65536;
                         temp_log_bmi[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 16 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 16]);
+                        if (temp_log_bmi[i] > 32767)
+                            temp_log_bmi[i] -= 65536;
                     } catch (Exception e){}
                 }
 
