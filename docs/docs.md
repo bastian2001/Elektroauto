@@ -19,17 +19,17 @@
   <tr>
     <td>USB-TX (reserved)</td>
     <td>1</td>
-    <td>-none-</td>
+    <td>-reserved, don't use-</td>
   </tr>
   <tr>
     <td>USB-RX (reserved)</td>
     <td>3</td>
-    <td>-none-</td>
+    <td>-reserved, don't use-</td>
   </tr>
   <tr>
     <td>LED_BUILTIN</td>
     <td>22</td>
-    <td>-none-</td>
+    <td>-can be used for debugging-</td>
   </tr>
   <tr>
     <td>ESC 1 Output</td>
@@ -78,13 +78,13 @@
   </tr>
   <tr>
     <td>BMI160 - VCC</td>
-    <td>3V3</td>
+    <td>26 or 3V3</td>
     <td>BMI160: 3V3</td>
   </tr>
   <tr>
     <td>Transmission indicator</td>
     <td>33</td>
-    <td>-none-</td>
+    <td>-can be used for debugging (set flags)-</td>
   </tr>
 </table>
 
@@ -132,12 +132,22 @@
 - set RPS control variables
   - keys: RPSA, RPSB, RPSC, PIDMULTIPLIER
   - value: [value]
-- error count
+- set additional multiplier for slip control
+  - key: SLIPMULTIPLIER
+  - value: [multiplier, default: 2]
+  - example: `SLIPMULTIPLIER:2`
+- get error count
   - key: ERRORCOUNT
   - value: none
+  - note: currently not used/implemented
 - reconnect to WiFi
   - key: RECONNECT
   - value: none
+- send raw data to the ESCs
+  - key: RAWDATA
+  - value: packets of 11 bits as 3 hex characters
+  - example: `RAWDATA:100 100 100` to send 3 packets with value 0010 0000 000(1 1010) to the ESCs
+  - note: telemetry will always be requested and checksum will be added automatically
 - save settings
   - key: SAVESETTINGS alias SAVE
   - value: none
@@ -147,6 +157,7 @@
 - restore defaults
   - key: RESTOREDEFAULTS alias RESTORE
   - value: none
+  - note: will restart the ESP32
 - send/print settings
   - key: SENDSETTINGS alias SETTINGS
   - value: none
@@ -159,6 +170,9 @@
 - set wheel diameter
   - key: WHEELDIAMETER alias WHEELDIA
   - value: [wheel diameter in mm]
+- reboot the ESP32
+  - key: REBOOT alias RESTART
+  - value: none
 
 # Car -> Device protocol
 
@@ -191,75 +205,86 @@
 
 ## Telemetry response
 
-- prefix: "TELEMETRY "
-- a: armed
-- m: mode
-- t: throttle
-- r: rps
-- s: slip
-- v: velocity (BMI)
-- w: velocity (wheels)
-- c: acceleration (BMI)
-- u: voltage (cV)
-- p: temperature (°C)
-- o: override slider and text input - or -
-- q: override just text input
-- example: TELEMETRY a0!m0!t0!r0!s0!v0!w0!c0!u740!p30
+Telemetry is sent as 28 bytes of binary data:
+
+- Byte 1: armed: 1 (armed), 0 (disarmed)
+- Bytes 2-3: throttle of left ESC
+- Bytes 4-5: throttle of right ESC
+- Bytes 6-7: speed of left ESC in mm/s
+- Bytes 8-9: speed of right ESC in mm/s
+- Bytes 10-11: speed as measured by the accelerometer in mm/s
+- Bytes 12-13: RPS of left ESC
+- Bytes 14-15: RPS of right ESC
+- Byte 16: temperature of left ESC
+- Byte 17: temperature of right ESC
+- Byte 18: temperature of the accelerometer
+- Byte 19: temperature of the ESP32
+- Bytes 20-21: voltage measured by left ESC
+- Bytes 22-23: voltage measured by right ESC
+- Bytes 24-25: raw accelerometer value (-32768 = -2g ... 32767 = +2g)
+- Byte 26: 1 if race mode is enabled and race is not running, 0 otherwise. This is neccessary for the UI, so it will actually show the correct value in the slider AND the input box
+- Bytes 27-28: the last requested value (will usually be used to show in the input box)
 
 # CPU core assignments
 
 - core 1
   - loop
-    - telemetry acquisition and processing
+    - ESC loop
+      - telemetry acquisition and processing
+      - handling errors and status change
     - throttle calculation
   - interrupts
-    - ESCir
+    - ESC
       - sending ESC data packet
       - receiving BMI sensor data
 - core 0
   - loop
     - WiFi
-      - receiving commands and sending telemetry
+      - receiving commands and sending telemetry and race log
     - Serial
     - voltage protection
+    - runs "Actions", e.g. timed disarming or sending queued messages
   - interrupts: none
 
 # Logging in RAM
 
-- every esc cycle (1000Hz) for 5000 frames:
-- uint16_t[] throttle (0...2000) - 10KB
-- int16_t[] acceleration (BMI raw value) - 10KB
-- uint16_t[] raw wheel heRPM - 10KB
-- uint16_t[] voltage (from ESC) in cV - 10KB
-- uint8_t[] temperature (from ESC) in °C - 5KB
-- total: 45KB
+- every esc cycle (currently 800Hz) for 3000 frames:
+- uint16_t[] left throttle (0...2000) - 6KB
+- uint16_t[] right throttle (0...2000) - 6KB
+- uint16_t[] raw left wheel heRPM - 6KB
+- uint16_t[] raw right wheel heRPM - 6KB
+- uint16_t[] voltage (from left ESC) in cV - 6KB
+- uint16_t[] voltage (from right ESC) in cV - 6KB
+- uint8_t[] temperature (from left ESC) in °C - 3KB
+- uint8_t[] temperature (from right ESC) in °C - 3KB
+- int16_t[] acceleration (from BMI, raw value) - 6KB
+- int16_t[] temperature (from BMI, raw value) - 6KB
+- total: 54KB
 
 # Sending the logs
 
-45KB of binary data:
+54KB of binary data, sent like they are in the RAM. Beware that the ESP32 is little endian, meaning 16 bit values will be stored and sent as follows:
 
-1. 0-9999: throttle
-2. 10000-19999: acceleration
-3. 20000-29999: erpm
-4. 30000-39999: voltage
-5. 40000-44999: temperature
+7 ... 0(LSB) | 15(MSB) ... 8
 
 # Other notes
 
 ## Slip calculation
 
-slip = (vRad - vAuto) / vRad
+slip = (vWheel - vCar) / vWheel
 
-<=> slip \* vRad = vRad - vAuto
+<=> slip \* vWheel = vWheel - vCar
 
-<=> vRad \* slip - vRad = - vAuto
+<=> vWheel \* slip - vWheel = - vCar
 
-<=> vRad = (- vAuto) / (slip - 1)
+<=> vWheel = vCar / (1 - slip)
 
 ## Hold RPS
 
+d_thr: throttle difference for next cycle
+
 1. d_rps = rps_soll - rps_pred
-2. d*thr = d_rps³ * .00000015+d*rps² * .000006+d_rps \* .006 &nbsp;&nbsp;&nbsp;&nbsp;(each ms, for PID_DIV = 0)
+2. d_thr = d_rps³ \* .00000015+d_rps² \* .000006+d_rps \* .006 &nbsp;&nbsp;&nbsp;&nbsp;(each ESC cycle)
 
 ## ESC telemetry protocol
 

@@ -234,11 +234,7 @@ void processMessage(String message, uint8_t from) {
   //   if (!message.endsWith("NOMESSAGE"))
   //     sendWSMessage(from, "MESSAGE Beschleunigungssensor wird kalibriert");
   // }
-
-  else if (command == "GETSPEED"){
-    sendWSMessage(from, String(speedBMI / 1000.0) + "m/s");
-  }
-
+  
   else if (command == "REBOOT" || command == "RESTART"){
     ESP.restart();
   }
