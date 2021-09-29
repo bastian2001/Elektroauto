@@ -25,8 +25,29 @@ void processMessage(String message, uint8_t from) {
     String valueStr = message.substring(dividerPos + 1);
     valueStr.toUpperCase();
     int value = valueStr.toInt();
-    if (valueStr == "YES" || valueStr == "TRUE") value = 1;
-    setArmed(value > 0);
+    if (value == 1 || valueStr == "YES" || valueStr == "TRUE"){
+      setArmed(true);
+      return;
+    } else if (value == 2 || valueStr == "SOFT") {
+      int pos = 0;
+      while (actionQueue[pos].type != 0)
+        pos++;
+      
+      Action a;
+      a.type = 3; //set mode to current mode
+      a.payload = ctrlMode;
+      a.time = millis() + 1500;
+      actionQueue[pos++] = a;
+      a.type = 1; // disarm
+      a.payload = 0;
+      actionQueue[pos] = a;
+
+      setMode(MODE_RPS);
+      reqValue = 0;
+      setNewTargetValue();
+      return;
+    }
+    setArmed(false);
   }
 
   else if (command == "PING") {
@@ -42,27 +63,7 @@ void processMessage(String message, uint8_t from) {
     } else if (valueStr == "SLIP"){
         value = MODE_SLIP;
     }
-    ctrlMode = value;
-    String modeText = "SET MODESPINNER ";
-    modeText += ctrlMode;
-    switch(ctrlMode){
-      case MODE_THROTTLE:
-        reqValue = (((int)(ESCs[0]->currentThrottle)) + ((int)(ESCs[1]->currentThrottle))) / 2; // stationary
-        break;
-      case MODE_RPS:
-        if (erpmToRps((((uint16_t)(ESCs[0]->heRPM)) + ((uint16_t)(ESCs[1]->heRPM))) / 2) > maxTargetRPS)
-          reqValue = maxTargetRPS;
-        reqValue = erpmToRps((((uint16_t)(ESCs[0]->heRPM)) + ((uint16_t)(ESCs[1]->heRPM))) / 2);
-        targetERPM = rpsToErpm(reqValue);
-        break;
-      case MODE_SLIP:
-        if (reqValue > maxTargetSlip)
-          reqValue = maxTargetSlip;
-        targetSlip = reqValue;
-        break;
-    }
-    broadcastWSMessage(modeText);
-    broadcastWSMessage(String("MAXVALUE ") + String(getMaxValue(ctrlMode)));
+    setMode(value);
   }
 
   else if (command == "TELEMETRY" && dividerPos != -1 && from != 255){

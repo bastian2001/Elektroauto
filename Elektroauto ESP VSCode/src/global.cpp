@@ -1,4 +1,5 @@
 #include "global.h"
+int64_t integ = 0;
 
 // rps control settings
 double pidMulti = 1;

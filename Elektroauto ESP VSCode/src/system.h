@@ -11,6 +11,13 @@
 void setArmed(bool arm);
 
 /**
+ * @brief sets the mode of the car
+ * 
+ * @param mode any MODE_*
+ */
+void setMode(uint8_t mode);
+
+/**
  * @brief Sets the ESC value with the appended checksum
  * 
  * WARNING: There are no further armed checks between this function and the sending of the value, alter the "nextThrottle" variable instead. The offset for the settings is automatically applied

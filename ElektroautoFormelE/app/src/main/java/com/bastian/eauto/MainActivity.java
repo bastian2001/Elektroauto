@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton buttonForward, buttonBackward, buttonDirectionOne, buttonDirectionTwo, buttonRed, buttonGreen, buttonBlue;
 
     //main variables
-    private int espMode = 0, modeBeforeSoftDisarm = 0;
+    private int espMode = 0;
     private MainActivity.TaskHandle autoSend;
     private boolean newSeekbarValueAvailable = false;
     private int newSeekbarValue = -1;
@@ -562,13 +562,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendSoftDisarm(){
-        modeBeforeSoftDisarm = espMode;
-        wsSend("MODE:RPS");
-        setTimeout(() -> wsSend("VALUE:0"), 2);
-        setTimeout(() -> {
-            sendArmed(false);
-            wsSend("MODE:" + modeBeforeSoftDisarm);
-        }, 1000);
+        wsSend("ARMED:SOFT");
     }
 
     public void sendRaceMode (boolean r){

@@ -25,6 +25,11 @@ void IRAM_ATTR escIR() {
   previousERPM[0][TREND_AMOUNT - 1] = ESCs[0]->heRPM;
   previousERPM[1][TREND_AMOUNT - 1] = ESCs[1]->heRPM;
 
+  if(ESCs[0]->status & ARMED_MASK)
+  integ += targetERPM - ESCs[0]->heRPM;
+  else
+  integ = 0;
+
   // handle BMI routine
   readBMI();
 

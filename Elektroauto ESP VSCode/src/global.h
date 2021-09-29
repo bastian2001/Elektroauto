@@ -8,6 +8,7 @@
 #include <esp_task_wdt.h>
 #include "BMI160Gen.h"
 #include "ESC.h"
+extern int64_t integ;
 
 
 
@@ -98,7 +99,7 @@ enum Modes {
 
 /// Action for disarm etc
 typedef struct Action{
-    uint8_t type = 0; //1 = setArmed, 2 = broadcast payload (char array) to all WS clients, 255 = own function
+    uint8_t type = 0; //1 = setArmed, 2 = broadcast payload (char array) to all WS clients, 3 = set mode, 255 = own function
     // void * fn;
     int payload = 0; // payload or (int casted) payload pointer (for own function)
     size_t payloadLength = 0; //payload length

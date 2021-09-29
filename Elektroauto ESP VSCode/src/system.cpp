@@ -18,6 +18,26 @@ void setArmed (bool arm){
   }
 }
 
+void setMode(uint8_t mode){
+  ctrlMode = mode;
+  String modeText = "SET MODESPINNER ";
+  modeText += ctrlMode;
+  switch(ctrlMode){
+    case MODE_THROTTLE:
+      reqValue = (((int)(ESCs[0]->currentThrottle)) + ((int)(ESCs[1]->currentThrottle))) / 2; // stationary
+      break;
+    case MODE_RPS:
+      reqValue = erpmToRps((((uint16_t)(ESCs[0]->heRPM)) + ((uint16_t)(ESCs[1]->heRPM))) / 2);
+      break;
+    case MODE_SLIP:
+      reqValue = 0;
+      break;
+  }
+  setNewTargetValue();
+  broadcastWSMessage(modeText);
+  broadcastWSMessage(String("MAXVALUE ") + String(getMaxValue(ctrlMode)));
+}
+
 uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest) {
   value &= 0x7FF;
   value = (value << 1) | telemetryRequest;
@@ -42,26 +62,40 @@ void startRace(){
   }
 }
 
+double kP = .2, kI = .008, kD = 1;
+
 double calcThrottle(int target, int was[], double currentThrottle, double masterMultiplier) {
-  double was_avg = 0;
-  int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
-  for (int i = 0; i < TREND_AMOUNT; i++) {
-    int t = i - TREND_AMOUNT / 2;
-    was_sum += was[i];
-    t_sq_sum += t*t;
-    t_multi_was_sum += t * was[i];
-  }
-  was_avg = (double)was_sum / TREND_AMOUNT;
+  // double was_avg = 0;
+  // int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
+  // for (int i = 0; i < TREND_AMOUNT; i++) {
+  //   int t = i - TREND_AMOUNT / 2;
+  //   was_sum += was[i];
+  //   t_sq_sum += t*t;
+  //   t_multi_was_sum += t * was[i];
+  // }
+  // was_avg = (double)was_sum / TREND_AMOUNT;
 
-  double m = (double)t_multi_was_sum / (double)t_sq_sum;
+  // double m = (double)t_multi_was_sum / (double)t_sq_sum;
 
-  double prediction = m * ((double)TREND_AMOUNT - (double)(TREND_AMOUNT / 2)) + (double)was_avg;
-  if (prediction < 0) prediction = 0;
-  double deltaERPM = target - prediction;
-  double delta_throttle = erpmA * deltaERPM*deltaERPM*deltaERPM + erpmB * deltaERPM*deltaERPM + erpmC * deltaERPM;
-  delta_throttle *= pidMulti * masterMultiplier;
+  // double prediction = m * ((double)TREND_AMOUNT - (double)(TREND_AMOUNT / 2)) + (double)was_avg;
+  // if (prediction < 0) prediction = 0;
+  // double deltaERPM = target - prediction;
+  // double delta_throttle = erpmA * deltaERPM*deltaERPM*deltaERPM + erpmB * deltaERPM*deltaERPM + erpmC * deltaERPM;
+  // delta_throttle *= pidMulti * masterMultiplier;
 
-  return currentThrottle + delta_throttle;
+  // return currentThrottle + delta_throttle;
+
+  // proportional
+  double proportional = (target - was[TREND_AMOUNT - 1]) * kP;
+
+  // integral
+  double integral = kI * (double) integ;
+
+  // derivative
+  double derivative = (was[TREND_AMOUNT - 1] - was[0]) * kD;
+
+
+  return proportional + integral + derivative;
 }
 
 void receiveSerial() {
@@ -74,32 +108,52 @@ void receiveSerial() {
 
 void runActions() {
   for (uint8_t i = 0; i < 50;){
+    Action action = actionQueue[i];
     switch (actionQueue[i].type){
       case 0:
         goto exitRunActionsLoop;
       case 1:
-        if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
-          setArmed(actionQueue[i].payload);
-          memmove(&(actionQueue[i]), &(actionQueue[i]) + sizeof(Action), (49 - i) * sizeof(Action));
+        if (action.time == 0 || action.time < millis()){
+          setArmed(action.payload);
+
+          for (int x = i; x < 49; x++){
+            actionQueue[x] = actionQueue[x+1];
+          }
           actionQueue[49] = Action();
         } else {
           i++;
         }
         break;
       case 2:
-        if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
-          Serial.println(actionQueue[i].payload);
-          broadcastWSMessage(String((char*)actionQueue[i].payload), false, 5, true);
-          free((void*)actionQueue[i].payload);
-          memmove(&(actionQueue[i]), &(actionQueue[i]) + sizeof(Action), (49 - i) * sizeof(Action));
+        if (action.time == 0 || action.time < millis()){
+          broadcastWSMessage(String((char*)action.payload), false, 5, true);
+          free((void*)action.payload);
+
+          for (int x = i; x < 49; x++){
+            actionQueue[x] = actionQueue[x+1];
+          }
+          actionQueue[49] = Action();
+        } else {
+          i++;
+        }
+        break;
+      case 3:
+        if (action.time == 0 || action.time < millis()){
+          setMode(action.payload);
+
+          actionQueue[49] = Action();
+
+          for (int x = i; x < 49; x++){
+            actionQueue[x] = actionQueue[x+1];
+          }
           actionQueue[49] = Action();
         } else {
           i++;
         }
         break;
       // case 255:
-      //   if (actionQueue[i].time == 0 || actionQueue[i].time > millis()){
-      //     (*(actionQueue[i].fn))(actionQueue[i].payload, actionQueue[i].payloadLength);
+      //   if (action.time == 0 || action.time > millis()){
+      //     (*(action.fn))(action.payload, action.payloadLength);
       //   } else {
       //     i++;
       //   }
