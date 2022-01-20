@@ -38,19 +38,6 @@ void setMode(uint8_t mode){
   broadcastWSMessage(String("MAXVALUE ") + String(getMaxValue(ctrlMode)));
 }
 
-uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest) {
-  value &= 0x7FF;
-  value = (value << 1) | telemetryRequest;
-  int csum = 0, csum_data = value;
-  for (int i = 0; i < 3; i++) {
-    csum ^=  csum_data;
-    csum_data >>= 4;
-  }
-  csum &= 0xf;
-  value = (value << 4) | csum;
-  return value;
-}
-
 void startRace(){
   if (!raceActive && raceMode){
     broadcastWSMessage("BLOCK RACEMODETOGGLE ON");

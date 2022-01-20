@@ -1,6 +1,8 @@
 #include "global.h"
 #include "accelerometerFunctions.h"
 
+uint32_t escOutputCounter = 0;
+
 void IRAM_ATTR escIR() {
   #if TRANSMISSION_IND != 0
   escOutputCounter = (escOutputCounter == TRANSMISSION_IND - 1) ? 0 : escOutputCounter + 1;

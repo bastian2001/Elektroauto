@@ -1,5 +1,6 @@
 {
-    "files.associations": {
-        "typeinfo": "cpp"
-    }
+	"files.associations": {
+		"typeinfo": "cpp",
+		"new": "cpp"
+	}
 }

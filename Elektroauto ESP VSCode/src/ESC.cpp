@@ -33,6 +33,7 @@ ESC::ESC(HardwareSerial *telemetryStream, int8_t signalPin, int8_t telemetryPin,
 
 ESC::~ESC(){
     rmt_driver_uninstall(this->dmaChannel);
+    telemetryStream->end();
 }
 
 

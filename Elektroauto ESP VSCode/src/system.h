@@ -25,15 +25,6 @@ void setMode(uint8_t mode);
  */
 void IRAM_ATTR setThrottle(double newThrottle);
 
-/**
- * @brief appends the checksum and the telemetry request bit
- * 
- * @param value the first 11 bits from 0 to 2047
- * @param telemetryRequest default: true, whether or not to set the telemetry request bit
- * @return the full escValue packet
- */
-uint16_t IRAM_ATTR appendChecksum(uint16_t value, bool telemetryRequest = true);
-
 //! @brief starts the race
 void startRace();
 
@@ -42,6 +33,7 @@ void startRace();
  * 
  * @param target the target hERPM value
  * @param was array of previous hERPM value
+ * @param currentThrottle the current Throttle
  * @param masterMultiplier default: 1, another GP multiplier for quick adjustments
  * @return the next throttle value (NOT set automatically)
  */
