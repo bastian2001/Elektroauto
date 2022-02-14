@@ -241,3 +241,17 @@ uint16_t getMaxValue (int mode){
       return 0;
   }
 }
+
+void enableRaceMode(bool en){
+  if (en){
+    broadcastWSMessage("SET RACEMODETOGGLE ON");
+    broadcastWSMessage("UNBLOCK VALUE");
+    setStatusLED(LED_RACE_MODE);
+  } else {
+    broadcastWSMessage("SET RACEMODETOGGLE OFF");
+    if (!((ESCs[0]->status) & ARMED_MASK))
+      broadcastWSMessage("BLOCK VALUE 0");
+    if (statusLED == LED_RACE_MODE) resetStatusLED();
+  }
+  raceMode = en;
+}
