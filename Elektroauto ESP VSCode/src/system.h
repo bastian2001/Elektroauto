@@ -88,3 +88,10 @@ void checkVoltage();
  * @return the maximum value
  */
 uint16_t getMaxValue (int mode);
+
+/**
+ * @brief enables or disables the race mode (not the race itself)
+ * 
+ * @param en whether to enable or disable
+ */
+void enableRaceMode(bool en);

@@ -2,6 +2,8 @@
 #include "wifiStuff.h"
 #include "system.h"
 #include "messageHandler.h"
+#include "settings.h"
+#include "LED.h"
 
 uint32_t nextCheck = 0;
 uint8_t warningVoltageCount = 0;
@@ -44,6 +46,7 @@ void startRace(){
     raceActive = true;
     setArmed(true);
     setNewTargetValue();
+    setStatusLED(LED_RACE_ARMED_ACTIVE);
   } else if (!raceMode) {
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
   }

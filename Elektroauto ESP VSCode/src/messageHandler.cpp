@@ -87,15 +87,7 @@ void processMessage(String message, uint8_t from) {
     String valueStr = message.substring(dividerPos + 1);
     bool raceModeOn = valueStr.toInt() > 0;
     if (valueStr == "ON") raceModeOn = 1;
-    if (raceModeOn){
-      broadcastWSMessage("SET RACEMODETOGGLE ON");
-      broadcastWSMessage("UNBLOCK VALUE");
-    } else {
-      broadcastWSMessage("SET RACEMODETOGGLE OFF");
-      if (!((ESCs[0]->status) & ARMED_MASK))
-        broadcastWSMessage("BLOCK VALUE 0");
-    }
-    raceMode = raceModeOn;
+    enableRaceMode(raceModeOn);
   }
 
   else if (command == "STARTRACE"){

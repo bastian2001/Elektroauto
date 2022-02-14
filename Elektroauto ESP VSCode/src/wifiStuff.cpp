@@ -2,6 +2,7 @@
 #include "wifiStuff.h"
 #include "messageHandler.h"
 #include "system.h"
+#include "LED.h"
 
 unsigned long lastTelemetry = 0;
 uint8_t telData[28];
@@ -171,6 +172,8 @@ void sendTelemetry() {
 }
 
 void handleWiFi() {
+  if (webSocket.connectedClients() == 0)
+    setStatusLED(LED_NO_DEVICE);
   webSocket.loop();
   if (millis() > lastTelemetry + TELEMETRY_UPDATE_MS + TELEMETRY_UPDATE_ADD * telemetryClientsCounter) {
     lastTelemetry = millis();

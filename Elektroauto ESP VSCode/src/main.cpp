@@ -9,6 +9,8 @@
 #include "escFunctions.h"
 #include "settings.h"
 #include "accelerometerFunctions.h"
+#include "LED.h"
+#include "button.h"
 
 
 /*====================================================global variables================================================*/
@@ -148,11 +150,15 @@ void loop0() {
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
     sendRaceLog();
     logPosition = 0;
+    if (statusLED >= LED_RACE_MODE && statusLED <= LED_RACE_ARMED_ACTIVE) resetStatusLED();
   }
   checkVoltage();
 
   handleWiFi();
   receiveSerial();
+
+  checkButton();
+  ledRoutine();
 
   runActions();
 
@@ -221,7 +227,9 @@ void core0Code( void * parameter) {
 void setup() {
   pinMode(26, OUTPUT);
   digitalWrite(26, HIGH); // enable BMI160
-
+  pinMode(LED_PIN, OUTPUT);
+  setStatusLED(LED_SETUP);
+  ledRoutine();
   //Serial setup
   Serial.begin(500000);
 
@@ -324,4 +332,5 @@ void setup() {
     delay(1);
     // lastCore1 = millis();
   }
+  if (statusLED == LED_SETUP) resetStatusLED();
 }

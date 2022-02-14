@@ -1,6 +1,13 @@
 #include "global.h"
 int64_t integ = 0;
 
+//button variables
+ButtonEvent lastButtonEvent;
+unsigned long lastButtonDown = 0;
+
+// status LED
+int statusLED;
+
 // rps control settings
 double pidMulti = 1;
 double slipMulti = 2;

@@ -32,6 +32,10 @@ extern int64_t integ;
 #define SPI_CS 5
 /// pin used for SCL/SCK of the SPI driver
 #define SPI_SCL 18
+/// pin used for LED
+#define LED_PIN LED_BUILTIN
+/// pin used for button control
+#define BUTTON_PIN 4
 
 
 ///frequency of basically everything
@@ -97,6 +101,20 @@ enum Modes {
     MODE_SLIP
 };
 
+/// defines LED blinking behaviour
+enum LEDModes {
+    LED_OFF = 0,
+    LED_SETUP,
+    LED_NO_DEVICE,
+    LED_RACE_MODE,
+    LED_FOUND_BLOCK,
+    LED_RACE_ARMED_ACTIVE,
+    LED_HALF_RESET,
+    LED_HALF_RESET_PRESSED,
+    LED_HALF_RESET_DANGER,
+};
+// the status represents a hirarchy, call resetStatusLED() to reset it to 0
+
 /// Action for disarm etc
 typedef struct Action{
     uint8_t type = 0; //1 = setArmed, 2 = broadcast payload (char array) to all WS clients, 3 = set mode, 255 = own function
@@ -105,6 +123,26 @@ typedef struct Action{
     size_t payloadLength = 0; //payload length
     unsigned long time = 0; //millis at which the action will be triggered, 0 for immediately
 } action;
+
+///defines the types of button events
+enum class ButtonEventType{
+    ShortPress = 0,
+    LongPress,
+    DoublePress
+};
+/// A button event
+typedef struct buttonEvent{
+    ButtonEventType type = ButtonEventType::ShortPress;
+    unsigned long time = 0;
+} ButtonEvent;
+
+/// stores the last button event (e.g. for double press actions)
+extern ButtonEvent lastButtonEvent;
+/// when the button was last pressed
+extern unsigned long lastButtonDown;
+
+/// status LED
+extern int statusLED;
 
 // rps control variables
 /// holds the master multiplier for RPS/slip control, default value is set here
