@@ -174,6 +174,8 @@ void sendTelemetry() {
 void handleWiFi() {
   if (webSocket.connectedClients() == 0)
     setStatusLED(LED_NO_DEVICE);
+  else if (statusLED == LED_NO_DEVICE)
+    resetStatusLED();
   webSocket.loop();
   if (millis() > lastTelemetry + TELEMETRY_UPDATE_MS + TELEMETRY_UPDATE_ADD * telemetryClientsCounter) {
     lastTelemetry = millis();

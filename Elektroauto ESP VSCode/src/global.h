@@ -67,10 +67,10 @@ extern int64_t integ;
 // #define ssid "Bloedfrauen und -maenner"
 /// The password for wifi
 // #define password "CaputDraconis"
-#define ssid "POCO X3 NFC"
-#define password "055fb39a4cc4"
-// #define ssid "springernet"
-// #define password "CL7B1L609235"
+// #define ssid "POCO X3 NFC"
+// #define password "055fb39a4cc4"
+#define ssid "springernet"
+#define password "CL7B1L609235"
 
 //debugging settings
 /// print setup info (e.g. IP-Address)

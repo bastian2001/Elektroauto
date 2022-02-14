@@ -280,8 +280,9 @@ void setup() {
   initBMI();
 
   //ESC pins Setup
-  pinMode(ESC1_OUTPUT_PIN, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+
   #if TRANSMISSION_IND != 0
   pinMode(TRANSMISSION_PIN, OUTPUT);
   digitalWrite(TRANSMISSION_PIN, HIGH);
