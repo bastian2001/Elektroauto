@@ -1,5 +1,5 @@
 #include "global.h"
-#include "WiFi.h"
+#include "wifiStuff.h"
 
 bool firstStartup(){
   return !(EEPROM.readBool(0));

@@ -3,7 +3,7 @@
 #include "settings.h"
 #include "button.h"
 #include "LED.h"
-#include "WiFi.h"
+#include "wifiStuff.h"
 
 bool lastButtonState = HIGH;
 

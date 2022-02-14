@@ -1,6 +1,6 @@
 #include "global.h"
 #include "messageHandler.h"
-#include "WiFi.h"
+#include "wifiStuff.h"
 #include "settings.h"
 #include "system.h"
 #include "accelerometerFunctions.h"

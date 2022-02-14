@@ -1,4 +1,4 @@
-///@file WiFi.h functions for wifi communication to clients
+///@file wifiStuff.h functions for wifi communication to clients
 
 #include <Arduino.h>
 #include "WebSocketsServer.h"
