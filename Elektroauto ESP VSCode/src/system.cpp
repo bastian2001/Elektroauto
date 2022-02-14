@@ -1,5 +1,5 @@
 #include "global.h"
-#include "wifiStuff.h"
+#include "WiFi.h"
 #include "system.h"
 #include "messageHandler.h"
 #include "settings.h"

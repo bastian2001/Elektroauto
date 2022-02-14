@@ -5,7 +5,7 @@
 
 #include "global.h"
 #include "system.h"
-#include "wifiStuff.h"
+#include "WiFi.h"
 #include "escFunctions.h"
 #include "settings.h"
 #include "accelerometerFunctions.h"
