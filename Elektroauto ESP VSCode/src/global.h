@@ -36,6 +36,8 @@ extern int64_t integ;
 #define LED_PIN LED_BUILTIN
 /// pin used for button control
 #define BUTTON_PIN 4
+/// pin used for the phototransistor
+#define LIGHT_SENSOR_PIN 32
 
 
 ///frequency of basically everything
@@ -143,6 +145,7 @@ extern unsigned long lastButtonDown;
 
 /// status LED
 extern int statusLED;
+
 
 // rps control variables
 /// holds the master multiplier for RPS/slip control, default value is set here

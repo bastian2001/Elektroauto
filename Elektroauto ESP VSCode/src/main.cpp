@@ -11,7 +11,8 @@
 #include "accelerometerFunctions.h"
 #include "LED.h"
 #include "button.h"
-
+#include "lightSensor.h"
+#include "race.h"
 
 /*====================================================global variables================================================*/
 
@@ -304,6 +305,9 @@ void setup() {
     clients[i][0] = 0;
     clients[i][1] = 0;
   }
+
+  //registering the light block sensor
+  initLightSensor(LIGHT_SENSOR_PIN, &onLightSensorChange);
 
   //setup termination
   #ifdef PRINT_SETUP
