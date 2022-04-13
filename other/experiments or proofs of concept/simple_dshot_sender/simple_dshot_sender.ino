@@ -7,22 +7,21 @@
 /*======================================================definitions======================================================*/
 
 //Pin numbers
-#define ESC_OUTPUT_PIN  25  // the signal pin
-#define ESC_TRIGGER_PIN 23  // pwm pin for output trigger
+#define ESC_OUTPUT_PIN  23  // the signal pin
+#define ESC_TRIGGER_PIN 25  // pwm pin for output trigger
 #define TRANSMISSION  33    //transmission indicator
 #define LED_BUILTIN 22
 
 //ESC values
-#define ESC_FREQ 8000
+#define ESC_FREQ 4000
 #define ESC_BUFFER_ITEMS 16
-#define CLK_DIV 6; //DShot 150: 24, DShot 300: 12, DShot 600: 6
-#define TT 22 // total bit time
-#define T0H 8 // 0 bit high time
-#define T1H 16 // 1 bit high time
+#define CLK_DIV 2; // DShot 300: 4, DShot 600: 2, DShot 1200: 1
+#define TT 67 // total bit time
+#define T0H 25 // 0 bit high time
+#define T1H 50 // 1 bit high time
 #define T0L (TT - T0H) // 0 bit low time
 #define T1L (TT - T1H) // 1 bit low time
-#define T_RESET 21 // reset length in multiples of bit time
-#define TRANSMISSION_IND 12000
+#define TRANSMISSION_IND ESC_FREQ * 1.5
 
 
 /*======================================================global variables======================================================*/
@@ -50,6 +49,7 @@ void setup() {
   //Serial setup
   Serial.begin(115200);
   disableCore0WDT();
+  disableCore1WDT();
 
   //ESC pins Setup
   pinMode(ESC_OUTPUT_PIN, OUTPUT);
@@ -79,18 +79,15 @@ void Task1code( void * parameter) {
   }
 
   while (true) {
-    loop0();
   }
 }
 
-void loop0() {
-}
-
+uint16_t val;
 void loop() {
   if (Serial.available()) {
     String readout = Serial.readStringUntil('\n');
-    uint16_t val = readout.toInt();
-    val = (val > 200) ? 200 : val;
+    val = readout.toInt();
+    val = (val > 500) ? 500 : val;
     escValue = appendChecksum(val);
   }
 }
@@ -99,12 +96,15 @@ void loop() {
 /*======================================================functional methods======================================================*/
 
 void escir() {
+  rmt_set_idle_level((rmt_channel_t) 0, true, (rmt_idle_level_t) 1);
   escOutputCounter = (escOutputCounter == TRANSMISSION_IND) ? 0 : escOutputCounter + 1;
   digitalWrite(TRANSMISSION, HIGH);
   if (escOutputCounter == 0)
     digitalWrite(TRANSMISSION, LOW);
   delayMicroseconds(6);
   esc_send_value(escValue, false);
+  delayMicroseconds(25);
+  rmt_set_idle_level((rmt_channel_t) 0, false, (rmt_idle_level_t) 1);
 }
 
 uint16_t appendChecksum(uint16_t value) {
@@ -129,7 +129,7 @@ void esc_init(uint8_t channel, uint8_t pin) {
   config.mem_block_num = 1;
   config.tx_config.loop_en = false;
   config.tx_config.carrier_en = false;
-  config.tx_config.idle_output_en = false;
+  config.tx_config.idle_output_en = true;
   config.tx_config.idle_level = ((rmt_idle_level_t) 1);
   config.clk_div = CLK_DIV; // target: DShot 300 (300kbps)
 

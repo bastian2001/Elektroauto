@@ -4,9 +4,9 @@
 //5 - transmission indicator - D1
 
 
-#define NO_OF_MEASUREMENTS 520
+#define NO_OF_MEASUREMENTS 500
 #define LED_BUILTIN 22
-#define SLOWNESS 0
+#define SLOWNESS 320  //Dshot: 1 or so, PWM 320
 
 bool result[NO_OF_MEASUREMENTS];
 unsigned long mic = 0, lastMics = 0;
@@ -16,7 +16,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin (230400);
   Serial.println("almost ready");
-  pinMode(13, INPUT);
+  pinMode(12, INPUT_PULLUP);
   pinMode(5, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -36,24 +36,21 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if(!digitalRead(5)){
-    mic = micros();
+  if(!digitalRead(12)){
+    //mic = micros();
     for (int i = 0; i < NO_OF_MEASUREMENTS; i++){
-      result[i] = digitalRead(13);
+      result[i] = digitalRead(12);
       #if SLOWNESS > 0
         for (int i = 0; i < SLOWNESS; i++){
-          digitalRead(13);
+          digitalRead(12);
         }
       #endif
     }
-    mic = micros() - mic;
-    /*for (int i = 0; i < EMPTY_SPACE; i++){
-      Serial.println(1);
-    }*/
+    //mic = micros() - mic;
     for (int i = 0; i < NO_OF_MEASUREMENTS; i++){
-      Serial.println(result[i]);
+      Serial.println(1-result[i]);
     }
     //Serial.println(mic);
-    while(digitalRead(5)){yield();}
+  delay(50);
   }
 }
