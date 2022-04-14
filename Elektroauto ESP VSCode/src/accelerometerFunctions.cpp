@@ -1,7 +1,7 @@
 #include "global.h"
 
 double rawAccelToPhysicalAccel(int raw){ // in mm per s
-    return (double) raw / (16.384 / 9.81);
+    return (double) raw / (16.384 / 9.81) * 4;
 }
 
 void readBMI(){
@@ -32,13 +32,15 @@ void initBMI(){
     // checking connection
     bool connected = BMI160.testConnection();
 
-    #ifdef PRINT_SETUP
-    if (!connected)
-        Serial.println("could not connect to the BMI160 sensor");
-    #endif
+    if (!connected){
+        #ifdef PRINT_SETUP
+            Serial.println("could not connect to the BMI160 sensor");
+        #endif
+        return;
+    }
     
-    BMI160.setAccelerometerRange(2); //+/-2g range for high precision
-    BMI160.setAccelerometerRate(800); //800Hz for no aliasing (is default anyway)
+    BMI160.setAccelerometerRange(8); //+/-2g range for high precision
+    BMI160.setAccelerometerRate(1600); //800Hz for no aliasing (is default anyway)
 
     
     BMI160.autoCalibrateXAccelOffset(0);
