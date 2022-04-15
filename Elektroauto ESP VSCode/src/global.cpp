@@ -1,5 +1,4 @@
 #include "global.h"
-int64_t integ = 0;
 
 //button variables
 ButtonEvent lastButtonEvent;
@@ -14,6 +13,9 @@ double slipMulti = 2;
 double erpmA = 0.000000008;
 double erpmB = 0.0000006;
 double erpmC = 0.01;
+int32_t integ = 0;
+double kP = .2, kI = .008, kD = 1;
+
 
 // motor and wheel settings
 uint16_t maxTargetRPS = 1500;
@@ -65,6 +67,9 @@ ESC *ESCs[2];
 
 // error
 uint16_t errorCount = 0;
+
+//light sensor
+int * lsStatePtr;
 
 
 String toBePrinted = "";

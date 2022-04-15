@@ -1,22 +1,19 @@
 ///@file lightSensor.h Provides functions for the light sensor
 #include <Arduino.h>
 
-///frequency of start block
-#define START_BLOCK_FREQ 1200
-///tolerated offset
-#define START_BLOCK_FREQ_DELTA 30
-#define START_BLOCK_FREQ_MAX START_BLOCK_FREQ+START_BLOCK_FREQ_DELTA
-#define START_BLOCK_FREQ_MIN START_BLOCK_FREQ-START_BLOCK_FREQ_DELTA
-#define START_BLOCK_MICROS_MAX 1000000/START_BLOCK_FREQ_MIN
-#define START_BLOCK_MICROS_MIN 1000000/START_BLOCK_FREQ_MAX
+/// light sensor update frequency
+#define LS_FREQ 900
 
 
-enum LighSensorStates{
-	NO_BLOCK = 0,
-	START_BLOCK_DETECTED,
-	START_BLOCK_ARMED,
-	START_BLOCK_RACE
+/// defines light sensor states
+enum {
+	LS_STATE_UNKNOWN,
+    LS_STATE_IDLE,
+    LS_STATE_READY,
+    LS_STATE_START
 };
+
+extern int lsState;
 
 /**
  * @brief runs when the light sensor changed its value
@@ -24,7 +21,7 @@ enum LighSensorStates{
  * on rising edge: stores a timestamp<br>
  * on falling edge: determines the duration and compares it to previous events. If the race mode is active and the start block is armed, it may start the race
  */
-void IRAM_ATTR lightSensorRoutine();
+void lsLoop();
 
 /**
  * @brief initialises the light sensor
@@ -33,4 +30,10 @@ void IRAM_ATTR lightSensorRoutine();
  * @param onStatusChange method that is called when the status changes
  * @return int* the current status
  */
-int * initLightSensor(int pin, void (* onStatusChange) (int previousStatus, int newStatus));
+int * initLightSensor(int pin, void (* onStatusChange) (int previousStatus, int newStatus), bool enableAutoLoop = true);
+
+/// @brief pauses the light sensor timer
+void pauseLS();
+
+///@brief resumes the light sensor timer
+void resumeLS();

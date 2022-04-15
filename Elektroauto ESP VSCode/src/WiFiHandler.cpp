@@ -3,13 +3,14 @@
 #include "messageHandler.h"
 #include "system.h"
 #include "LED.h"
+#include "lightSensor.h"
 
 unsigned long lastTelemetry = 0;
 uint8_t telData[28];
 //armed, throttle0, throttle1, speed0, speed1, speedBMI, rps0, rps1, temp0, temp1, tempBMI, voltage0, voltage1, acceleration, raceModeThing, reqValue
 // 1      2          2          2       2       2         2     2     1      1      2        2         2         2             1              2        = 28
 
-void broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
+void IRAM_ATTR broadcastWSMessage(String text, bool justActive, int del, bool noPrint){
   #ifdef PRINT_BROADCASTS
     uint8_t noOfDevices = 0;
   #endif
@@ -154,7 +155,8 @@ void sendTelemetry() {
   telData[12] = rps0 & 0xFF;
   telData[13] = rps1 >> 8;
   telData[14] = rps1 & 0xFF;
-  telData[15] = ESCs[0]->temperature;
+  // telData[15] = ESCs[0]->temperature;
+  telData[15] = lsState;
   telData[16] = ESCs[1]->temperature;
   telData[17] = bmiTemp;
   telData[18] = temperatureRead();

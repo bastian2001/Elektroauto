@@ -110,28 +110,43 @@ void processMessage(String message, uint8_t from) {
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, bcMessage);
   }
+  else if (command == "PGAIN"){
+    kP = message.substring(dividerPos + 1).toDouble();
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE P gain ist nun ") + String(kP));
+  }
+  else if (command == "IGAIN"){
+    kI = message.substring(dividerPos + 1).toDouble();
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE I gain ist nun ") + String(kI));
+  }
+  else if (command == "DGAIN"){
+    kD = message.substring(dividerPos + 1).toDouble();
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE D gain ist nun ") + String(kD));
+  }
   else if (command == "RPSA"){
-    erpmA = message.substring(dividerPos + 1).toFloat();
+    erpmA = message.substring(dividerPos + 1).toDouble();
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE Tempomat 3. Potenz ist nun ") + String(erpmA));
   }
   else if (command == "RPSB"){
-    erpmB = message.substring(dividerPos + 1).toFloat();
+    erpmB = message.substring(dividerPos + 1).toDouble();
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE Tempomat 2. Potenz ist nun ") + String(erpmB));
   }
   else if (command == "RPSC"){
-    erpmC = message.substring(dividerPos + 1).toFloat();
+    erpmC = message.substring(dividerPos + 1).toDouble();
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE Tempomat 1. Potenz ist nun ") + String(erpmC));
   }
   else if (command == "PIDMULTIPLIER"){
-    pidMulti = message.substring(dividerPos + 1).toFloat();
+    pidMulti = message.substring(dividerPos + 1).toDouble();
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE Tempomat-Master ist nun ") + String(pidMulti));
   }
   else if (command == "SLIPMULTIPLIER"){
-    slipMulti = message.substring(dividerPos + 1).toFloat();
+    slipMulti = message.substring(dividerPos + 1).toDouble();
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE Schlupf-Master ist nun ") + String(slipMulti));
   }

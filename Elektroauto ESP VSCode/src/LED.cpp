@@ -4,7 +4,7 @@
 bool lastLEDState = LOW;
 bool newState;
 
-bool setStatusLED(int newStatus){
+bool IRAM_ATTR setStatusLED(int newStatus){
   if (newStatus <= statusLED) return false;
   statusLED = newStatus;
   return true;
@@ -20,7 +20,7 @@ void ledRoutine(){
     if (lastLEDState) digitalWrite(LED_PIN, lastLEDState = LOW);
     break;
   case LED_SETUP:
-    if (lastLEDState) digitalWrite(LED_PIN, lastLEDState = HIGH);
+    if (!lastLEDState) digitalWrite(LED_PIN, lastLEDState = HIGH);
     break;
   case LED_NO_DEVICE:
     newState = millis() % 1000 < 850;

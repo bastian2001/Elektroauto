@@ -8,7 +8,6 @@
 #include <esp_task_wdt.h>
 #include "BMI160Gen.h"
 #include "ESC.h"
-extern int64_t integ;
 
 
 
@@ -158,6 +157,16 @@ extern double erpmA;
 extern double erpmB;
 /// responsiveness: zu viel -> schnelles wackeln um den eigenen Wert, evtl. overshooting bei kleinen Anpassungen. zu wenig -> langsames Anpassen bei kleinen Änderungen; holds the linear factor for RPS/slip control, default value is set here
 extern double erpmC;
+/// holds i term
+extern int32_t integ;
+/// P gain for PID controller
+extern double kP;
+/// I gain for PID controller
+extern double kI;
+/// D gain for PID controller
+extern double kD;
+
+
 
 // motor and wheel settings
 /// holds the maximum allowed target RPS, default value is set here
@@ -219,6 +228,9 @@ extern ESC *ESCs[2]; //0: left, 1: right
 
 // error
 extern uint16_t errorCount;
+
+// light sensor
+extern int * lsStatePtr;
 
 
 /** 

@@ -8,7 +8,7 @@
 uint32_t nextCheck = 0;
 uint8_t warningVoltageCount = 0;
 
-void setArmed (bool arm){
+void IRAM_ATTR setArmed (bool arm){
   if (arm != ((ESCs[0]->status & ARMED_MASK) > 0)){
     if (!raceActive){
       reqValue = 0;
@@ -40,7 +40,7 @@ void setMode(uint8_t mode){
   broadcastWSMessage(String("MAXVALUE ") + String(getMaxValue(ctrlMode)));
 }
 
-void startRace(){
+void IRAM_ATTR startRace(){
   if (!raceActive && raceMode){
     broadcastWSMessage("BLOCK RACEMODETOGGLE ON");
     raceActive = true;
@@ -51,8 +51,6 @@ void startRace(){
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
   }
 }
-
-double kP = .2, kI = .008, kD = 1;
 
 double calcThrottle(int target, int was[], double currentThrottle, double masterMultiplier) {
   // double was_avg = 0;
@@ -162,7 +160,7 @@ float erpmToRps(float erpm){
   return (erpm * rpsConversionFactor + .5f);
 }
 
-void setNewTargetValue(){
+void IRAM_ATTR setNewTargetValue(){
   switch (ctrlMode) {
     case MODE_THROTTLE:
       ESCs[0]->setThrottle(reqValue);

@@ -1,84 +1,120 @@
 #include "lightSensor.h"
 #include <Arduino.h>
 
-int ringBufPos = 0, lastRingBufPos = 3;
-int pos;
-int lsPin;
-void (*lsStateChange) (int previousStatus, int newStatus);
 
-typedef struct lightEvent{
-    unsigned long risingEdge = 0; ///micros() of rising edge
-    unsigned long duration = 0; ///micros() of falling edge
-	unsigned int distance = 0;
-} LightEvent;
-///stores previous light sensor events
-LightEvent previousLightEvents[4];
-unsigned long lastRisingEdge;
-unsigned long lastValidState;
+// int ringBufPos = 0, lastRingBufPos = 3;
+// int pos;
+int previousReading, currentReading;
+int lsPin;
+void (*lsStateChange) (int previousState, int newState);
+
+#define LS_BUFFER_LENGTH 4
+// unsigned long lastLightOff[LS_BUFFER_LENGTH], lastLightOn[LS_BUFFER_LENGTH];
+unsigned long lastLightOff, lastLightOn;
 int lsState = 0;
+uint32_t lastStateChange;
 int counterAvailable, counterArmed, counterRace;
 
-void IRAM_ATTR lightSensorRoutine(){
-	if (digitalRead(lsPin)){
-		lastRisingEdge = micros();
-	} else {
-		ringBufPos++;
-		lastRingBufPos++;
-		if (ringBufPos == 4) ringBufPos = 0;
-		previousLightEvents[ringBufPos].risingEdge = lastRisingEdge;
-		previousLightEvents[ringBufPos].duration = micros() - lastRisingEdge;
-		previousLightEvents[ringBufPos].distance = lastRisingEdge - previousLightEvents[lastRingBufPos].risingEdge;
+void IRAM_ATTR startState(){
+	lsState = LS_STATE_START;
+	lsStateChange(LS_STATE_READY, LS_STATE_START);
+	lastStateChange = millis();
+	detachInterrupt(lsPin);
+}
 
-		if (lastValidState < millis() - 20 && lsState != NO_BLOCK){
-			int temp = lsState;
-			lsState = NO_BLOCK;
-			if (lsStateChange != nullptr)
-				lsStateChange(temp, NO_BLOCK);
-		}
-		for (pos = 0; pos < 4; pos++){
-			if (previousLightEvents[pos].distance > START_BLOCK_MICROS_MAX || previousLightEvents[pos].distance < START_BLOCK_MICROS_MIN)
-				return;
-		}
-		counterAvailable = counterArmed = counterRace = 0;
-		for (pos = 0; pos < 4; pos++){
-			int dur = previousLightEvents[pos].duration;
-			if (dur > 1000000 / START_BLOCK_FREQ / 4 - 40 && dur < 1000000 / START_BLOCK_FREQ / 4 + 40){
-				//short pulse - block is present
-				counterAvailable++;
-			} else if (dur > 1000000 / START_BLOCK_FREQ / 2 - 40 && dur < 1000000 / START_BLOCK_FREQ / 2 + 40){
-				//middle pulse - block is armed
-				counterArmed++;
-			} else if (dur > 1000000 / START_BLOCK_FREQ * 3 / 4 - 40 && dur < 1000000 / START_BLOCK_FREQ * 3 / 4 + 40){
-				//loong pulse - start race
-				counterRace++;
-			} else return; //invalid duration
-		}
-		if (counterAvailable && counterArmed && counterRace) return; //all three modes present -> shouldn't be
-		lastValidState = millis();
-		if (counterAvailable >= 3){
-			int temp = lsState;
-			lsState = START_BLOCK_DETECTED;
-			if (lsStateChange != nullptr)
-				lsStateChange(temp, START_BLOCK_DETECTED);
-		}
-		else if (counterArmed >= 3 && (lsState == START_BLOCK_DETECTED || lsState == NO_BLOCK)) {
-			int temp = lsState;
-			lsState = START_BLOCK_ARMED;
-			if (lsStateChange != nullptr)
-				lsStateChange(temp, START_BLOCK_ARMED);
-		}
-		else if (counterRace >= 3 && lsState == START_BLOCK_ARMED) {
-			lsState = START_BLOCK_RACE;
-			if (lsStateChange != nullptr)
-				lsStateChange(START_BLOCK_ARMED, START_BLOCK_RACE);
-		}
+void lsLoop(){
+	uint32_t now = millis();
+	currentReading = digitalRead(lsPin);
+	// for (int i = LS_BUFFER_LENGTH - 1; i > 0 && !currentReading; i--){
+	// 	lastLightOn[i] = lastLightOn[i-1];
+	// }
+	// for (int i = LS_BUFFER_LENGTH - 1; i > 0 && currentReading; i--){
+	// 	lastLightOff[i] = lastLightOff[i-1];
+	// }
+
+	int lightChange = (previousReading && !currentReading) - (currentReading && !previousReading);
+
+	switch (lsState){
+		case LS_STATE_UNKNOWN:
+			if (lightChange == -1 && now - lastLightOn > 40 && now - lastLightOn < 60){
+					lsState = LS_STATE_IDLE;
+					lsStateChange(LS_STATE_UNKNOWN, LS_STATE_IDLE);
+					lastStateChange = now;
+			}
+			break;
+		case LS_STATE_IDLE:
+			if (lightChange == 1){
+				// off -> on
+				if (now - lastLightOff < 40 || now - lastLightOff > 60){
+					lsState = LS_STATE_UNKNOWN;
+					lsStateChange(LS_STATE_IDLE, LS_STATE_UNKNOWN);
+					lastStateChange = now;
+				}
+			}
+			if (lightChange == -1){
+				//on -> off
+				if (now - lastLightOn > 60){
+					lsState = LS_STATE_UNKNOWN;
+					lsStateChange(LS_STATE_IDLE, LS_STATE_UNKNOWN);
+					lastStateChange = now;
+				}
+			}
+			if (now - lastLightOff > 120 && lastLightOff - lastStateChange <= 500){
+				lsState = LS_STATE_UNKNOWN;
+				lsStateChange (LS_STATE_IDLE, LS_STATE_UNKNOWN);
+				lastStateChange = now;
+			}
+			if (currentReading && now - lastLightOff >= 2000 && lastLightOff - lastStateChange > 500){
+				lsState = LS_STATE_READY;
+				lsStateChange (LS_STATE_IDLE, LS_STATE_READY);
+				lastStateChange = now;
+				attachInterrupt (lsPin, &startState, FALLING);
+			}
+			break;
+		case LS_STATE_READY:
+			if (now - lastStateChange > 300000){
+				lsState = LS_STATE_UNKNOWN;
+				lsStateChange (LS_STATE_READY, LS_STATE_UNKNOWN);
+				lastStateChange = now;
+				detachInterrupt(lsPin);
+			}
+			break;
+		case LS_STATE_START:
+			if (currentReading){
+				lsState = LS_STATE_UNKNOWN;
+				lsStateChange(LS_STATE_START, LS_STATE_UNKNOWN);
+				lastStateChange = now;
+			}
+			break;
+	}
+
+	previousReading = currentReading;
+	if (lightChange == 1){
+		lastLightOn = now;
+
+	}
+	if (lightChange == -1){
+		lastLightOff = now;
+
 	}
 }
 
-int * initLightSensor(int pin, void (* onStatusChange) (int previousStatus, int newStatus)){
+hw_timer_t * timerLS;
+int * initLightSensor(int pin, void (* onStatusChange) (int previousStatus, int newStatus), bool enableAutoLoop){
 	pinMode(pin, INPUT_PULLUP);
-	attachInterrupt(pin, &lightSensorRoutine, CHANGE);
+	timerLS = timerBegin(1, 80, true);
+	timerAttachInterrupt(timerLS, &lsLoop, true);
+	timerAlarmWrite(timerLS, 1000000/LS_FREQ, true);
+	timerAlarmEnable(timerLS);
 	lsPin = pin;
 	lsStateChange = onStatusChange;
 	return &lsState;
+}
+
+void pauseLS(){
+	timerAlarmDisable(timerLS);
+}
+
+void resumeLS(){
+	timerAlarmEnable(timerLS);
 }

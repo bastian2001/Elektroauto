@@ -187,15 +187,19 @@ void loop() {
   throttleRoutine();
   if (commitFlag){
     timerAlarmDisable(timer);
+    pauseLS();
     commitFlag = false;
     EEPROM.commit();
     timerAlarmEnable(timer);
+    resumeLS();
   }
   if (calibrateFlag){
     timerAlarmDisable(timer);
+    pauseLS();
     calibrateAccelerometer();
     calibrateFlag = false;
     timerAlarmEnable(timer);
+    resumeLS();
   }
   // lastCore1 = millis();
   // if (lastCore0 + 200 < millis() && lastCore0 != 0 && millis() > 5000){
@@ -237,7 +241,7 @@ void setup() {
   delay(100);
 
   //reading settings from EEPROM or writing them
-  EEPROM.begin(52);
+  EEPROM.begin(76);
   if (firstStartup())
     writeEEPROM();
   else
@@ -292,7 +296,7 @@ void setup() {
   ESCs[1] = new ESC(&Serial2, ESC2_OUTPUT_PIN, ESC2_INPUT_PIN, RMT_CHANNEL_1, onESCError, onStatusChange);
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &escIR, true);
-  timerAlarmWrite(timer, ESC_FREQ, true);
+  timerAlarmWrite(timer, 1000000 / ESC_FREQ, true);
   timerAlarmEnable(timer);
 
   //2nd core setup
@@ -306,8 +310,8 @@ void setup() {
     clients[i][1] = 0;
   }
 
-  //registering the light block sensor
-  initLightSensor(LIGHT_SENSOR_PIN, &onLightSensorChange);
+  //registering the light sensor
+  lsStatePtr = initLightSensor(LIGHT_SENSOR_PIN, &onLightSensorChange);
 
   //setup termination
   #ifdef PRINT_SETUP
