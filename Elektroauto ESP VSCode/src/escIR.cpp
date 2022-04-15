@@ -24,11 +24,11 @@ void IRAM_ATTR escIR() {
     previousERPM[0][i] = previousERPM[0][i + 1];
     previousERPM[1][i] = previousERPM[1][i + 1];
   }
-  previousERPM[0][TREND_AMOUNT - 1] = ESCs[0]->heRPM;
-  previousERPM[1][TREND_AMOUNT - 1] = ESCs[1]->heRPM;
+  previousERPM[0][TREND_AMOUNT - 1] = ESCs[0]->eRPM;
+  previousERPM[1][TREND_AMOUNT - 1] = ESCs[1]->eRPM;
 
   if(ESCs[0]->status & ARMED_MASK)
-  integ += targetERPM - ESCs[0]->heRPM;
+  integ += targetERPM - ESCs[0]->eRPM;
   else
   integ = 0;
 
@@ -65,8 +65,8 @@ void IRAM_ATTR escIR() {
   if (raceActive){
     throttle_log0[logPosition] = ESCs[0]->currentThrottle + .5;
     throttle_log1[logPosition] = ESCs[1]->currentThrottle + .5;
-    erpm_log0[logPosition] = ESCs[0]->heRPM;
-    erpm_log1[logPosition] = ESCs[1]->heRPM;
+    erpm_log0[logPosition] = ESCs[0]->eRPM;
+    erpm_log1[logPosition] = ESCs[1]->eRPM;
     voltage_log0[logPosition] = ESCs[0]->voltage;
     voltage_log1[logPosition] = ESCs[1]->voltage;
     temp_log0[logPosition] = ESCs[0]->temperature;

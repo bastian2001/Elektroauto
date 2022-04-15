@@ -6,7 +6,7 @@ double rawAccelToPhysicalAccel(int raw){ // in mm per s
 
 void readBMI(){
     rawAccel = -BMI160.getAccelerationX();
-    if (ESCs[0]->heRPM > 0 || ESCs[0]->currentThrottle > 0){
+    if (ESCs[0]->eRPM > 0 || ESCs[0]->currentThrottle > 0){
         acceleration = rawAccelToPhysicalAccel(rawAccel);
         speedBMI += acceleration / (double)ESC_FREQ;
         distBMI += speedBMI / (double)ESC_FREQ;

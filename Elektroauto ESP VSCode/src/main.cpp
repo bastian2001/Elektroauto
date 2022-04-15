@@ -182,8 +182,8 @@ void loop0() {
  * - if neccessary, saves the settings
  */
 void loop() {
-  ESCs[0]->loop();
-  ESCs[1]->loop();
+  // ESCs[0]->loop();
+  // ESCs[1]->loop();
   throttleRoutine();
   if (commitFlag){
     timerAlarmDisable(timer);
@@ -292,8 +292,10 @@ void setup() {
   pinMode(TRANSMISSION_PIN, OUTPUT);
   digitalWrite(TRANSMISSION_PIN, HIGH);
   #endif
-  ESCs[0] = new ESC(&Serial1, ESC1_OUTPUT_PIN, ESC1_INPUT_PIN, RMT_CHANNEL_0, onESCError, onStatusChange);
-  ESCs[1] = new ESC(&Serial2, ESC2_OUTPUT_PIN, ESC2_INPUT_PIN, RMT_CHANNEL_1, onESCError, onStatusChange);
+  // ESCs[0] = new ESC(&Serial1, ESC1_OUTPUT_PIN, ESC1_INPUT_PIN, RMT_CHANNEL_0, onESCError, onStatusChange);
+  // ESCs[1] = new ESC(&Serial2, ESC2_OUTPUT_PIN, ESC2_INPUT_PIN, RMT_CHANNEL_1, onESCError, onStatusChange);
+  ESCs[0] = new ESC(ESC1_OUTPUT_PIN, ESC1_INPUT_PIN, RMT_CHANNEL_0, RMT_CHANNEL_1, onESCError, onStatusChange);
+  ESCs[1] = new ESC(ESC2_OUTPUT_PIN, ESC2_INPUT_PIN, RMT_CHANNEL_2, RMT_CHANNEL_3, onESCError, onStatusChange);
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &escIR, true);
   timerAlarmWrite(timer, 1000000 / ESC_FREQ, true);

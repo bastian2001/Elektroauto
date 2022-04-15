@@ -92,11 +92,9 @@ private:
     bool isTelemetryComplete();
 
     /// stores the stream for telemetry readout, NULL if none
-    HardwareSerial *telemetryStream;
+    // HardwareSerial *telemetryStream;
     /// pin for telemetry readout
-    uint8_t telemetryPin;
-    /// dmaChannel used for transmission
-    rmt_channel_t dmaChannel;
+    // uint8_t telemetryPin;
     /// ESC error method, this is fired when an error occurs
     void (*onESCError) (ESC *esc, uint8_t errorCode);
     /// ESC status change, this is fired when the status changes (e.g. ESC is connected)
@@ -113,6 +111,9 @@ private:
     /// next throttle
     double nextThrottle = 0;
 
+    /// isr
+    static void isr(void* arg);
+
     /// the maximum throttle for all ESCs
     static uint16_t maxThrottle;
 public:
@@ -122,19 +123,26 @@ public:
      * @param telemetryStream stream for telemetry acquisition
      * @param signalPin pin for data output (DShot)
      * @param telemetryPin pin for telemetry reception (Baud 115200)
-     * @param dmaChannel dmaChannel for sending the packets
+     * @param dmaChannelTX dmaChannel for sending the packets
+     * @param dmaChannelRX dma channel for receiving erpm updates
      * @param onError callback method when an error occurs, takes an ESC pointer and an error code
      * @param onStatusChange callback method when the status changes (fired at loop()), takes an ESC pointer, the old and the new status
      */
-    ESC(HardwareSerial *telemetryStream, int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannel, void (*onError) (ESC *esc, uint8_t errorCode), void (*onStatusChange) (ESC *esc, uint8_t newStatus, uint8_t oldStatus));
+    ESC(/*HardwareSerial *telemetryStream, */int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannelTX, rmt_channel_t dmaChannelRX, void (*onError) (ESC *esc, uint8_t errorCode), void (*onStatusChange) (ESC *esc, uint8_t newStatus, uint8_t oldStatus));
     /// @brief destroys the ESC object
     ~ESC();
+    /**
+     * @brief sets the new ERPM value from telemetry after RPS conversion
+     * 
+     * @param newERPM the new erpm value
+     */
+    void setERPM(uint32_t newERPM);
     /** @brief checks for telemetry
      * 
      * reads errors (onError), supplies telemetry to telemetry variables, checks if ESC is connected, checks for status change (onStatusChange)
      * @return true if new telemetry
      */
-    bool loop();
+    // bool loop();
     /// @brief disables ESC temporarily
     void pause();
     /// @brief enables ESC after it was paused
@@ -222,8 +230,8 @@ public:
     static uint16_t appendChecksum(uint16_t value);
     /// voltage as supplied by telemetry, in cV
     uint16_t voltage = 0;
-    /// heRPM as supplied by telemetry
-    uint16_t heRPM = 0;
+    /// eRPM of the motor (divide by 60*(motorpoles/2))
+    uint16_t eRPM = 0;
     /// speed (calculated by using wheel diameter and pole count, not implemented yet)
     uint16_t speed = 0;
     /// temperature as supplied by telemetry
@@ -238,6 +246,10 @@ public:
     double currentThrottle = 0;
     /// voltage at which all ESCs will fire a VOLTAGE_LOW error
     static uint16_t cutoffVoltage;
+    /// dma channel used for transmission
+    rmt_channel_t dmaChannelTX = (rmt_channel_t)0;
+    /// dma channel used for bidirectional dshot
+    rmt_channel_t dmaChannelRX = (rmt_channel_t)0;
 };
 
 #endif

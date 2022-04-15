@@ -225,7 +225,7 @@ void processMessage(String message, uint8_t from) {
   }
   else if (command == "MOTORPOLE"){
     motorPoleCount = message.substring(dividerPos + 1).toInt();
-    rpsConversionFactor = (1.6667f / ((float)motorPoleCount / 2.0f));
+    rpsConversionFactor = (1.0f/60.0f / ((float)motorPoleCount / 2.0f));
     erpmToMMPerSecond = (rpsConversionFactor * (float)wheelDiameter * PI);
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE Anzahl Motorpole ist nun ") + String(motorPoleCount));

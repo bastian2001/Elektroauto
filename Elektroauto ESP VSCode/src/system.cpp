@@ -29,7 +29,7 @@ void setMode(uint8_t mode){
       reqValue = (((int)(ESCs[0]->currentThrottle)) + ((int)(ESCs[1]->currentThrottle))) / 2; // stationary
       break;
     case MODE_RPS:
-      reqValue = erpmToRps((((uint16_t)(ESCs[0]->heRPM)) + ((uint16_t)(ESCs[1]->heRPM))) / 2);
+      reqValue = erpmToRps((((uint16_t)(ESCs[0]->eRPM)) + ((uint16_t)(ESCs[1]->eRPM))) / 2);
       break;
     case MODE_SLIP:
       reqValue = 0;

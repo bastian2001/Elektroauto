@@ -132,10 +132,10 @@ void reconnect() {
 }
 
 void sendTelemetry() {
-  uint16_t rps0 = erpmToRps (ESCs[0]->heRPM);
-  uint16_t rps1 = erpmToRps (ESCs[1]->heRPM);
-  uint16_t speedWheel0 = ((float)(ESCs[0]->heRPM)) * erpmToMMPerSecond;
-  uint16_t speedWheel1 = ((float)(ESCs[1]->heRPM)) * erpmToMMPerSecond;
+  uint16_t rps0 = erpmToRps (ESCs[0]->eRPM);
+  uint16_t rps1 = erpmToRps (ESCs[1]->eRPM);
+  uint16_t speedWheel0 = ((float)(ESCs[0]->eRPM)) * erpmToMMPerSecond;
+  uint16_t speedWheel1 = ((float)(ESCs[1]->eRPM)) * erpmToMMPerSecond;
   uint16_t t0 = ESCs[0]->currentThrottle;
   uint16_t t1 = ESCs[1]->currentThrottle;
   int acc = acceleration + .5;
