@@ -33,7 +33,7 @@ void IRAM_ATTR escIR() {
   integ = 0;
 
   // handle BMI routine
-  readBMI();
+  // readBMI();
 
   // print debug telemetry over Serial
   #if TELEMETRY_DEBUG != 0

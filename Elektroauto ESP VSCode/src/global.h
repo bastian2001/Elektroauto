@@ -65,11 +65,11 @@
 /// add ... ms to telemetry frequency for every connected client (1 client: Telemetry every TELEMETRY_UPDATE_MS + /TELEMETRY_UPDATE_ADD milliseconds)
 #define TELEMETRY_UPDATE_ADD 20
 /// The SSID
-#define ssid "Bloedfrauen und -maenner"
+// #define ssid "Bloedfrauen und -maenner"
 /// The password for wifi
-#define password "CaputDraconis"
-// #define ssid "POCO X3 NFC"
-// #define password "055fb39a4cc4"
+// #define password "CaputDraconis"
+#define ssid "POCO X3 NFC"
+#define password "hallo123"
 // #define ssid "springernet"
 // #define password "CL7B1L609235"
 

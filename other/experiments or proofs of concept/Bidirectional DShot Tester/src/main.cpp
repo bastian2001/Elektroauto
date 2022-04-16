@@ -146,7 +146,7 @@ void telemetryInit(rmt_channel_t channel, gpio_num_t pin){
 	ESP_ERROR_CHECK(rmt_set_tx_intr_en(channel, false));
 	ESP_ERROR_CHECK(rmt_set_tx_thr_intr_en(channel, false, 30));
 	ESP_ERROR_CHECK(rmt_set_err_intr_en(channel, false));
-	ESP_ERROR_CHECK(rmt_isr_register(isr, NULL, ESP_INTR_FLAG_LEVEL1, &xHandler));
+	ESP_ERROR_CHECK(rmt_isr_register(isr, (void*)15, ESP_INTR_FLAG_LEVEL1, &xHandler));
 	rmt_rx_start(channel, true);
 }
 

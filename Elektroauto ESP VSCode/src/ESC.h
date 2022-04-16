@@ -253,3 +253,5 @@ public:
 };
 
 #endif
+
+void telemetryInit(rmt_channel_t, gpio_num_t);

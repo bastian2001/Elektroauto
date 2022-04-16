@@ -22,14 +22,9 @@ bool c1ready = false, c0ready = false;
 
 hw_timer_t * timer = NULL;
 
-// volatile unsigned long lastCore0 = 0;
-// volatile unsigned long lastCore1 = 0;
-
 const char ERROR_OVERHEAT_MESSAGE[] = "MESSAGEBEEP Wegen Überhitzung disarmed\0";
 const char ERROR_CUTOFF_MESSAGE[] = "MESSAGEBEEP Cutoff-Spannung unterschritten\0";
 const char ERROR_TOO_FAST_MESSAGE[] = "MESSAGEBEEP Zu hohe Drehzahl\0";
-
-
 
 void onESCError(ESC * esc, uint8_t err){
   int pos = 0;
@@ -140,20 +135,18 @@ void onStatusChange(ESC * esc, uint8_t newStatus, uint8_t oldStatus){
 void loop0() {
   if (WiFi.status() != WL_CONNECTED) {
     disableCore0WDT();
-    // lastCore0 = millis() + 5000;
     reconnect();
     delay(1);
     enableCore0WDT();
   }
   if (raceModeSendValues){
     raceMode = false;
-    // lastCore0 = millis() + 2000;
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
     sendRaceLog();
     logPosition = 0;
     if (statusLED >= LED_RACE_MODE && statusLED <= LED_RACE_ARMED_ACTIVE) resetStatusLED();
   }
-  checkVoltage();
+  // checkVoltage();
 
   handleWiFi();
   receiveSerial();
@@ -165,11 +158,6 @@ void loop0() {
 
   printSerial();
   delay(1);
-  // lastCore0 = millis();
-  // if (lastCore1 + (timerAlarmEnabled(timer) ? 5 : 500) < millis() && lastCore1 != 0 && millis() > 5000){
-  //   Serial.println(String("Restarting because of Core 1 ") + lastCore0);
-  //   // ESP.restart();
-  // }
 }
 
 /**
@@ -201,11 +189,6 @@ void loop() {
     timerAlarmEnable(timer);
     resumeLS();
   }
-  // lastCore1 = millis();
-  // if (lastCore0 + 200 < millis() && lastCore0 != 0 && millis() > 5000){
-  //   // Serial.println(String("Restarting because of Core 0 ") + lastCore0);
-  //   // ESP.restart();
-  // }
 }
 
 //! @brief Task for core 0, creates loop0
@@ -213,7 +196,6 @@ void core0Code( void * parameter) {
   c0ready = true;
   while (!c1ready) {
     delay(1);
-    // lastCore0 = millis();
   }
   while (true) {
     loop0();
@@ -282,11 +264,11 @@ void setup() {
   delay(20);
 
   //BMI initialization
-  initBMI();
+  // initBMI();
 
   //ESC pins Setup
-  pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  // pinMode(LED_BUILTIN, OUTPUT);
+  // pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   #if TRANSMISSION_IND != 0
   pinMode(TRANSMISSION_PIN, OUTPUT);
@@ -294,12 +276,12 @@ void setup() {
   #endif
   // ESCs[0] = new ESC(&Serial1, ESC1_OUTPUT_PIN, ESC1_INPUT_PIN, RMT_CHANNEL_0, onESCError, onStatusChange);
   // ESCs[1] = new ESC(&Serial2, ESC2_OUTPUT_PIN, ESC2_INPUT_PIN, RMT_CHANNEL_1, onESCError, onStatusChange);
-  ESCs[0] = new ESC(ESC1_OUTPUT_PIN, ESC1_INPUT_PIN, RMT_CHANNEL_0, RMT_CHANNEL_1, onESCError, onStatusChange);
+  ESCs[0] = new ESC(ESC1_OUTPUT_PIN, ESC1_INPUT_PIN, RMT_CHANNEL_1, RMT_CHANNEL_0, onESCError, onStatusChange);
   ESCs[1] = new ESC(ESC2_OUTPUT_PIN, ESC2_INPUT_PIN, RMT_CHANNEL_2, RMT_CHANNEL_3, onESCError, onStatusChange);
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &escIR, true);
   timerAlarmWrite(timer, 1000000 / ESC_FREQ, true);
-  timerAlarmEnable(timer);
+  // timerAlarmEnable(timer);
 
   //2nd core setup
   xTaskCreatePinnedToCore( core0Code, "core0Task", 60000, NULL, 0, &core0Task, 0);
@@ -337,11 +319,9 @@ void setup() {
     Serial.println();
   #endif
   #endif
-  // lastCore1 = millis();
   c1ready = true;
   while (!c0ready) {
     delay(1);
-    // lastCore1 = millis();
   }
   if (statusLED == LED_SETUP) resetStatusLED();
 }

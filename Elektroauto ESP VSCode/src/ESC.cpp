@@ -10,6 +10,7 @@ uint16_t ESC::cutoffVoltage = 640;
 rmt_isr_handle_t xHandler = NULL;
 volatile rmt_item32_t itemBuf[64];
 
+
 ESC::ESC(/*HardwareSerial *telemetryStream,*/ int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannelTX, rmt_channel_t dmaChannelRX, void (*onError) (ESC *esc, uint8_t errorCode), void (*onStatusChange) (ESC *esc, uint8_t newStatus, uint8_t oldStatus))
 : //telemetryStream(telemetryStream),
  onESCError(onError)
@@ -19,24 +20,29 @@ ESC::ESC(/*HardwareSerial *telemetryStream,*/ int8_t signalPin, int8_t telemetry
     // telemetryStream->begin(115200, SERIAL_8N1, telemetryPin);
     status |= ENABLED_MASK;
 
-    rmt_config_t c;
-    c.rmt_mode = RMT_MODE_TX;
-    c.channel = dmaChannelTX;
-    c.clk_div = CLK_DIV;
-    c.gpio_num = (gpio_num_t) signalPin;
-    c.mem_block_num = 1;
-    c.tx_config.loop_en = false;
-    c.tx_config.carrier_en = false;
-    c.tx_config.idle_level = RMT_IDLE_LEVEL_LOW;
-    c.tx_config.idle_output_en = true;
-    ESP_ERROR_CHECK(rmt_config(&c));
-    ESP_ERROR_CHECK(rmt_driver_install(dmaChannelTX, 0, 0));
+    // rmt_config_t c;
+    // c.rmt_mode = RMT_MODE_TX;
+    // c.channel = dmaChannelTX;
+    // c.clk_div = CLK_DIV;
+    // c.gpio_num = (gpio_num_t) signalPin;
+    // c.mem_block_num = 1;
+    // c.tx_config.loop_en = false;
+    // c.tx_config.carrier_en = false;
+    // c.tx_config.idle_level = RMT_IDLE_LEVEL_LOW;
+    // c.tx_config.idle_output_en = true;
+    // ESP_ERROR_CHECK(rmt_config(&c));
+    // ESP_ERROR_CHECK(rmt_driver_install(dmaChannelTX, 0, 0));
+	// ESP_ERROR_CHECK(rmt_set_rx_intr_en(dmaChannelTX, false));
+	// ESP_ERROR_CHECK(rmt_set_tx_intr_en(dmaChannelTX, false));
+	// ESP_ERROR_CHECK(rmt_set_tx_thr_intr_en(dmaChannelTX, false, 30));
+	// ESP_ERROR_CHECK(rmt_set_err_intr_en(dmaChannelTX, false));
+	// ESP_ERROR_CHECK(rmt_isr_register(ESC::isr, this, ESP_INTR_FLAG_LEVEL1, &xHandler));
 
     
 	rmt_config_t d;
 	d.rmt_mode = RMT_MODE_RX;
 	d.channel = dmaChannelRX;
-	d.gpio_num = (gpio_num_t) telemetryPin;
+	d.gpio_num = (gpio_num_t)telemetryPin;
 	d.mem_block_num = 1;
 	d.clk_div = 1;
 	d.rx_config.idle_threshold = 2700;
@@ -49,6 +55,15 @@ ESC::ESC(/*HardwareSerial *telemetryStream,*/ int8_t signalPin, int8_t telemetry
 	ESP_ERROR_CHECK(rmt_set_err_intr_en(dmaChannelRX, false));
 	ESP_ERROR_CHECK(rmt_isr_register(ESC::isr, this, ESP_INTR_FLAG_LEVEL1, &xHandler));
 	rmt_rx_start(dmaChannelRX, true);
+
+    rmt_channel_status_result_t xx;
+    rmt_get_channel_status(&xx);
+    Serial.println(xx.status[0]);
+    Serial.println(xx.status[1]);
+    Serial.println(xx.status[2]);
+    Serial.println(xx.status[3]);
+
+    Serial.println("init done");
 }
 
 
