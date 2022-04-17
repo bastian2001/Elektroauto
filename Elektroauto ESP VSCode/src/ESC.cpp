@@ -5,40 +5,31 @@
 uint8_t get_crc8(uint8_t *Buf, uint8_t BufLen);
 
 uint16_t ESC::maxThrottle = 2000;
-uint16_t ESC::cutoffVoltage = 640;
 
 rmt_isr_handle_t xHandler = NULL;
 volatile rmt_item32_t itemBuf[64];
 
 
-ESC::ESC(/*HardwareSerial *telemetryStream,*/ int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannelTX, rmt_channel_t dmaChannelRX, void (*onError) (ESC *esc, uint8_t errorCode), void (*onStatusChange) (ESC *esc, uint8_t newStatus, uint8_t oldStatus))
-: //telemetryStream(telemetryStream),
- onESCError(onError)
+ESC::ESC(int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannelTX, rmt_channel_t dmaChannelRX, void (*onError) (ESC *esc, uint8_t errorCode), void (*onStatusChange) (ESC *esc, uint8_t newStatus, uint8_t oldStatus))
+: onESCError(onError)
 , onStatusChange(onStatusChange)
 , dmaChannelTX(dmaChannelTX)
 , dmaChannelRX(dmaChannelRX){
-    // telemetryStream->begin(115200, SERIAL_8N1, telemetryPin);
     status |= ENABLED_MASK;
 
-    // rmt_config_t c;
-    // c.rmt_mode = RMT_MODE_TX;
-    // c.channel = dmaChannelTX;
-    // c.clk_div = CLK_DIV;
-    // c.gpio_num = (gpio_num_t) signalPin;
-    // c.mem_block_num = 1;
-    // c.tx_config.loop_en = false;
-    // c.tx_config.carrier_en = false;
-    // c.tx_config.idle_level = RMT_IDLE_LEVEL_LOW;
-    // c.tx_config.idle_output_en = true;
-    // ESP_ERROR_CHECK(rmt_config(&c));
-    // ESP_ERROR_CHECK(rmt_driver_install(dmaChannelTX, 0, 0));
-	// ESP_ERROR_CHECK(rmt_set_rx_intr_en(dmaChannelTX, false));
-	// ESP_ERROR_CHECK(rmt_set_tx_intr_en(dmaChannelTX, false));
-	// ESP_ERROR_CHECK(rmt_set_tx_thr_intr_en(dmaChannelTX, false, 30));
-	// ESP_ERROR_CHECK(rmt_set_err_intr_en(dmaChannelTX, false));
-	// ESP_ERROR_CHECK(rmt_isr_register(ESC::isr, this, ESP_INTR_FLAG_LEVEL1, &xHandler));
+    rmt_config_t c;
+    c.rmt_mode = RMT_MODE_TX;
+    c.channel = dmaChannelTX;
+    c.clk_div = CLK_DIV;
+    c.gpio_num = (gpio_num_t) signalPin;
+    c.mem_block_num = 1;
+    c.tx_config.loop_en = false;
+    c.tx_config.carrier_en = false;
+    c.tx_config.idle_level = RMT_IDLE_LEVEL_HIGH;
+    c.tx_config.idle_output_en = true;
+    ESP_ERROR_CHECK(rmt_config(&c));
+    ESP_ERROR_CHECK(rmt_driver_install(dmaChannelTX, 0, 0));
 
-    
 	rmt_config_t d;
 	d.rmt_mode = RMT_MODE_RX;
 	d.channel = dmaChannelRX;
@@ -49,19 +40,8 @@ ESC::ESC(/*HardwareSerial *telemetryStream,*/ int8_t signalPin, int8_t telemetry
 	d.rx_config.filter_en = true;
 	d.rx_config.filter_ticks_thresh = 5;
 	ESP_ERROR_CHECK(rmt_config(&d));
-	ESP_ERROR_CHECK(rmt_set_rx_intr_en(dmaChannelRX, true));
-	ESP_ERROR_CHECK(rmt_set_tx_intr_en(dmaChannelRX, false));
-	ESP_ERROR_CHECK(rmt_set_tx_thr_intr_en(dmaChannelRX, false, 30));
-	ESP_ERROR_CHECK(rmt_set_err_intr_en(dmaChannelRX, false));
-	ESP_ERROR_CHECK(rmt_isr_register(ESC::isr, this, ESP_INTR_FLAG_LEVEL1, &xHandler));
+    ESP_ERROR_CHECK(rmt_driver_install(dmaChannelRX, 0, 0));
 	rmt_rx_start(dmaChannelRX, true);
-
-    rmt_channel_status_result_t xx;
-    rmt_get_channel_status(&xx);
-    Serial.println(xx.status[0]);
-    Serial.println(xx.status[1]);
-    Serial.println(xx.status[2]);
-    Serial.println(xx.status[3]);
 
     Serial.println("init done");
 }
@@ -70,22 +50,6 @@ ESC::ESC(/*HardwareSerial *telemetryStream,*/ int8_t signalPin, int8_t telemetry
 ESC::~ESC(){
     rmt_driver_uninstall(this->dmaChannelTX);
     rmt_driver_uninstall(this->dmaChannelRX);
-    // telemetryStream->end();
-}
-
-int IRAM_ATTR rmt_get_mem_len(rmt_channel_t channel){
-    int block_num = RMT.conf_ch[channel].conf0.mem_size;
-    int item_block_len = block_num * RMT_MEM_ITEM_NUM;
-    volatile rmt_item32_t* data = RMTMEM.chan[channel].data32;
-    int idx;
-    for(idx = 0; idx < item_block_len; idx++) {
-        if(data[idx].duration0 == 0) {
-            return idx;
-        } else if(data[idx].duration1 == 0) {
-            return idx + 1;
-        }
-    }
-    return idx;
 }
 
 IRAM_ATTR uint32_t bufToERPM(volatile rmt_item32_t items[64], int startPos, int length){
@@ -146,114 +110,36 @@ IRAM_ATTR uint32_t bufToERPM(volatile rmt_item32_t items[64], int startPos, int 
     return value;
 }
 
-void IRAM_ATTR ESC::isr(void *arg){
-	// uint32_t m = micros();
-	// currentDuration = m - lastMicros;
-    static ESC* thisESC = (ESC *)arg;
-	static int itemLength = rmt_get_mem_len((rmt_channel_t)thisESC->dmaChannelRX);
-	volatile rmt_item32_t* data = RMTMEM.chan[thisESC->dmaChannelRX].data32;
-	for ( int i = 0; i < 64; i++){
-		if (data[i].duration0 != 0){
-			((uint32_t *)itemBuf)[i] = ((uint32_t *)data)[i];
-		}
-	}
-	// lastMicros = m;
-	uint32_t intr_st = RMT.int_st.val;
 
-	auto& conf = RMT.conf_ch[thisESC->dmaChannelRX].conf1;
-	conf.rx_en = 0;
-	conf.mem_owner = RMT_MEM_OWNER_TX;
+bool ESC::loop(){
+    bool newTelemetry = false;
+    
+    RingbufHandle_t handle;
+    ESP_ERROR_CHECK(rmt_get_ringbuf_handle(dmaChannelRX, &handle));
+    size_t itemSize;
+    rmt_item32_t * itemPtr = (rmt_item32_t *)xRingbufferReceive(handle, &itemSize, 0);
+    
+    if (itemPtr != NULL){
+        eRPM = bufToERPM(itemPtr, 16, itemSize/4);
+        vRingbufferReturnItem(handle, itemPtr);
+        newTelemetry = true;
+    }
 
-	conf.mem_wr_rst = 1;
-	conf.mem_owner = RMT_MEM_OWNER_RX;
-	RMT.int_clr.val = intr_st;
-	conf.rx_en = 1;
+    if (status != pStatus){
+        this->onStatusChange(this, status, pStatus);
+        pStatus = status;
+    }
 
-    thisESC->eRPM = bufToERPM((volatile rmt_item32_t*)itemBuf, 16, itemLength);
-}
-
-
-
-/*bool ESC::loop(){
-    // bool newTelemetry = false;
-
-    // if (this->disconnectedAt < millis() && (status & CONNECTED_MASK) && (status & ENABLED_MASK)){
-    //     status &= ((uint8_t) 0xFF - CONNECTED_MASK);
-    // }
-    // while (this->telemetryStream->available()){
-    //     for (uint8_t i = 0; i < 9; i++){
-    //         telemetry[i] = telemetry[i+1];
-    //     }
-    //     telemetry[9] = (char) telemetryStream->read();
-    //     if (isTelemetryComplete()){
-    //         this->disconnectedAt = millis() + 50;
-
-    //         if (!(status & CONNECTED_MASK)){
-    //             for (uint8_t i = 0; i < 17; i++){
-    //                 manualData11[i] = 0;
-    //             }
-    //             manualData11[17] = (status & RED_LED_MASK) ? CMD_LED0_ON : CMD_LED0_OFF;
-    //             manualData11[18] = (status & GREEN_LED_MASK) ? CMD_LED1_ON : CMD_LED1_OFF;
-    //             manualData11[19] = (status & BLUE_LED_MASK) ? CMD_LED2_ON : CMD_LED2_OFF;
-    //             manualDataAmount = 20;
-    //             status |= CONNECTED_MASK;
-    //         }
-
-    //         temperature = telemetry[0];
-    //         voltage = (telemetry[1] << 8) | telemetry[2];
-    //         heRPM = (telemetry[7] << 8) | telemetry[8];
-    //         speed = (float)heRPM;// * erpmToMMPerSecond;
-    //         for (uint8_t i = 0; i < 10; i++){
-    //             telemetry[i] = 1;
-    //         }
-
-    //         if (temperature > 80){
-    //             this->onESCError(this, ERROR_OVERHEAT);
-    //         } else if(voltage < cutoffVoltage){
-    //             this->onESCError(this, ERROR_VOLTAGE_LOW);
-    //         } else if (heRPM > 8000){
-    //             this->onESCError(this, ERROR_TOO_FAST);
-    //         }
-    //         newTelemetry = true;
-    //         break;
-    //     }
-    // }
-
-    // if (status != pStatus){
-    //     this->onStatusChange(this, status, pStatus);
-    //     pStatus = status;
-    // }
-
-    // return newTelemetry;
-    return false;
-}*/
-
-
-bool ESC::isTelemetryComplete(){
-    if (telemetry[0] > 1
-        && get_crc8((uint8_t*)telemetry, 9) == telemetry[9]
-        && telemetry[2] > 1
-        && telemetry[3] == 0
-        && telemetry[4] == 0
-        && telemetry[5] == 0
-        && telemetry[6] == 0
-        && telemetry[0] < 100
-        && telemetry[1] < 8
-    )
-        return true;
-    return false;
+    return newTelemetry;
 }
 
 
 void ESC::pause(){
-    // telemetryStream->end();
     status &= (0xFF - ENABLED_MASK);
 }
 
 
 void ESC::resume(){
-    // telemetryStream->begin(115200, SERIAL_8N1, telemetryPin);
-    disconnectedAt = millis() + 50;
     status |= ENABLED_MASK;
 }
 
@@ -336,7 +222,7 @@ void IRAM_ATTR ESC::sendFullRaw(uint16_t rawValueWithChecksum){
     uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
     for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
         uint16_t bit_is_set = rawValueWithChecksum & mask;
-        dataBuffer[bit] = bit_is_set ? (rmt_item32_t) {{{T1H, 1, T1L, 0}}} : (rmt_item32_t) {{{T0H, 1, T0L, 0}}};
+        dataBuffer[bit] = bit_is_set ? (rmt_item32_t) {{{T1L, 0, T1H, 1}}} : (rmt_item32_t) {{{T0L, 0, T0H, 1}}};
         mask >>= 1;
     }
     ESP_ERROR_CHECK(rmt_write_items(this->dmaChannelTX, dataBuffer, ESC_BUFFER_ITEMS, false));

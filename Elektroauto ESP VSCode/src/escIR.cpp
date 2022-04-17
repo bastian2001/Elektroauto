@@ -67,10 +67,10 @@ void IRAM_ATTR escIR() {
     throttle_log1[logPosition] = ESCs[1]->currentThrottle + .5;
     erpm_log0[logPosition] = ESCs[0]->eRPM;
     erpm_log1[logPosition] = ESCs[1]->eRPM;
-    voltage_log0[logPosition] = ESCs[0]->voltage;
-    voltage_log1[logPosition] = ESCs[1]->voltage;
-    temp_log0[logPosition] = ESCs[0]->temperature;
-    temp_log1[logPosition] = ESCs[1]->temperature;
+    // voltage_log0[logPosition] = ESCs[0]->voltage;
+    // voltage_log1[logPosition] = ESCs[1]->voltage;
+    // temp_log0[logPosition] = ESCs[0]->temperature;
+    // temp_log1[logPosition] = ESCs[1]->temperature;
     acceleration_log[logPosition] = rawAccel;
     bmi_temp_log[logPosition] = bmiRawTemp;
     logPosition++;

@@ -212,19 +212,19 @@ void throttleRoutine(){
 }
 
 void checkVoltage(){
-  if (millis() > nextCheck){
-    nextCheck += 10000;
-    if (ESCs[0]->voltage < warningVoltage && ESCs[0]->voltage != 0 && ESCs[0]->status & CONNECTED_MASK){
-      warningVoltageCount++;
-      if (warningVoltageCount % 5 == 3){
-        broadcastWSMessage(F("MESSAGEBEEP Warnung! Spannung niedrig!"));
-        ESCs[0]->beep(ESC_BEEP_5);
-        ESCs[1]->beep(ESC_BEEP_5);
-      }
-    } else {
-      warningVoltageCount = 0;
-    }
-  }
+  // if (millis() > nextCheck){
+  //   nextCheck += 10000;
+  //   if (ESCs[0]->voltage < warningVoltage && ESCs[0]->voltage != 0 && ESCs[0]->status & CONNECTED_MASK){
+  //     warningVoltageCount++;
+  //     if (warningVoltageCount % 5 == 3){
+  //       broadcastWSMessage(F("MESSAGEBEEP Warnung! Spannung niedrig!"));
+  //       ESCs[0]->beep(ESC_BEEP_5);
+  //       ESCs[1]->beep(ESC_BEEP_5);
+  //     }
+  //   } else {
+  //     warningVoltageCount = 0;
+  //   }
+  // }
 }
 
 uint16_t getMaxValue (int mode){

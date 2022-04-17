@@ -140,35 +140,30 @@ void sendTelemetry() {
   uint16_t t1 = ESCs[1]->currentThrottle;
   int acc = acceleration + .5;
   int sBMI = speedBMI;
-  telData[0] = ESCs[0]->status & ARMED_MASK;
-  telData[1] = (t0) >> 8;
+  telData[0] = ESCs[0]->status & ARMED_MASK; //armed
+  telData[1] = (t0) >> 8; //throttle
   telData[2] = (t0) & 0xFF;
   telData[3] = (t1) >> 8;
   telData[4] = (t1) & 0xFF;
-  telData[5] = speedWheel0 >> 8;
+  telData[5] = speedWheel0 >> 8; // speed in mm per second
   telData[6] = speedWheel0 & 0xFF;
   telData[7] = speedWheel1 >> 8;
   telData[8] = speedWheel1 & 0xFF;
-  telData[9] = sBMI >> 8;
+  telData[9] = sBMI >> 8; // speed of the accelerometer
   telData[10] = sBMI & 0xFF;
-  telData[11] = rps0 >> 8;
+  telData[11] = rps0 >> 8; // revolutions per second
   telData[12] = rps0 & 0xFF;
   telData[13] = rps1 >> 8;
   telData[14] = rps1 & 0xFF;
-  // telData[15] = ESCs[0]->temperature;
-  telData[15] = lsState;
-  telData[16] = ESCs[1]->temperature;
-  telData[17] = bmiTemp;
-  telData[18] = temperatureRead();
-  telData[19] = ESCs[0]->voltage >> 8;
-  telData[20] = ESCs[0]->voltage & 0xFF;
-  telData[21] = ESCs[1]->voltage >> 8;
-  telData[22] = ESCs[1]->voltage & 0xFF;
-  telData[23] = acc >> 8;
-  telData[24] = acc & 0xFF;
-  telData[25] = raceMode && !raceActive;
-  telData[26] = reqValue >> 8;
-  telData[27] = reqValue & 0xFF;
+  telData[15] = bmiTemp; //temps
+  telData[16] = temperatureRead();
+  telData[17] = acc >> 8; // acceleration
+  telData[18] = acc & 0xFF;
+  telData[19] = raceMode && !raceActive;//UI
+  telData[20] = reqValue >> 8;
+  telData[21] = reqValue & 0xFF;
+  telData[22] = *lsStatePtr; // light sensor state
+  
 
   broadcastWSBin(telData, 28, true, 0);
 }

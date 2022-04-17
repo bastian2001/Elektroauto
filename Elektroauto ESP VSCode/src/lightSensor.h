@@ -13,8 +13,6 @@ enum {
     LS_STATE_START
 };
 
-extern int lsState;
-
 /**
  * @brief runs when the light sensor changed its value
  * 

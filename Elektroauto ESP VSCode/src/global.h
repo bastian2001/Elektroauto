@@ -12,13 +12,13 @@
 
 
 /// pin used for output to ESC1
-#define ESC1_OUTPUT_PIN 25
+#define ESC1_OUTPUT_PIN 16
 /// pin used for input from ESC1
 #define ESC1_INPUT_PIN 21
 /// pin used for output to ESC2
-#define ESC2_OUTPUT_PIN 27
+#define ESC2_OUTPUT_PIN 25
 /// pin used for input from ESC1
-#define ESC2_INPUT_PIN 16
+#define ESC2_INPUT_PIN 27
 /// pin used for the transmission indicator
 #define TRANSMISSION_PIN 33
 /// pin of the built-in LED

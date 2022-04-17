@@ -7,8 +7,8 @@
 /*======================================================definitions======================================================*/
 
 //Pin numbers
-#define ESC_OUTPUT_PIN  23  // the signal pin
-#define ESC_TRIGGER_PIN 25  // pwm pin for output trigger
+#define ESC_OUTPUT_PIN  25  // the signal pin
+#define ESC_TRIGGER_PIN 32  // pwm pin for output trigger
 #define TRANSMISSION  33    //transmission indicator
 #define LED_BUILTIN 22
 

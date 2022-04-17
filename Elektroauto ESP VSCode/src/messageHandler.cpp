@@ -94,15 +94,15 @@ void processMessage(String message, uint8_t from) {
     startRace();
   }
 
-  else if (command == "CUTOFFVOLTAGE"){
-    uint16_t vol = message.substring(dividerPos + 1).toInt();
-    ESCs[0]->cutoffVoltage = vol;
-    ESCs[1]->cutoffVoltage = vol;
-    char bcMessage[50];
-    snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", (double)vol/100.0);
-    if (!message.endsWith("NOMESSAGE"))
-      sendWSMessage(from, bcMessage);
-  }
+  // else if (command == "CUTOFFVOLTAGE"){
+  //   uint16_t vol = message.substring(dividerPos + 1).toInt();
+  //   ESCs[0]->cutoffVoltage = vol;
+  //   ESCs[1]->cutoffVoltage = vol;
+  //   char bcMessage[50];
+  //   snprintf(bcMessage, 50, "MESSAGE Not-Stop erfolgt nun unter %4.2fV", (double)vol/100.0);
+  //   if (!message.endsWith("NOMESSAGE"))
+  //     sendWSMessage(from, bcMessage);
+  // }
   else if (command == "WARNINGVOLTAGE"){
     warningVoltage = message.substring(dividerPos + 1).toInt();
     char bcMessage[50];

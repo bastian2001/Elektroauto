@@ -6,18 +6,16 @@
 #ifndef ESC_H
 #define ESC_H
 
-///DShot 150: 12, DShot 300: 6, DShot 600: 3, change value accordingly for the desired DShot speed
-#define CLK_DIV 3
+///DShot 150: 8, DShot 300: 4, DShot 600: 2, change value accordingly for the desired DShot speed
+#define CLK_DIV 2
 /// 0 bit high time
-#define T0H 17
+#define T0H 42
 /// 1 bit high time
-#define T1H 33
+#define T1H 17
 /// 0 bit low time
-#define T0L 27
+#define T0L 25
 /// 1 bit low time
-#define T1L 11
-/// reset length in multiples of bit time
-#define T_RESET 21
+#define T1L 50
 /// number of bits sent out via DShot
 #define ESC_BUFFER_ITEMS 16
 /// maximum amount of manual data
@@ -88,13 +86,6 @@ enum{
  */
 class ESC {
 private:
-    /// checks if telemetry is complete
-    bool isTelemetryComplete();
-
-    /// stores the stream for telemetry readout, NULL if none
-    // HardwareSerial *telemetryStream;
-    /// pin for telemetry readout
-    // uint8_t telemetryPin;
     /// ESC error method, this is fired when an error occurs
     void (*onESCError) (ESC *esc, uint8_t errorCode);
     /// ESC status change, this is fired when the status changes (e.g. ESC is connected)
@@ -104,15 +95,10 @@ private:
     unsigned long disconnectedAt = 0;
     /// the previous status (used for status change detection)
     uint8_t pStatus = DEFAULT_STATUS;
-    /// telemetry storage
-    char telemetry[10];
     /// buffer for sending ESC packets
     rmt_item32_t dataBuffer[ESC_BUFFER_ITEMS];
     /// next throttle
     double nextThrottle = 0;
-
-    /// isr
-    static void isr(void* arg);
 
     /// the maximum throttle for all ESCs
     static uint16_t maxThrottle;
@@ -131,18 +117,12 @@ public:
     ESC(/*HardwareSerial *telemetryStream, */int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannelTX, rmt_channel_t dmaChannelRX, void (*onError) (ESC *esc, uint8_t errorCode), void (*onStatusChange) (ESC *esc, uint8_t newStatus, uint8_t oldStatus));
     /// @brief destroys the ESC object
     ~ESC();
-    /**
-     * @brief sets the new ERPM value from telemetry after RPS conversion
-     * 
-     * @param newERPM the new erpm value
-     */
-    void setERPM(uint32_t newERPM);
     /** @brief checks for telemetry
      * 
      * reads errors (onError), supplies telemetry to telemetry variables, checks if ESC is connected, checks for status change (onStatusChange)
      * @return true if new telemetry
      */
-    // bool loop();
+    bool loop();
     /// @brief disables ESC temporarily
     void pause();
     /// @brief enables ESC after it was paused
@@ -228,14 +208,10 @@ public:
      * @return uint16_t the final bit array that can be sent to the ESC
      */
     static uint16_t appendChecksum(uint16_t value);
-    /// voltage as supplied by telemetry, in cV
-    uint16_t voltage = 0;
     /// eRPM of the motor (divide by 60*(motorpoles/2))
     uint16_t eRPM = 0;
     /// speed (calculated by using wheel diameter and pole count, not implemented yet)
-    uint16_t speed = 0;
-    /// temperature as supplied by telemetry
-    uint8_t temperature = 0;
+    // uint16_t speed = 0;
     /// status byte (read using masks)
     uint8_t status = DEFAULT_STATUS;
     /// manual data array, put data here and set manualDataAmount
@@ -244,8 +220,6 @@ public:
     uint16_t manualDataAmount = 0;
     ///currentThrottle (read only)
     double currentThrottle = 0;
-    /// voltage at which all ESCs will fire a VOLTAGE_LOW error
-    static uint16_t cutoffVoltage;
     /// dma channel used for transmission
     rmt_channel_t dmaChannelTX = (rmt_channel_t)0;
     /// dma channel used for bidirectional dshot
@@ -253,5 +227,3 @@ public:
 };
 
 #endif
-
-void telemetryInit(rmt_channel_t, gpio_num_t);
