@@ -14,7 +14,7 @@ double erpmA = 0.000000008;
 double erpmB = 0.0000006;
 double erpmC = 0.01;
 int32_t integ = 0;
-double kP = .2, kI = .008, kD = 1;
+double kP = .2, kI = .008, kD = 1, kI2 = .05;
 
 
 // motor and wheel settings
@@ -22,7 +22,7 @@ uint16_t maxTargetRPS = 1500;
 uint8_t maxTargetSlip = 20;
 uint8_t motorPoleCount = 12;
 uint8_t wheelDiameter = 30;
-float rpsConversionFactor = (1.0f/60.0f / ((float)motorPoleCount / 2.0f));
+double rpsConversionFactor = (1.0f/60.0f / ((float)motorPoleCount / 2.0f));
 float erpmToMMPerSecond = (rpsConversionFactor * (float)wheelDiameter * PI);
 uint16_t zeroERPMOffset = 40;
 uint16_t zeroOffsetAtThrottle = 200;
@@ -42,11 +42,15 @@ int previousERPM[2][TREND_AMOUNT];
 // race mode, adjust LOG_SIZE when changing logged data
 bool raceMode = false, raceActive = false, raceModeSendValues = false;
 uint8_t *logData;
-uint16_t *throttle_log0, *throttle_log1, *erpm_log0, *erpm_log1, *voltage_log0, *voltage_log1;
-uint8_t *temp_log0, *temp_log1;
+uint16_t *throttle_log0, *throttle_log1, *erpm_log0, *erpm_log1;
+uint16_t *p_term_log0, *p_term_log1, *i_term_log0, *i_term_log1, *i2_term_log0, *i2_term_log1, *d_term_log0, *d_term_log1;
 int16_t *acceleration_log;
 int16_t *bmi_temp_log;
+uint32_t *target_erpm_log;
 uint16_t logPosition = 0;
+uint32_t raceStartedAt = 0;
+uint16_t finishFrame = 0;
+ControlLogFrame pidLoggers[2];
 
 // accelerometer
 double distBMI = 0, speedBMI = 0, acceleration = 0;

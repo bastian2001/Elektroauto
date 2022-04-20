@@ -40,12 +40,12 @@
 
 
 ///frequency of basically everything
-#define ESC_FREQ 800
+#define ESC_FREQ 1600
 
 
 //ESC/DShot debugging settings
 /// transmission indicator every ... frames; 0 for disabled (recommended for final/semi-stable build)
-#define TRANSMISSION_IND 0
+#define TRANSMISSION_IND 5000
 /// Print telemetry from ESC out to Serial every ... frames; 0 for disabled (recommended for final/semi-stable build); use lower values with care
 #define TELEMETRY_DEBUG 0
 /// Print the throttle when printing the telemetry
@@ -85,15 +85,17 @@
 
 //PID loop settings
 /// number of frames for RPS calculation, to be tested
-#define TREND_AMOUNT 5 //nur ungerade!! 
+#define TREND_AMOUNT 20
 
 //logging settings
 /// number of frames that are logged in race mode
-#define LOG_FRAMES 3000
+#define LOG_FRAMES ESC_FREQ * 4
+/// logging frequency divider, e.g. ESC_FREQ is 3200Hz, then a divider of 2 will log at 1600Hz
+#define LOG_FREQ_DIVIDER 1
 /// number of bytes needed per log frame
-#define BYTES_PER_LOG_FRAME 18
+#define BYTES_PER_LOG_FRAME 6
 /// bytes reserved for logging
-#define LOG_SIZE (LOG_FRAMES * BYTES_PER_LOG_FRAME)
+#define LOG_SIZE (LOG_FRAMES * BYTES_PER_LOG_FRAME / LOG_FREQ_DIVIDER + 256)
 
 /// defines modes
 enum Modes {
@@ -116,6 +118,19 @@ enum LEDModes {
 };
 // the status represents a hirarchy, call resetStatusLED() to reset it to 0
 
+typedef struct logFrame{
+    uint16_t throttle0;
+    uint16_t throttle1;
+    uint16_t erpm0;
+    uint16_t erpm1;
+    uint16_t pTerm0;
+    uint16_t iTerm0;
+    uint16_t dTerm0;
+    uint16_t i2Term0;
+    int16_t acceleration;
+    uint16_t targetERPM;
+} LogFrame;
+
 /// Action for disarm etc
 typedef struct Action{
     uint8_t type = 0; //1 = setArmed, 2 = broadcast payload (char array) to all WS clients, 3 = set mode, 255 = own function
@@ -136,6 +151,14 @@ typedef struct buttonEvent{
     ButtonEventType type = ButtonEventType::ShortPress;
     unsigned long time = 0;
 } ButtonEvent;
+
+/// PII²D log part
+typedef struct pii2dLogHelper{
+    uint16_t proportional = 0;
+    uint16_t integral = 0;
+    uint16_t derivative = 0;
+    uint16_t iSquared = 0;
+} ControlLogFrame;
 
 /// stores the last button event (e.g. for double press actions)
 extern ButtonEvent lastButtonEvent;
@@ -165,6 +188,8 @@ extern double kP;
 extern double kI;
 /// D gain for PID controller
 extern double kD;
+/// I² gain for PII²D controller
+extern double kI2;
 
 
 
@@ -178,7 +203,7 @@ extern uint8_t motorPoleCount;
 /// holds the wheel diameter in mm, default value is set here
 extern uint8_t wheelDiameter;
 // don't change anything here, this makes conversions from rps to erpm and back easier
-extern float rpsConversionFactor;
+extern double rpsConversionFactor;
 // don't change anything here, this makes conversions from erpm to mm/s and back easier
 extern float erpmToMMPerSecond;
 /// slip control: throttle at zero ERPM / starting throttle, default value is set here
@@ -203,11 +228,15 @@ extern int previousERPM[2][TREND_AMOUNT];
 // race mode
 extern bool raceModeSendValues, raceMode, raceActive;
 extern uint8_t *logData;
-extern uint16_t *throttle_log0, *throttle_log1, *erpm_log0, *erpm_log1, *voltage_log0, *voltage_log1;
-extern uint8_t *temp_log0, *temp_log1;
+extern uint16_t *throttle_log0, *throttle_log1, *erpm_log0, *erpm_log1;
+extern uint16_t *p_term_log0, *p_term_log1, *i_term_log0, *i_term_log1, *i2_term_log0, *i2_term_log1, *d_term_log0, *d_term_log1;
 extern int16_t *acceleration_log;
 extern int16_t *bmi_temp_log;
+extern uint32_t *target_erpm_log;
 extern uint16_t logPosition;
+extern uint32_t raceStartedAt;
+extern uint16_t finishFrame;
+extern ControlLogFrame pidLoggers[2];
 
 // accelerometer
 extern double distBMI, speedBMI, acceleration;

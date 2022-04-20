@@ -44,6 +44,7 @@ void IRAM_ATTR startRace(){
   if (!raceActive && raceMode){
     broadcastWSMessage("BLOCK RACEMODETOGGLE ON");
     raceActive = true;
+    raceStartedAt = millis();
     setArmed(true);
     setNewTargetValue();
     setStatusLED(LED_RACE_ARMED_ACTIVE);
@@ -52,7 +53,7 @@ void IRAM_ATTR startRace(){
   }
 }
 
-double calcThrottle(int target, int was[], double currentThrottle, double masterMultiplier) {
+double calcThrottle(int target, int was[], ControlLogFrame* logHelper) {
   // double was_avg = 0;
   // int was_sum = 0, t_sq_sum = 0, t_multi_was_sum = 0;
   // for (int i = 0; i < TREND_AMOUNT; i++) {
@@ -82,6 +83,9 @@ double calcThrottle(int target, int was[], double currentThrottle, double master
   // derivative
   double derivative = (was[TREND_AMOUNT - 1] - was[0]) * kD;
 
+  logHelper->proportional = proportional;
+  logHelper->integral = integral;
+  logHelper->derivative = derivative;
 
   return proportional + integral + derivative;
 }
@@ -152,8 +156,8 @@ void runActions() {
   return;
 }
 
-float rpsToErpm(float rps){
-  return (rps / rpsConversionFactor + .5f);
+double rpsToErpm(double rps){
+  return (rps / rpsConversionFactor + .5);
 }
 
 float erpmToRps(float erpm){
@@ -192,8 +196,8 @@ void throttleRoutine(){
       case MODE_THROTTLE:
         break;
       case MODE_RPS:
-        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM[0], ESCs[0]->currentThrottle));
-        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM[1], ESCs[1]->currentThrottle));
+        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM[0], &(pidLoggers[0])));
+        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM[1], &(pidLoggers[1])));
         break;
       case MODE_SLIP:
         addToTargetERPMLeft = zeroERPMOffset - ((float)(ESCs[0]->currentThrottle) * (float) zeroERPMOffset / (float) zeroOffsetAtThrottle);
@@ -204,8 +208,8 @@ void throttleRoutine(){
           addToTargetERPMRight = 0;
         
         targetERPM = ((-(float)speedBMI) / ((float) targetSlip * .01f - 1)) / erpmToMMPerSecond + (addToTargetERPMLeft + addToTargetERPMRight) / 2;
-        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM[0], ESCs[0]->currentThrottle, slipMulti));
-        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM[1], ESCs[1]->currentThrottle, slipMulti));
+        ESCs[0]->setThrottle(calcThrottle(targetERPM, previousERPM[0], &(pidLoggers[0])));
+        ESCs[1]->setThrottle(calcThrottle(targetERPM, previousERPM[1], &(pidLoggers[1])));
         break;
     }
   }

@@ -28,12 +28,12 @@ void IRAM_ATTR escIR() {
   previousERPM[1][TREND_AMOUNT - 1] = ESCs[1]->eRPM;
 
   if(ESCs[0]->status & ARMED_MASK)
-  integ += targetERPM - ESCs[0]->eRPM;
+    integ += targetERPM - ESCs[0]->eRPM;
   else
-  integ = 0;
+    integ = 0;
 
   // handle BMI routine
-  // readBMI();
+  readBMI();
 
   // print debug telemetry over Serial
   #if TELEMETRY_DEBUG != 0
@@ -62,17 +62,24 @@ void IRAM_ATTR escIR() {
   #endif
 
   // logging, if race is active
-  if (raceActive){
+  static int logFreqHelper = 0;
+  if (raceActive && (++logFreqHelper == LOG_FREQ_DIVIDER)){
+    logFreqHelper = 0;
     throttle_log0[logPosition] = ESCs[0]->currentThrottle + .5;
     throttle_log1[logPosition] = ESCs[1]->currentThrottle + .5;
-    erpm_log0[logPosition] = ESCs[0]->eRPM;
-    erpm_log1[logPosition] = ESCs[1]->eRPM;
-    // voltage_log0[logPosition] = ESCs[0]->voltage;
-    // voltage_log1[logPosition] = ESCs[1]->voltage;
-    // temp_log0[logPosition] = ESCs[0]->temperature;
-    // temp_log1[logPosition] = ESCs[1]->temperature;
+    // erpm_log0[logPosition] = ESCs[0]->eRPM;
+    // erpm_log1[logPosition] = ESCs[1]->eRPM;
     acceleration_log[logPosition] = rawAccel;
-    bmi_temp_log[logPosition] = bmiRawTemp;
+    // bmi_temp_log[logPosition] = bmiRawTemp;
+    // p_term_log0[logPosition] = pidLoggers[0].proportional;
+    // p_term_log1[logPosition] = pidLoggers[0].proportional;
+    // i_term_log0[logPosition] = pidLoggers[0].integral;
+    // i_term_log1[logPosition] = pidLoggers[0].integral;
+    // d_term_log1[logPosition] = pidLoggers[0].derivative;
+    // d_term_log0[logPosition] = pidLoggers[0].derivative;
+    // i2_term_log0[logPosition] = pidLoggers[0].iSquared;
+    // i2_term_log1[logPosition] = pidLoggers[0].iSquared;
+    if (distBMI < 20) finishFrame = logPosition;
     logPosition++;
     if (logPosition == LOG_FRAMES){
       raceActive = false;

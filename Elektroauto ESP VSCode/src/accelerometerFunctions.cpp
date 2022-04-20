@@ -1,7 +1,7 @@
 #include "global.h"
 
 double rawAccelToPhysicalAccel(int raw){ // in mm per s
-    return (double) raw / (16.384 / 9.81) * 4;
+    return (double) raw / (16.384 / 9.81) * 1;
 }
 
 void readBMI(){
@@ -27,7 +27,7 @@ void initBMI(){
     Serial.println("Connecting to BMI160...");
     #endif
     BMI160.begin(BMI160GenClass::SPI_MODE, 5); //see docs/bmi160 breakout.png and docs/ESP32 Lilygo Pinout.webp for pins
-
+ 
 
     // checking connection
     bool connected = BMI160.testConnection();
@@ -39,7 +39,7 @@ void initBMI(){
         return;
     }
     
-    BMI160.setAccelerometerRange(8); //+/-2g range for high precision
+    BMI160.setAccelerometerRange(2); //+/-2g range for high precision
     BMI160.setAccelerometerRate(1600); //800Hz for no aliasing (is default anyway)
 
     

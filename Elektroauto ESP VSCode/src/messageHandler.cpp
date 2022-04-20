@@ -120,6 +120,11 @@ void processMessage(String message, uint8_t from) {
     if (!message.endsWith("NOMESSAGE"))
       sendWSMessage(from, String("MESSAGE I gain ist nun ") + String(kI));
   }
+  else if (command == "I2GAIN"){
+    kI2 = message.substring(dividerPos + 1).toDouble();
+    if (!message.endsWith("NOMESSAGE"))
+      sendWSMessage(from, String("MESSAGE I² gain ist nun ") + String(kI));
+  }
   else if (command == "DGAIN"){
     kD = message.substring(dividerPos + 1).toDouble();
     if (!message.endsWith("NOMESSAGE"))

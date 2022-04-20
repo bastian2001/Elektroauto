@@ -90,11 +90,13 @@ public class MainActivity extends AppCompatActivity {
     private int res_throttle0 = 0, res_throttle1 = 0;
     private int res_speed0 = 0, res_speed1 = 0, res_speed_bmi = 0;
     private int res_rps0 = 0, res_rps1 = 0;
-    private int res_temp0 = 0, res_temp1 = 0, res_temp_bmi = 0, res_temp_chip = 0;
-    private int res_voltage0 = 0, res_voltage1 = 0;
+    private int res_temp_bmi = 0, res_temp_chip = 0;
     private int res_acceleration = 0;
     private boolean res_raceModeThing = false;
     private int res_reqValue = 0;
+    private int res_lsState = 0;
+    private int res_dist_bmi = 0;
+    private int res_send_freq = 0, res_loop_freq = 0, res_erpm_freq = 0;
     private int res_slip0 =0, res_slip1 = 0;
 
     //ping
@@ -624,15 +626,16 @@ public class MainActivity extends AppCompatActivity {
                 res_speed_bmi = bytes[9] << 8 | Byte.toUnsignedInt(bytes[10]);
                 res_rps0 = bytes[11] << 8 | Byte.toUnsignedInt(bytes[12]);
                 res_rps1 = bytes[13] << 8 | Byte.toUnsignedInt(bytes[14]);
-                res_temp0 = Byte.toUnsignedInt(bytes[15]);
-                res_temp1 = Byte.toUnsignedInt(bytes[16]);
-                res_temp_bmi = Byte.toUnsignedInt(bytes[17]);
-                res_temp_chip = Byte.toUnsignedInt(bytes[18]);
-                res_voltage0 = bytes[19] << 8 | Byte.toUnsignedInt(bytes[20]);
-                res_voltage1 = bytes[21] << 8 | Byte.toUnsignedInt(bytes[22]);
-                res_acceleration = bytes[23] << 8 | Byte.toUnsignedInt(bytes[24]);
-                res_raceModeThing = bytes[25] > 0;
-                res_reqValue = bytes[26] << 8 | Byte.toUnsignedInt(bytes[27]);
+                res_temp_bmi = Byte.toUnsignedInt(bytes[15]);
+                res_temp_chip = Byte.toUnsignedInt(bytes[16]);
+                res_acceleration = bytes[17] << 8 | Byte.toUnsignedInt(bytes[18]);
+                res_raceModeThing = bytes[19] > 0;
+                res_reqValue = bytes[20] << 8 | Byte.toUnsignedInt(bytes[21]);
+                res_lsState = Byte.toUnsignedInt(bytes[22]);
+                res_dist_bmi = bytes[23] << 8 | Byte.toUnsignedInt(bytes[24]);
+                res_send_freq = bytes[25] << 8 | Byte.toUnsignedInt(bytes[26]);
+                res_loop_freq = Byte.toUnsignedInt(bytes[27]) << 8 | Byte.toUnsignedInt(bytes[28]);
+                res_erpm_freq = bytes[29] << 8 | Byte.toUnsignedInt(bytes[30]);
                 res_slip0 = 0; res_slip1 = 0;
 
                 if (res_speed0 != 0 && res_speed1 != 0){
@@ -664,19 +667,30 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (detailedTelemetry) {
+                    final String[] lsStates = {"Unbekannt", "Startblock vorhanden", "Bereitmachen", "Losfahren"};
                     textViewTelemetry.setText(
                             "Status\n\t" + (res_armed ? "Armed" : "Disarmed")
-                                    + "\nSpannung (V)\n\tLinks:\t" + (float) res_voltage0 / 100.0 + "\n\tRechts:\t" + (float) res_voltage1 / 100.0
                                     + "\nThrottle\n\tLinks:\t" + res_throttle0 + "\n\tRechts:\t" + res_throttle1
                                     + "\nU/sek\n\tLinks:\t" + res_rps0 + "\n\tRechts:\t" + res_rps1
                                     + "\nSchlupf (%)\n\tLinks:\t" + res_slip0 + "\n\tRechts:\t" + res_slip1
                                     + "\nGeschwindigkeit (m/s)\n\tLinks:\t" + (float) res_speed0 / 1000.0 + "\n\tRechts:\t" + (float) res_speed1 / 1000.0 + "\n\tBMI160:\t" + (float) res_speed_bmi / 1000.0
                                     + "\nBeschleunigung (m/s²)\n\t" + (float) (res_acceleration) / 1000.0
-                                    + "\nTemperatur (°C)\n\tLinks:\t" + res_temp0 + "\n\tRechts:\t" + res_temp1 + "\n\tBMI160:\t" + res_temp_bmi + "\n\tChip:\t" + res_temp_chip
+                                    + "\nStrecke laut BMI160 (m)\n\t" + (float) (res_dist_bmi) / 1000.0
+                                    + "\nTemperatur (°C)\n\tBMI160:\t" + res_temp_bmi + "\n\tChip:\t" + res_temp_chip
+                                    + "\nLichtsensor\n\t" + lsStates[res_lsState]
+                                    + "\nFrequenzen\n\tSenden: " + res_send_freq + "\n\tLoop: " + res_loop_freq + "\n\tERPM: " + res_erpm_freq
                     );
                 }
                 else {
                     textViewTelemetry.setText(
+                        "Status: " + (res_armed ? "Armed" : "Disarmed")
+                                + "\nThrottle: " + (res_throttle0 + res_throttle1) / 2
+                                + "\nU/sek: " + (res_rps0 + res_rps1) / 2
+                                + "\nSchlupf: " + (res_slip0 + res_slip1) / 2
+                                + " %\nGeschwindigkeit: " + (float) (res_speed0 + res_speed1) / 2000.0 + " m/s, " + (float) res_speed_bmi / 1000.0
+                                + " m/s\nBeschleunigung: " + (float) (res_acceleration) / 1000.0
+                    );
+                    /*textViewTelemetry.setText(
                             "Status: " + (res_armed ? "Armed" : "Disarmed")
                                     + "\nSpannung: " + (float) (res_voltage0 + res_voltage1) / 200.0
                                     + " V\nThrottle: " + (res_throttle0 + res_throttle1) / 2
@@ -685,7 +699,7 @@ public class MainActivity extends AppCompatActivity {
                                     + " %\nGeschwindigkeit: " + (float) (res_speed0 + res_speed1) / 2000.0 + " m/s, " + (float) res_speed_bmi / 1000.0
                                     + " m/s\nBeschleunigung: " + (float) (res_acceleration) / 1000.0
                                     + " m/s²\nTemperatur: " + (res_temp0 + res_temp1) / 2 + " °C"
-                    );
+                    );*/
                     /*textViewTelemetry.setText(
                             "Status: " + (res_armed ? "Armed" : "Disarmed")
                                     + "\nSpannung (V): " + (float) res_voltage0 / 100.0 + ", " + (float) res_voltage1 / 100.0
@@ -698,7 +712,7 @@ public class MainActivity extends AppCompatActivity {
                     );*/
                 }
             } else {
-                for (int i = 0; i < LOG_FRAMES; i++) {
+                /*for (int i = 0; i < LOG_FRAMES; i++) {
                     try {
                         throttle_log_0[i] = (Byte.toUnsignedInt(bytes[i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2]);
                         throttle_log_1[i] = (Byte.toUnsignedInt(bytes[LOG_FRAMES * 2 + i * 2 + 1]) << 8) | Byte.toUnsignedInt(bytes[i * 2 + LOG_FRAMES * 2]);
@@ -738,18 +752,20 @@ public class MainActivity extends AppCompatActivity {
                     output.put("temperature0", finalTemperature0Array);
                     output.put("temperature1", finalTemperature1Array);
                     output.put("acceleration", finalAccelerationArray);
-                    output.put("temperatureBMI", finalTemperatureBMIArray);
+                    output.put("temperatureBMI", finalTemperatureBMIArray);*/
+                try{
                     String fileName = "log " + Calendar.getInstance().get(Calendar.YEAR) + "-" + prefixZero(Calendar.getInstance().get(Calendar.MONTH) + 1, 2) + "-"
                             + prefixZero(Calendar.getInstance().get(Calendar.DATE), 2) + "-" + prefixZero(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 2)
                             + ":" + prefixZero(Calendar.getInstance().get(Calendar.MINUTE), 2) + ":"
                             + prefixZero(Calendar.getInstance().get(Calendar.SECOND), 2) + ".json";
                     File folder;
                     boolean permissionGranted = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-                    if (permissionGranted) {
+                    /*if (permissionGranted) {
                         folder = new File(Environment.getExternalStorageDirectory(), "Formel-E-Logs");
-                    } else {
+                    } else {*/
+                    permissionGranted = false;
                         folder = getExternalFilesDir("Formel-E-Logs");
-                    }
+                    //}
                     if (!folder.exists()) {
                         folder.mkdir();
                     }
@@ -767,17 +783,24 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     if (file != null) {
+                        long time = System.currentTimeMillis() / 1000;
+                        bytes[4] = (byte) ((time >> 24) & 0xFF);
+                        bytes[5] = (byte) ((time >> 16) & 0xFF);
+                        bytes[6] = (byte) ((time >> 8) & 0xFF);
+                        bytes[7] = (byte) (time & 0xFF);
                         FileOutputStream fos = new FileOutputStream(file);
-                        OutputStreamWriter osw = new OutputStreamWriter(fos);
-                        BufferedWriter bufferedWriter = new BufferedWriter(osw);
-                        bufferedWriter.write(output.toString());
-                        bufferedWriter.close();
+                        fos.write(bytes);
+                        fos.close();
+                        //OutputStreamWriter osw = new OutputStreamWriter(fos);
+                        //BufferedWriter bufferedWriter = new BufferedWriter(osw);
+                        //bufferedWriter.write(output.toString());
+                        //bufferedWriter.close();
                         Toast.makeText(MainActivity.this, permissionGranted ? "Output in Interner Speicher -> Formel-E-Logs -> " + fileName + " gespeichert" : "Da die Berechtigung nicht erteilt wurde, wurde der Log unter " + file.getAbsolutePath() + " gespeichert.", Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
                     }
 
-                    throttle_log_0 = new int[LOG_FRAMES];
+                    /*throttle_log_0 = new int[LOG_FRAMES];
                     throttle_log_1 = new int[LOG_FRAMES];
                     erpm_log_0 = new int[LOG_FRAMES];
                     erpm_log_1 = new int[LOG_FRAMES];
@@ -786,9 +809,9 @@ public class MainActivity extends AppCompatActivity {
                     temp_log_0 = new int[LOG_FRAMES];
                     temp_log_1 = new int[LOG_FRAMES];
                     acceleration_log = new int[LOG_FRAMES];
-                    temp_log_bmi = new int[LOG_FRAMES];
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    temp_log_bmi = new int[LOG_FRAMES];*/
+                //}catch (JSONException e) {
+                   // e.printStackTrace();
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "Fehler beim Speichern der Datei", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();

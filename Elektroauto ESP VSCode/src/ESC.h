@@ -17,7 +17,7 @@
 /// 1 bit low time
 #define T1L 50
 /// number of bits sent out via DShot
-#define ESC_BUFFER_ITEMS 16
+#define ESC_BUFFER_ITEMS 17
 /// maximum amount of manual data
 #define MAX_MANUAL_DATA 256
 
@@ -35,6 +35,9 @@
 #define BLUE_LED_MASK   (uint8_t)0b00000001
 
 #define DEFAULT_STATUS  (ENABLED_MASK | RED_LED_MASK | GREEN_LED_MASK | BLUE_LED_MASK)
+
+/// erpm measurement wrong
+#define INVALID_ERPM 0xfffff
 
 /// special commands
 enum {
@@ -102,6 +105,11 @@ private:
 
     /// the maximum throttle for all ESCs
     static uint16_t maxThrottle;
+
+    uint16_t sendCounter = 0;
+    uint16_t loopCounter = 0;
+    uint16_t erpmCounter = 0;
+    uint32_t lastCounterReset = 0;
 public:
     /**
      * @brief registers a new ESC
@@ -224,6 +232,10 @@ public:
     rmt_channel_t dmaChannelTX = (rmt_channel_t)0;
     /// dma channel used for bidirectional dshot
     rmt_channel_t dmaChannelRX = (rmt_channel_t)0;
+    ///
+    uint16_t sendFreq = 0;
+    uint16_t loopFreq = 0;
+    uint16_t erpmFreq = 0;
 };
 
 #endif

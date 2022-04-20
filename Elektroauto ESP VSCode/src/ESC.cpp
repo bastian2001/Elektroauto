@@ -29,7 +29,7 @@ ESC::ESC(int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannelTX, rmt_
     c.tx_config.idle_output_en = true;
     ESP_ERROR_CHECK(rmt_config(&c));
     ESP_ERROR_CHECK(rmt_driver_install(dmaChannelTX, 0, 0));
-
+/*
 	rmt_config_t d;
 	d.rmt_mode = RMT_MODE_RX;
 	d.channel = dmaChannelRX;
@@ -40,10 +40,12 @@ ESC::ESC(int8_t signalPin, int8_t telemetryPin, rmt_channel_t dmaChannelTX, rmt_
 	d.rx_config.filter_en = true;
 	d.rx_config.filter_ticks_thresh = 5;
 	ESP_ERROR_CHECK(rmt_config(&d));
-    ESP_ERROR_CHECK(rmt_driver_install(dmaChannelRX, 0, 0));
-	rmt_rx_start(dmaChannelRX, true);
+    ESP_ERROR_CHECK(rmt_driver_install(dmaChannelRX, 1024, 0));
+	rmt_rx_start(dmaChannelRX, true);*/
 
     Serial.println("init done");
+
+    lastCounterReset = millis();
 }
 
 
@@ -53,18 +55,19 @@ ESC::~ESC(){
 }
 
 IRAM_ATTR uint32_t bufToERPM(volatile rmt_item32_t items[64], int startPos, int length){
+    if (length <= startPos) return INVALID_ERPM;
 	static int pos = 20;
 	static uint32_t value = 0x1fffff;
 
 	//read 21 bit double encoded value from rmt buffer
-	for (int i = 16; i < length; i++){
+	for (int i = startPos; i < length; i++){
 		int dur0 = items[i].duration0 + 15;
 		int dur1 = items[i].duration1 + 15;
 		dur0 /= 105;
 		dur1 /= 105;
 		for (int i = 0; i < dur0; i++){
 			if (pos < 0){
-				return 500;
+				return INVALID_ERPM;
 			}
 			value ^= 1 << pos--;
 		}
@@ -93,7 +96,7 @@ IRAM_ATTR uint32_t bufToERPM(volatile rmt_item32_t items[64], int startPos, int 
 
     if ((csum & 0xf) != 0xf || decodedValue > 0xffff) {
 		// intrCounter++;
-		return 1;
+		return INVALID_ERPM;
 
     } else {
         value = decodedValue >> 4;
@@ -102,7 +105,7 @@ IRAM_ATTR uint32_t bufToERPM(volatile rmt_item32_t items[64], int startPos, int 
         }
         value = (value & 0x000001ff) << ((value >> 9) & 0x7);
         if (!value) {
-            return 1500;
+            return INVALID_ERPM;
         }
         value = (1000000 * 60 + value * 50) / value;
     }
@@ -114,22 +117,37 @@ IRAM_ATTR uint32_t bufToERPM(volatile rmt_item32_t items[64], int startPos, int 
 bool ESC::loop(){
     bool newTelemetry = false;
     
-    RingbufHandle_t handle;
-    ESP_ERROR_CHECK(rmt_get_ringbuf_handle(dmaChannelRX, &handle));
-    size_t itemSize;
-    rmt_item32_t * itemPtr = (rmt_item32_t *)xRingbufferReceive(handle, &itemSize, 0);
+    // RingbufHandle_t handle;
+    // ESP_ERROR_CHECK(rmt_get_ringbuf_handle(dmaChannelRX, &handle));
+    // size_t itemSize;
+    // rmt_item32_t * itemPtr = (rmt_item32_t *)xRingbufferReceive(handle, &itemSize, 0);
     
-    if (itemPtr != NULL){
-        eRPM = bufToERPM(itemPtr, 16, itemSize/4);
-        vRingbufferReturnItem(handle, itemPtr);
-        newTelemetry = true;
-    }
+    // if (itemPtr != NULL){
+    //     eRPM = bufToERPM(itemPtr, 16, itemSize/4);
+    //     vRingbufferReturnItem(handle, itemPtr);
+    //     if (eRPM == INVALID_ERPM){
+    //         eRPM = 0;
+    //         return false;
+    //     }
+    //     newTelemetry = true;
+    //     erpmCounter++;
+    // }
 
     if (status != pStatus){
         this->onStatusChange(this, status, pStatus);
         pStatus = status;
     }
 
+    loopCounter++;
+    if (millis() - lastCounterReset >= 1000){
+        lastCounterReset = millis();
+        sendFreq = sendCounter;
+        erpmFreq = erpmCounter;
+        loopFreq = loopCounter;
+        sendCounter = 0;
+        erpmCounter = 0;
+        loopCounter = 0;
+    }
     return newTelemetry;
 }
 
@@ -184,7 +202,7 @@ void ESC::beep(uint8_t level, bool pauseBefore){
 }
 
 
-void ESC::setThrottle(double newThrottle){
+void IRAM_ATTR ESC::setThrottle(double newThrottle){
     newThrottle = (newThrottle < 0) ? 0 : newThrottle;
     nextThrottle = (newThrottle > maxThrottle) ? maxThrottle : newThrottle;
 }
@@ -219,12 +237,14 @@ void IRAM_ATTR ESC::sendRaw11(uint16_t rawValueWithoutChecksum){
 
 
 void IRAM_ATTR ESC::sendFullRaw(uint16_t rawValueWithChecksum){
-    uint16_t mask = 1 << (ESC_BUFFER_ITEMS - 1);
-    for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
+    uint16_t mask = 1 << 15;
+    for (uint8_t bit = 1; bit < ESC_BUFFER_ITEMS; bit++) {
         uint16_t bit_is_set = rawValueWithChecksum & mask;
         dataBuffer[bit] = bit_is_set ? (rmt_item32_t) {{{T1L, 0, T1H, 1}}} : (rmt_item32_t) {{{T0L, 0, T0H, 1}}};
         mask >>= 1;
     }
+    dataBuffer[0] = (rmt_item32_t){{{1, 1, 400, 1}}};
+    dataBuffer[ESC_BUFFER_ITEMS - 1].duration1 = 800;
     ESP_ERROR_CHECK(rmt_write_items(this->dmaChannelTX, dataBuffer, ESC_BUFFER_ITEMS, false));
     switch(rawValueWithChecksum){
         case 0x0356:
@@ -247,7 +267,8 @@ void IRAM_ATTR ESC::sendFullRaw(uint16_t rawValueWithChecksum){
             break;
         default:
             break;
-  }
+    }
+    sendCounter++;
 }
 
 
@@ -285,6 +306,7 @@ uint16_t IRAM_ATTR ESC::appendChecksum(uint16_t value){
         csum ^=  csum_data;
         csum_data >>= 4;
     }
+    csum = ~csum;
     csum &= 0xf;
     value = (value << 4) | csum;
     return value;

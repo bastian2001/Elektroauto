@@ -6,7 +6,7 @@
 #include "lightSensor.h"
 
 unsigned long lastTelemetry = 0;
-uint8_t telData[28];
+uint8_t telData[31];
 //armed, throttle0, throttle1, speed0, speed1, speedBMI, rps0, rps1, temp0, temp1, tempBMI, voltage0, voltage1, acceleration, raceModeThing, reqValue
 // 1      2          2          2       2       2         2     2     1      1      2        2         2         2             1              2        = 28
 
@@ -140,6 +140,7 @@ void sendTelemetry() {
   uint16_t t1 = ESCs[1]->currentThrottle;
   int acc = acceleration + .5;
   int sBMI = speedBMI;
+  int dBMI = distBMI;
   telData[0] = ESCs[0]->status & ARMED_MASK; //armed
   telData[1] = (t0) >> 8; //throttle
   telData[2] = (t0) & 0xFF;
@@ -163,9 +164,16 @@ void sendTelemetry() {
   telData[20] = reqValue >> 8;
   telData[21] = reqValue & 0xFF;
   telData[22] = *lsStatePtr; // light sensor state
-  
+  telData[23] = (dBMI >> 8) & 0xFF; //distance travelled according to BMI
+  telData[24] = dBMI & 0xFF;
+  telData[25] = ESCs[0]->sendFreq >> 8;
+  telData[26] = ESCs[0]->sendFreq & 0xFF;
+  telData[27] = ESCs[0]->loopFreq >> 8;
+  telData[28] = ESCs[0]->loopFreq & 0xFF;
+  telData[29] = ESCs[0]->erpmFreq >> 8;
+  telData[30] = ESCs[0]->erpmFreq & 0xFF;
 
-  broadcastWSBin(telData, 28, true, 0);
+  broadcastWSBin(telData, 31, true, 0);
 }
 
 void handleWiFi() {

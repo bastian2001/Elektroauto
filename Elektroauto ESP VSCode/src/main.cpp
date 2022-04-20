@@ -15,7 +15,7 @@
 #include "race.h"
 
 /*====================================================global variables================================================*/
-
+extern bool lightSensorStart;
 //Core 0 variables
 TaskHandle_t core0Task;
 bool c1ready = false, c0ready = false;
@@ -133,6 +133,10 @@ void onStatusChange(ESC * esc, uint8_t newStatus, uint8_t oldStatus){
  * - Serial string printing
  */
 void loop0() {
+  if (lightSensorStart){
+    lightSensorStart = false;
+    startRace();
+  }
   if (WiFi.status() != WL_CONNECTED) {
     disableCore0WDT();
     reconnect();
@@ -142,6 +146,10 @@ void loop0() {
   if (raceModeSendValues){
     raceMode = false;
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
+    if (finishFrame < LOG_FRAMES - 1)
+      broadcastWSMessage(String("MESSAGE Rennzeit (s): ") + String((float)(finishFrame + 1) / (float) ESC_FREQ));
+    else
+      broadcastWSMessage("MESSAGE Ziel laut BMI nicht erreicht");
     sendRaceLog();
     logPosition = 0;
     if (statusLED >= LED_RACE_MODE && statusLED <= LED_RACE_ARMED_ACTIVE) resetStatusLED();
@@ -157,22 +165,7 @@ void loop0() {
   runActions();
 
   printSerial();
-  delay(1);
-}
 
-/**
- * @brief loop on core 1
- * 
- * time sensitive stuff<br>
- * initiates:
- * - telemetry acquisition and processing
- * - throttle routine
- * - if neccessary, saves the settings
- */
-void loop() {
-  // ESCs[0]->loop();
-  // ESCs[1]->loop();
-  throttleRoutine();
   if (commitFlag){
     timerAlarmDisable(timer);
     pauseLS();
@@ -189,6 +182,26 @@ void loop() {
     timerAlarmEnable(timer);
     resumeLS();
   }
+
+  delay(1);
+}
+
+/**
+ * @brief loop on core 1
+ * 
+ * time sensitive stuff<br>
+ * initiates:
+ * - telemetry acquisition and processing
+ * - throttle routine
+ * - if neccessary, saves the settings
+ */
+void loop() {
+  ESCs[0]->loop();
+  ESCs[1]->loop();
+  if (raceStartedAt && millis() - raceStartedAt > 4000){
+    setArmed(false);
+  }
+  throttleRoutine();
 }
 
 //! @brief Task for core 0, creates loop0
@@ -229,18 +242,25 @@ void setup() {
   else
     readEEPROM();
 
+  Serial.println();
   //logData initialization
   logData = (uint8_t*)malloc(LOG_SIZE);
-  throttle_log0 = (uint16_t *)(logData + 0 * LOG_FRAMES);
-  throttle_log1 = (uint16_t *)(logData + 2 * LOG_FRAMES);
-  erpm_log0 = (uint16_t *)(logData + 4 * LOG_FRAMES);
-  erpm_log1 = (uint16_t *)(logData + 6 * LOG_FRAMES);
-  voltage_log0 = (uint16_t *)(logData + 8 * LOG_FRAMES);
-  voltage_log1 = (uint16_t *)(logData + 10 * LOG_FRAMES);
-  temp_log0 = (uint8_t*)(logData + 12 * LOG_FRAMES);
-  temp_log1 = (uint8_t*)(logData + 13 * LOG_FRAMES);
-  acceleration_log = (int16_t *)(logData + 14 * LOG_FRAMES);
-  bmi_temp_log = (int16_t *)(logData + 16 * LOG_FRAMES);
+  throttle_log0 = (uint16_t *)(logData + 256 + 0 * LOG_FRAMES);
+  throttle_log1 = (uint16_t *)(logData + 256 + 2 * LOG_FRAMES);
+  // erpm_log0 = (uint16_t *)(logData + 256 + 4 * LOG_FRAMES);
+  // erpm_log1 = (uint16_t *)(logData + 256 + 6 * LOG_FRAMES);
+  acceleration_log = (int16_t *)(logData + 256 + 4 * LOG_FRAMES);
+  // bmi_temp_log = (int16_t *)(logData + 256 + 10 * LOG_FRAMES);
+  // p_term_log0 = (uint16_t *)(logData + 256 + 12 * LOG_FRAMES);
+  // p_term_log1 = (uint16_t *)(logData + 256 + 14 * LOG_FRAMES);
+  // i_term_log0 = (uint16_t *)(logData + 256 + 16 * LOG_FRAMES);
+  // i_term_log1 = (uint16_t *)(logData + 256 + 18 * LOG_FRAMES);
+  // i2_term_log0 = (uint16_t *)(logData + 256 + 20 * LOG_FRAMES);
+  // i2_term_log1 = (uint16_t *)(logData + 256 + 22 * LOG_FRAMES);
+  // d_term_log0 = (uint16_t *)(logData + 256 + 24 * LOG_FRAMES);
+  // d_term_log1 = (uint16_t *)(logData + 256 + 26 * LOG_FRAMES);
+  // target_erpm_log = (uint32_t *)(logData + 256 + 28 * LOG_FRAMES);
+  
 
   //WiFi Setup
   WiFi.enableSTA(true);
@@ -273,9 +293,12 @@ void setup() {
   #if TRANSMISSION_IND != 0
   pinMode(TRANSMISSION_PIN, OUTPUT);
   digitalWrite(TRANSMISSION_PIN, HIGH);
-  #endif
+  #endif 
+
   ESCs[0] = new ESC(ESC1_OUTPUT_PIN, ESC1_INPUT_PIN, RMT_CHANNEL_0, RMT_CHANNEL_1, onESCError, onStatusChange);
   ESCs[1] = new ESC(ESC2_OUTPUT_PIN, ESC2_INPUT_PIN, RMT_CHANNEL_2, RMT_CHANNEL_3, onESCError, onStatusChange);
+
+  delay(5);
   timer = timerBegin(0, 80, true);
   timerAttachInterrupt(timer, &escIR, true);
   timerAlarmWrite(timer, 1000000 / ESC_FREQ, true);

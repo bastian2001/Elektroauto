@@ -23,9 +23,9 @@ void checkButton(){
   bool halfReset = (lastButtonEvent.time > millis() - 10000) && (lastButtonEvent.type == ButtonEventType::DoublePress);
   if (halfReset)
     setStatusLED(LED_HALF_RESET);
-  if (currentState == LOW){
+  if (!currentState){
     //button pressed
-    if(lastButtonState == HIGH){
+    if(lastButtonState){
       //button pressed just now
       for (int i = 0; i < 10; i++){
         //debounce: ignore false triggers

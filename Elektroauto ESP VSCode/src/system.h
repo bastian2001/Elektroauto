@@ -37,7 +37,7 @@ void startRace();
  * @param masterMultiplier default: 1, another GP multiplier for quick adjustments
  * @return the next throttle value (NOT set automatically)
  */
-double calcThrottle(int target, int was[], double currentThrottle, double masterMultiplier = 1);
+double calcThrottle(int target, int was[], ControlLogFrame * logHelper);
 
 //! @brief reads the Serial0 port and processes the message using processMessage
 void receiveSerial();
@@ -51,7 +51,7 @@ void runActions();
  * @param rps the speed in RPS
  * @return the speed in hERPM
  */
-float rpsToErpm(float rps);
+double rpsToErpm(double rps);
 
 /**
  * @brief converts hERPM to RPS
