@@ -41,7 +41,7 @@ int previousERPM[2][TREND_AMOUNT];
 
 // race mode, adjust LOG_SIZE when changing logged data
 bool raceMode = false, raceActive = false, raceModeSendValues = false;
-uint8_t *logData;
+uint8_t logData[LOG_SIZE];
 uint16_t *throttle_log0, *throttle_log1, *erpm_log0, *erpm_log1;
 uint16_t *p_term_log0, *p_term_log1, *i_term_log0, *i_term_log1, *i2_term_log0, *i2_term_log1, *d_term_log0, *d_term_log1;
 int16_t *acceleration_log;

@@ -244,7 +244,6 @@ void setup() {
 
   Serial.println();
   //logData initialization
-  logData = (uint8_t*)malloc(LOG_SIZE);
   throttle_log0 = (uint16_t *)(logData + 256 + 0 * LOG_FRAMES);
   throttle_log1 = (uint16_t *)(logData + 256 + 2 * LOG_FRAMES);
   // erpm_log0 = (uint16_t *)(logData + 256 + 4 * LOG_FRAMES);

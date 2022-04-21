@@ -227,7 +227,7 @@ extern int previousERPM[2][TREND_AMOUNT];
 
 // race mode
 extern bool raceModeSendValues, raceMode, raceActive;
-extern uint8_t *logData;
+extern uint8_t logData[LOG_SIZE];
 extern uint16_t *throttle_log0, *throttle_log1, *erpm_log0, *erpm_log1;
 extern uint16_t *p_term_log0, *p_term_log1, *i_term_log0, *i_term_log1, *i2_term_log0, *i2_term_log1, *d_term_log0, *d_term_log1;
 extern int16_t *acceleration_log;
