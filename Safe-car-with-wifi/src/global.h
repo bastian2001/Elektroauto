@@ -26,7 +26,7 @@
 
 
 ///frequency of basically everything
-#define ESC_FREQ 8000
+#define ESC_FREQ 4000
 
 
 //WiFi and WebSockets settings

@@ -9,13 +9,13 @@
 ///DShot 150: 8, DShot 300: 4, DShot 600: 2, change value accordingly for the desired DShot speed
 #define CLK_DIV 2
 /// 0 bit high time
-#define T0H 25
+#define T0H 42
 /// 1 bit high time
-#define T1H 50
+#define T1H 17
 /// 0 bit low time
-#define T0L 42
+#define T0L 25
 /// 1 bit low time
-#define T1L 17
+#define T1L 50
 /// number of bits sent out via DShot
 #define ESC_BUFFER_ITEMS 16
 /// maximum amount of manual data
@@ -170,6 +170,7 @@ public:
     ///
     uint32_t sendFreq = 0;
     uint32_t loopFreq = 0;
+    uint8_t signalPin = 0;
 };
 
 #endif

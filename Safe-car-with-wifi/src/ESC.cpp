@@ -11,7 +11,8 @@ volatile rmt_item32_t itemBuf[64];
 
 
 ESC::ESC(int8_t signalPin, rmt_channel_t dmaChannelTX)
-: dmaChannelTX(dmaChannelTX)
+: dmaChannelTX(dmaChannelTX),
+signalPin(signalPin)
 {
 
     pinMode (signalPin, OUTPUT);
@@ -23,7 +24,7 @@ ESC::ESC(int8_t signalPin, rmt_channel_t dmaChannelTX)
     c.mem_block_num = 1;
     c.tx_config.loop_en = false;
     c.tx_config.carrier_en = false;
-    c.tx_config.idle_level = RMT_IDLE_LEVEL_LOW;
+    c.tx_config.idle_level = RMT_IDLE_LEVEL_HIGH;
     c.tx_config.idle_output_en = true;
     ESP_ERROR_CHECK(rmt_config(&c));
     ESP_ERROR_CHECK(rmt_driver_install(dmaChannelTX, 0, 0));
@@ -34,7 +35,6 @@ ESC::ESC(int8_t signalPin, rmt_channel_t dmaChannelTX)
 
 ESC::~ESC(){
     rmt_driver_uninstall(this->dmaChannelTX);
-    rmt_driver_uninstall(this->dmaChannelRX);
 }
 
 bool ESC::loop(){
@@ -124,10 +124,12 @@ void ESC::sendRaw11(uint16_t rawValueWithoutChecksum){
 
 
 void ESC::sendFullRaw(uint16_t rawValueWithChecksum){
+    // rmt_set_pin(dmaChannelTX, RMT_MODE_TX, (gpio_num_t)signalPin);
+    // delayMicroseconds(10);
     uint16_t mask = 1 << 15;
     for (uint8_t bit = 0; bit < ESC_BUFFER_ITEMS; bit++) {
         uint16_t bit_is_set = rawValueWithChecksum & mask;
-        dataBuffer[bit] = bit_is_set ? (rmt_item32_t) {{{T1H, 1, T1L, 0}}} : (rmt_item32_t) {{{T0H, 1, T0L, 0}}};
+        dataBuffer[bit] = bit_is_set ? (rmt_item32_t) {{{T1L, 0, T1H, 1}}} : (rmt_item32_t) {{{T0L, 0, T0H, 1}}};
         mask >>= 1;
     }
     ESP_ERROR_CHECK(rmt_write_items(this->dmaChannelTX, dataBuffer, ESC_BUFFER_ITEMS, false));
@@ -154,7 +156,7 @@ uint16_t ESC::appendChecksum(uint16_t value){
         csum ^=  csum_data;
         csum_data >>= 4;
     }
-    // csum = ~csum;
+    csum = ~csum;
     csum &= 0xf;
     value = (value << 4) | csum;
     return value;

@@ -93,6 +93,10 @@ void loop() {
     sendESC = false;
     ESCs[0]->send();
     ESCs[1]->send();
+    // delayMicroseconds(25);
+    // rmt_set_pin(RMT_CHANNEL_0, RMT_MODE_RX, (gpio_num_t) ESC1_OUTPUT_PIN);
+    // delayMicroseconds(15);
+    // rmt_set_pin(RMT_CHANNEL_1, RMT_MODE_RX, (gpio_num_t) ESC2_OUTPUT_PIN);
   }
 }
 

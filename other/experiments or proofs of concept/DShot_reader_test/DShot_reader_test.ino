@@ -6,7 +6,7 @@
 
 #define NO_OF_MEASUREMENTS 500
 #define LED_BUILTIN 22
-#define SLOWNESS 0  //Dshot: 1 or so, PWM 320
+#define SLOWNESS 1  //Dshot: 1 or so, PWM 320
 
 bool result[NO_OF_MEASUREMENTS];
 unsigned long mic = 0, lastMics = 0;
@@ -36,7 +36,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if(!digitalRead(5)){
+  //if(!digitalRead(5)){
     //mic = micros();
     for (int i = 0; i < NO_OF_MEASUREMENTS; i++){
       result[i] = digitalRead(13);
@@ -51,7 +51,7 @@ void loop() {
       Serial.println(result[i]);
     }
     //Serial.println(mic);
-    while (!digitalRead(5));
-  delay(1000);
-  }
+    //while (!digitalRead(5));
+  delay(2000);
+  //}
 }
