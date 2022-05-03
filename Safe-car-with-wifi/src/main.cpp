@@ -21,6 +21,8 @@ TaskHandle_t core0Task;
 bool c1ready = false, c0ready = false;
 
 hw_timer_t * timer = NULL;
+uint32_t lastSend = 0;
+uint32_t lastCore0, lastCore1;
 
 
 
@@ -40,7 +42,7 @@ hw_timer_t * timer = NULL;
  * - Serial string printing
  */
 void loop0() {
-  if(WiFi.status() != WL_CONNECTED){
+  if(WiFi.status() != WL_CONNECTED && !raceStopAt){
     pauseLS();
     timerAlarmDisable(timer);
     reconnect();
@@ -65,7 +67,7 @@ void loop0() {
     timerAlarmEnable(timer);
     resumeLS();
   }
-
+  lastCore0 = millis();
   delay(1);
 }
 
@@ -89,10 +91,21 @@ void loop() {
   }
   ESCs[0]->loop();
   ESCs[1]->loop();
+  if (lastSend < millis() && !timerAlarmEnabled(timer)) sendESC = true;
   if (sendESC){
     sendESC = false;
     ESCs[0]->send();
     ESCs[1]->send();
+    lastSend=millis();
+  }
+  if(lastCore0 + 5000 < millis()){
+    Serial.println("Core 0 not responding");
+    delay(2);
+  }
+  if (lastCore0 + 15000 < millis()){
+    Serial.println("Core 0 didn't respond, restart...");
+    delay(5);
+    ESP.restart();
   }
 }
 
