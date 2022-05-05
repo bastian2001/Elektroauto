@@ -26,6 +26,13 @@ void startRace(){
     setArmed(true);
     setNewTargetValue();
     setStatusLED(LED_RACE_ARMED_ACTIVE);
+    for (int i = 0; i < 2; i++){
+      ESCs[i]->manualData11[0] = CMD_LED0_ON;
+      ESCs[i]->manualData11[1] = CMD_LED1_ON;
+      ESCs[i]->manualData11[2] = CMD_LED2_ON;
+      ESCs[i]->manualData11[3] = CMD_LED3_ON;
+      ESCs[i]->manualDataAmount = 4;
+    }
   } else if (!raceMode) {
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
   }
@@ -57,7 +64,14 @@ void enableRaceMode(bool en){
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
     setArmed(false);
     raceStopAt = 0;
-    if (statusLED == LED_RACE_MODE) resetStatusLED();
+    if (statusLED >= LED_RACE_MODE && statusLED <= LED_RACE_ARMED_ACTIVE) resetStatusLED();
+    for (int i = 0; i < 2; i++){
+      ESCs[i]->manualData11[0] = CMD_LED0_OFF;
+      ESCs[i]->manualData11[1] = CMD_LED1_OFF;
+      ESCs[i]->manualData11[2] = CMD_LED2_OFF;
+      ESCs[i]->manualData11[3] = CMD_LED3_OFF;
+      ESCs[i]->manualDataAmount = 4;
+    }
   }
   raceMode = en;
 }

@@ -1,5 +1,7 @@
 #include "lightSensor.h"
 #include <Arduino.h>
+#include "global.h"
+#include "LED.h"
 
 
 // int ringBufPos = 0, lastRingBufPos = 3;
@@ -37,9 +39,10 @@ void lsLoop(){
 	switch (lsState){
 		case LS_STATE_UNKNOWN:
 			if (lightChange == -1 && now - lastLightOn > 40 && now - lastLightOn < 60){
-					lsState = LS_STATE_IDLE;
-					lsStateChange(LS_STATE_UNKNOWN, LS_STATE_IDLE);
-					lastStateChange = now;
+				lsState = LS_STATE_IDLE;
+				lsStateChange(LS_STATE_UNKNOWN, LS_STATE_IDLE);
+				if (statusLED == LED_RACE_MODE) setStatusLED(LED_FOUND_BLOCK);
+				lastStateChange = now;
 			}
 			break;
 		case LS_STATE_IDLE:
@@ -47,6 +50,7 @@ void lsLoop(){
 				// off -> on
 				if (now - lastLightOff < 40 || now - lastLightOff > 60){
 					lsState = LS_STATE_UNKNOWN;
+					if (statusLED == LED_FOUND_BLOCK) resetStatusLED();
 					lsStateChange(LS_STATE_IDLE, LS_STATE_UNKNOWN);
 					lastStateChange = now;
 				}
@@ -55,18 +59,21 @@ void lsLoop(){
 				//on -> off
 				if (now - lastLightOn > 60){
 					lsState = LS_STATE_UNKNOWN;
+					if (statusLED == LED_FOUND_BLOCK) resetStatusLED();
 					lsStateChange(LS_STATE_IDLE, LS_STATE_UNKNOWN);
 					lastStateChange = now;
 				}
 			}
 			if (now - lastLightOff > 120 && lastLightOff - lastStateChange <= 500){
 				lsState = LS_STATE_UNKNOWN;
+				if (statusLED == LED_FOUND_BLOCK) resetStatusLED();
 				lsStateChange (LS_STATE_IDLE, LS_STATE_UNKNOWN);
 				lastStateChange = now;
 			}
 			if (currentReading && now - lastLightOff >= 2000 && lastLightOff - lastStateChange > 500){
 				lsState = LS_STATE_READY;
 				lsStateChange (LS_STATE_IDLE, LS_STATE_READY);
+				if (statusLED == LED_FOUND_BLOCK) setStatusLED(LED_BLOCK_READY);
 				lastStateChange = now;
 				attachInterrupt (lsPin, &startState, FALLING);
 			}
@@ -74,6 +81,7 @@ void lsLoop(){
 		case LS_STATE_READY:
 			if (now - lastStateChange > 300000){
 				lsState = LS_STATE_UNKNOWN;
+				if (statusLED == LED_BLOCK_READY) resetStatusLED();
 				lsStateChange (LS_STATE_READY, LS_STATE_UNKNOWN);
 				lastStateChange = now;
 				detachInterrupt(lsPin);
@@ -84,6 +92,7 @@ void lsLoop(){
 				lsState = LS_STATE_UNKNOWN;
 				lsStateChange(LS_STATE_START, LS_STATE_UNKNOWN);
 				lastStateChange = now;
+				if (statusLED == LED_RACE_ARMED_ACTIVE) resetStatusLED();
 			}
 			break;
 	}

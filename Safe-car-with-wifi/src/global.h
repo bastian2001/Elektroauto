@@ -24,6 +24,10 @@
 /// pin used for the phototransistor
 #define LIGHT_SENSOR_PIN 32
 
+#define LED_PIN_1 LED_BUILTIN
+#define LED_PIN_2 18
+#define LED_PIN_3 19
+
 
 ///frequency of basically everything
 #define ESC_FREQ 8000
@@ -63,6 +67,7 @@ enum LEDModes {
     LED_NO_WIFI,
     LED_RACE_MODE,
     LED_FOUND_BLOCK,
+    LED_BLOCK_READY,
     LED_RACE_ARMED_ACTIVE,
     LED_HALF_RESET,
     LED_HALF_RESET_PRESSED,
