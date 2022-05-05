@@ -128,7 +128,24 @@ void reconnect() {
   }
 }
 
+int x = 0;
 void sendTelemetry() {
+	if (x == 0){
+	for (int i = 0; i < 64; i++){
+		Serial.print(ESCs[0]->items[i].duration0);
+		Serial.print(' ');
+		Serial.print(ESCs[0]->items[i].level0);
+		Serial.print(' ');
+		Serial.print(ESCs[0]->items[i].duration1);
+		Serial.print(' ');
+		Serial.print(ESCs[0]->items[i].level1);
+		Serial.print(' ');
+		if (ESCs[0]->items[i].duration0 == 0 && ESCs[0]->items[i].duration1 ==0) break;
+	}
+	Serial.println();
+	}
+	x++;
+	if (x == 10) x = 0;
   uint16_t t0 = ESCs[0]->currentThrottle;
   uint16_t t1 = ESCs[1]->currentThrottle;
   telData[0] = ESCs[0]->armed;
@@ -136,6 +153,11 @@ void sendTelemetry() {
   telData[2] = (t0) & 0xFF;
   telData[3] = (t1) >> 8;
   telData[4] = (t1) & 0xFF;
+  telData[11] = ESCs[0]->eRPM >> 8; // revolutions per second
+  telData[12] = ESCs[0]->eRPM & 0xFF;
+  telData[13] = ESCs[1]->eRPM >> 8;
+  telData[14] = ESCs[1]->eRPM & 0xFF;
+  telData[15]= ESCs[0]->arb;
   telData[16] = temperatureRead();
   // telData[19] = raceMode && !raceStopAt;//UI
   telData[20] = reqValue >> 8;
@@ -149,6 +171,8 @@ void sendTelemetry() {
     telData[27] = 0xFF;
     telData[28] = 0xFF;
   }
+  telData[29] = ESCs[0]->erpmFreq >> 8;
+  telData[30] = ESCs[0]->erpmFreq & 0xFF;
 
   broadcastWSBin(telData, 31, true, 0);
 }

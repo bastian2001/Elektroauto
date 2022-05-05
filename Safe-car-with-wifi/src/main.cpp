@@ -184,8 +184,8 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
-  ESCs[0] = new ESC(ESC1_OUTPUT_PIN, RMT_CHANNEL_0);
-  ESCs[1] = new ESC(ESC2_OUTPUT_PIN, RMT_CHANNEL_1);
+  ESCs[0] = new ESC(ESC1_OUTPUT_PIN, 21, RMT_CHANNEL_0, RMT_CHANNEL_2);
+  ESCs[1] = new ESC(ESC2_OUTPUT_PIN, 19, RMT_CHANNEL_1, RMT_CHANNEL_3);
 
   delay(5);
   timer = timerBegin(0, 80, true);

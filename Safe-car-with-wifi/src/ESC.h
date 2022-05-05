@@ -75,15 +75,19 @@ private:
 
     uint32_t sendCounter = 0;
     uint32_t loopCounter = 0;
+    uint32_t erpmCounter = 0;
     uint32_t lastCounterReset = 0;
+	uint32_t lastSend = 0;
 public:
+	uint8_t arb = 0;
+	rmt_item32_t items[64];
     /**
      * @brief registers a new ESC
      * 
      * @param signalPin pin for data output (DShot)
      * @param dmaChannelTX dmaChannel for sending the packets
      */
-    ESC(int8_t signalPin, rmt_channel_t dmaChannelTX);
+    ESC(int8_t signalPin, uint8_t temeletryPin, rmt_channel_t dmaChannelTX, rmt_channel_t dmaChannelRX);
     /// @brief destroys the ESC object
     ~ESC();
     /** @brief checks for telemetry
@@ -170,7 +174,10 @@ public:
     ///
     uint32_t sendFreq = 0;
     uint32_t loopFreq = 0;
+    uint32_t erpmFreq = 0;
     uint8_t signalPin = 0;
+	uint32_t eRPM = 0;
+    uint8_t telemetryPin = 0;
 };
 
 #endif

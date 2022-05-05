@@ -6,7 +6,7 @@
 
 #define NO_OF_MEASUREMENTS 500
 #define LED_BUILTIN 22
-#define SLOWNESS 1  //Dshot: 1 or so, PWM 320
+#define SLOWNESS 3  //Dshot: 1 or so, PWM 320
 
 bool result[NO_OF_MEASUREMENTS];
 unsigned long mic = 0, lastMics = 0;
