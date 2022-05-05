@@ -10,13 +10,13 @@
 #define JACK_PIN PB1
 #define LIN_PIN PA2
 #define RIN_PIN PA1
-#define VIN_PIN PA7
-#define LOUT_ENDSTOP_PIN PB9
-#define ROUT_ENDSTOP_PIN PA8
+// #define VIN_PIN PA7
+// #define LOUT_ENDSTOP_PIN PB9
+// #define ROUT_ENDSTOP_PIN PA8
 #define LOUT_PIN PB7
 #define ROUT_PIN PB6
-#define L_LED_VOLT_PIN PA4
-#define R_LED_VOLT_PIN PA5
+// #define L_LED_VOLT_PIN PA4
+// #define R_LED_VOLT_PIN PA5
 
 #define CLOCK_CYCLES_PER_SECOND  72000000
 #define MAX_RELOAD               0xFFFF
@@ -30,18 +30,18 @@
 
 
 HardwareTimer pwmTimer3(3);
-HardwareTimer pwmTimer4(4);
+// HardwareTimer pwmTimer4(4);
 
 typedef struct output {
   uint8_t pin;
-  uint8_t endstopPin;
-  uint8_t voltagePin;
+//   uint8_t endstopPin;
+//   uint8_t voltagePin;
   uint8_t state;
   uint32_t lastChanged;
   uint32_t lastOnOffChange;
-  float ledVoltage;
-  bool connected;
-  bool ok;
+//   float ledVoltage;
+//   bool connected;
+//   bool ok;
   bool on;
 } Output;
 
@@ -61,15 +61,16 @@ Output& lOut = outputs[0];
 Output& rOut = outputs[1];
 float vin;
 uint32_t autostartAt, blinkUntil, ledoffset;
-bool powerFromJack, vinOk, safety = true, automatic, ledBlink;
+// bool powerFromJack, vinOk, safety = true;
+bool automatic, ledBlink;
 
 void switchOn(Output& o, bool on){
-  digitalWrite(o.pin, on && vinOk);
+  digitalWrite(o.pin, on /*&& vinOk*/);
   o.lastOnOffChange = millis();
 }
 
 void setState(Output& o, uint8_t state){
-  if (!o.ok && safety) state = STATE_OFF;
+//   if (!o.ok && safety) state = STATE_OFF;
   o.state = state;
   if (state == STATE_START) switchOn(o, true);
   else switchOn(o, false);
@@ -92,17 +93,17 @@ void setup() {
 
   rOut.pin = ROUT_PIN;
   lOut.pin = LOUT_PIN;
-  rOut.endstopPin = ROUT_ENDSTOP_PIN;
-  lOut.endstopPin = LOUT_ENDSTOP_PIN;
-  rOut.voltagePin = R_LED_VOLT_PIN;
-  lOut.voltagePin = L_LED_VOLT_PIN;
+//   rOut.endstopPin = ROUT_ENDSTOP_PIN;
+//   lOut.endstopPin = LOUT_ENDSTOP_PIN;
+//   rOut.voltagePin = R_LED_VOLT_PIN;
+//   lOut.voltagePin = L_LED_VOLT_PIN;
 
   pwmTimer3.pause();
   pwmTimer3.setPrescaleFactor(LED_PRESCALER);
   pwmTimer3.setOverflow(LED_OVERFLOW);
   pwmTimer3.refresh();
   pwmTimer3.resume();
-  pwmTimer4.pause();
+//   pwmTimer4.pause();
   // pwmTimer4.setPrescaleFactor(BLOCK_PRESCALER);
   // pwmTimer4.setOverflow(BLOCK_OVERFLOW);
   // pwmTimer4.refresh();
@@ -113,13 +114,13 @@ void setup() {
   pinMode(JACK_PIN, INPUT_PULLUP);
   pinMode(LIN_PIN, INPUT);
   pinMode(RIN_PIN, INPUT);
-  pinMode(VIN_PIN, INPUT);
-  pinMode(LOUT_ENDSTOP_PIN, INPUT);
-  pinMode(ROUT_ENDSTOP_PIN, INPUT);
+//   pinMode(VIN_PIN, INPUT);
+//   pinMode(LOUT_ENDSTOP_PIN, INPUT);
+//   pinMode(ROUT_ENDSTOP_PIN, INPUT);
   pinMode(LOUT_PIN, OUTPUT);
   pinMode(ROUT_PIN, OUTPUT);
-  pinMode(L_LED_VOLT_PIN, INPUT);
-  pinMode(R_LED_VOLT_PIN, INPUT);
+//   pinMode(L_LED_VOLT_PIN, INPUT);
+//   pinMode(R_LED_VOLT_PIN, INPUT);
   pwmWrite(LED_PIN, 0);
   setState(lOut, STATE_OFF);
   setState(rOut, STATE_OFF);
@@ -144,75 +145,75 @@ void disableStartPWM(){
   }
 }
 
-uint32_t lastRVoltageError[2];
-uint32_t lastLEDVoltageError[2];
-void checkOutputs(){
-  for (int i = 0; i < 2; i++){
-    Output& o = outputs[i];
-    if (o.connected == digitalRead(o.endstopPin)){
-      uint32_t state = digitalRead(o.endstopPin);
-      uint32_t end = millis() + 20;
-      while (millis() < end){
-        if (digitalRead(o.endstopPin) != state){
-          end = millis() + 20;
-          state = !state;
-        } 
-      }
-      if (o.connected == state) o.connected = !o.connected;
-      else continue; //error in reading
+// uint32_t lastRVoltageError[2];
+// uint32_t lastLEDVoltageError[2];
+// void checkOutputs(){
+//   for (int i = 0; i < 2; i++){
+//     Output& o = outputs[i];
+//     if (o.connected == digitalRead(o.endstopPin)){
+//       uint32_t state = digitalRead(o.endstopPin);
+//       uint32_t end = millis() + 20;
+//       while (millis() < end){
+//         if (digitalRead(o.endstopPin) != state){
+//           end = millis() + 20;
+//           state = !state;
+//         } 
+//       }
+//       if (o.connected == state) o.connected = !o.connected;
+//       else continue; //error in reading
 
-      if (o.connected) {
-        //freshly connected
-        Serial.print(i == R ? "Right" : "Left");
-        Serial.println(" connected");
-        o.ok = true;
-        setState(o, STATE_IDLE);
-      } else {
-        if (safety){
-          setState(o, STATE_OFF);
-        }
-        Serial.print(i == R ? "Right" : "Left");
-        Serial.println(" disconnected");
-        o.ok = false;
-        //freshly disconnected
-      }
-    }
-    o.ledVoltage = ADC_TO_VOLTAGE(analogRead(o.voltagePin));
-    if (millis() - o.lastOnOffChange > 10 && o.connected && millis() - o.lastChanged > 150){
-      if ((o.ledVoltage > 9.5 && o.on) || vin - o.ledVoltage > 6){
-        o.ok = false;
-        if (safety)
-          setState(o, STATE_OFF);
-      }
-    }
-  }
-}
+//       if (o.connected) {
+//         //freshly connected
+//         Serial.print(i == R ? "Right" : "Left");
+//         Serial.println(" connected");
+//         o.ok = true;
+//         setState(o, STATE_IDLE);
+//       } else {
+//         if (safety){
+//           setState(o, STATE_OFF);
+//         }
+//         Serial.print(i == R ? "Right" : "Left");
+//         Serial.println(" disconnected");
+//         o.ok = false;
+//         //freshly disconnected
+//       }
+//     }
+//     o.ledVoltage = ADC_TO_VOLTAGE(analogRead(o.voltagePin));
+//     if (millis() - o.lastOnOffChange > 10 && o.connected && millis() - o.lastChanged > 150){
+//       if ((o.ledVoltage > 9.5 && o.on) || vin - o.ledVoltage > 6){
+//         o.ok = false;
+//         if (safety)
+//           setState(o, STATE_OFF);
+//       }
+//     }
+//   }
+// }
 
-void checkPowerSupply(){
-  vin = ADC_TO_VOLTAGE(analogRead(VIN_PIN));
-  if (vin > 12.6 || (vin < 10 && safety)){
-    for (int i = 0; i < 10 && vinOk; i++){
-      if (ADC_TO_VOLTAGE(analogRead(VIN_PIN)) < 12.6 && ADC_TO_VOLTAGE(analogRead(VIN_PIN)) > 10) return;
-    }
-    if (!vinOk) return;
-    vinOk = false;
-    Serial.println("VIN out of bounds!");
-    setState(outputs[0], STATE_OFF);
-    setState(outputs[1], STATE_OFF);
-    blinkUntil = millis() + 1900;
-    ledBlink = true;
-  } else {
-    for (int i = 0; i < 10 && !vinOk; i++){
-      if (ADC_TO_VOLTAGE(analogRead(VIN_PIN)) > 12.6 || ADC_TO_VOLTAGE(analogRead(VIN_PIN)) < 10) return;
-    }
-    if (vinOk) return;
-    vinOk = true;
-    Serial.println("VIN ok again!");
-    setState(outputs[0], STATE_IDLE);
-    setState(outputs[1], STATE_IDLE);
-  }
-  powerFromJack = digitalRead(JACK_PIN);
-}
+// void checkPowerSupply(){
+//   vin = ADC_TO_VOLTAGE(analogRead(VIN_PIN));
+//   if (vin > 12.6 || (vin < 10 && safety)){
+//     for (int i = 0; i < 10 && vinOk; i++){
+//       if (ADC_TO_VOLTAGE(analogRead(VIN_PIN)) < 12.6 && ADC_TO_VOLTAGE(analogRead(VIN_PIN)) > 10) return;
+//     }
+//     if (!vinOk) return;
+//     vinOk = false;
+//     Serial.println("VIN out of bounds!");
+//     setState(outputs[0], STATE_OFF);
+//     setState(outputs[1], STATE_OFF);
+//     blinkUntil = millis() + 1900;
+//     ledBlink = true;
+//   } else {
+//     for (int i = 0; i < 10 && !vinOk; i++){
+//       if (ADC_TO_VOLTAGE(analogRead(VIN_PIN)) > 12.6 || ADC_TO_VOLTAGE(analogRead(VIN_PIN)) < 10) return;
+//     }
+//     if (vinOk) return;
+//     vinOk = true;
+//     Serial.println("VIN ok again!");
+//     setState(outputs[0], STATE_IDLE);
+//     setState(outputs[1], STATE_IDLE);
+//   }
+//   powerFromJack = digitalRead(JACK_PIN);
+// }
 
 void doublePress(){
   setState(outputs[0], STATE_IDLE);
@@ -240,7 +241,7 @@ void shortPress(){
   } else {
     if (!automatic){
       ledBlink = true;
-      blinkUntil = millis() + 400 * (outputs[R].ok * 2 + outputs[L].ok)+100;
+      blinkUntil = millis() + 400 * 3+100;
       ledoffset -= 200;
     }
     setState(outputs[0], STATE_READY);
@@ -250,7 +251,7 @@ void shortPress(){
 
 void longPress(){
   autostartAt = 0;
-  safety = !safety;
+//   safety = !safety;
   setState(outputs[0], STATE_IDLE);
   setState(outputs[1], STATE_IDLE);
   ledoffset = millis();
@@ -352,40 +353,40 @@ void btnLEDRoutine(){
     pwmWrite(LED_PIN, position);
     return;
   }
-  if (!(outputs[0].connected || outputs[1].connected)){
-    pwmWrite(LED_PIN, LED_OVERFLOW);
-    return;
-  }
-  if (outputs[R].connected && outputs[L].connected && !outputs[L].ok && !outputs[R].ok){
-    uint32_t timePassed = millis() - ledoffset;
-    timePassed %= 4500;
-    if (timePassed < 500 || (timePassed > 1000 && timePassed < 1500) || (timePassed > 2000 && timePassed < 2500)){
-      pwmWrite(LED_PIN, LED_OVERFLOW);
-      return;
-    }
-    pwmWrite(LED_PIN, 0);
-    return;
-  }
-  if (outputs[R].connected && !outputs[R].ok){
-    uint32_t timePassed = millis() - ledoffset;
-    timePassed %= 3500;
-    if (timePassed < 500 || (timePassed > 1000 && timePassed < 1500)){
-      pwmWrite(LED_PIN, LED_OVERFLOW);
-      return;
-    }
-    pwmWrite(LED_PIN, 0);
-    return;
-  }
-  if (outputs[L].connected && !outputs[L].ok){
-    uint32_t timePassed = millis() - ledoffset;
-    timePassed %= 2000;
-    if (timePassed < 500){
-      pwmWrite(LED_PIN, LED_OVERFLOW);
-      return;
-    }
-    pwmWrite(LED_PIN, 0);
-    return;
-  }
+//   if (!(outputs[0].connected || outputs[1].connected)){
+//     pwmWrite(LED_PIN, LED_OVERFLOW);
+//     return;
+//   }
+//   if (outputs[R].connected && outputs[L].connected && !outputs[L].ok && !outputs[R].ok){
+//     uint32_t timePassed = millis() - ledoffset;
+//     timePassed %= 4500;
+//     if (timePassed < 500 || (timePassed > 1000 && timePassed < 1500) || (timePassed > 2000 && timePassed < 2500)){
+//       pwmWrite(LED_PIN, LED_OVERFLOW);
+//       return;
+//     }
+//     pwmWrite(LED_PIN, 0);
+//     return;
+//   }
+//   if (outputs[R].connected && !outputs[R].ok){
+//     uint32_t timePassed = millis() - ledoffset;
+//     timePassed %= 3500;
+//     if (timePassed < 500 || (timePassed > 1000 && timePassed < 1500)){
+//       pwmWrite(LED_PIN, LED_OVERFLOW);
+//       return;
+//     }
+//     pwmWrite(LED_PIN, 0);
+//     return;
+//   }
+//   if (outputs[L].connected && !outputs[L].ok){
+//     uint32_t timePassed = millis() - ledoffset;
+//     timePassed %= 2000;
+//     if (timePassed < 500){
+//       pwmWrite(LED_PIN, LED_OVERFLOW);
+//       return;
+//     }
+//     pwmWrite(LED_PIN, 0);
+//     return;
+//   }
   uint32_t position = (millis() - ledoffset) % 4000;
   if (position > 2000) position = 4000 - position;
   position /= 2;
@@ -398,7 +399,7 @@ uint32_t lastSerialMillis;
 uint32_t lastOutputChangeMillis;
 bool cycle = false;
 bool outputsOn = false;
-char sOut[1000];
+// char sOut[1000];
 void loop() {
   while ((millis() - lastOutputChangeMillis) >= 48){
     cycle = true;
@@ -413,13 +414,13 @@ void loop() {
   }
   autostartRoutine();
   disableStartPWM();
-  checkPowerSupply(); //voltage and which source
-  checkOutputs(); //LED voltage and connected
+//   checkPowerSupply(); //voltage and which source
+//   checkOutputs(); //LED voltage and connected
   buttonRoutine();
   btnLEDRoutine();
-  if (millis() > lastSerialMillis + 2000){
-    lastSerialMillis = millis();
-    snprintf(sOut, 1000, "%4.2f\t%d\t%d\t%d\t%d\t%4.2f\t%d\t%d\t%d\t%4.2f\t%d\t%d\t%d", vin, vinOk, lastButtonState, outputs[0].connected, outputs[0].state, outputs[0].ledVoltage, outputs[0].ok, outputs[1].connected, outputs[1].state, outputs[1].ledVoltage, outputs[1].ok, automatic, (int)autostartAt);
-    Serial.println(sOut);
-  }
+//   if (millis() > lastSerialMillis + 2000){
+//     lastSerialMillis = millis();
+//     snprintf(sOut, 1000, "%4.2f\t%d\t%d\t%d\t%d\t%4.2f\t%d\t%d\t%d\t%4.2f\t%d\t%d\t%d", vin, vinOk, lastButtonState, outputs[0].connected, outputs[0].state, outputs[0].ledVoltage, outputs[0].ok, outputs[1].connected, outputs[1].state, outputs[1].ledVoltage, outputs[1].ok, automatic, (int)autostartAt);
+//     Serial.println(sOut);
+//   }
 }
