@@ -7,7 +7,7 @@
 
 #define BUTTON_PIN PB12
 #define LED_PIN PB0
-#define JACK_PIN PB1
+// #define JACK_PIN PB1
 #define LIN_PIN PA2
 #define RIN_PIN PA1
 // #define VIN_PIN PA7
@@ -109,9 +109,9 @@ void setup() {
   // pwmTimer4.refresh();
   // pwmTimer4.resume();
   
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_PIN, INPUT_PULLDOWN);
   pinMode(LED_PIN, PWM);
-  pinMode(JACK_PIN, INPUT_PULLUP);
+  // pinMode(JACK_PIN, INPUT_PULLUP);
   pinMode(LIN_PIN, INPUT);
   pinMode(RIN_PIN, INPUT);
 //   pinMode(VIN_PIN, INPUT);
