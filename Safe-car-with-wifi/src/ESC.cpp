@@ -28,6 +28,10 @@ ESC::ESC(int8_t signalPin, rmt_channel_t dmaChannelTX)
     ESP_ERROR_CHECK(rmt_config(&c));
     ESP_ERROR_CHECK(rmt_driver_install(dmaChannelTX, 0, 0));
 
+    for (int i = 0; i < MAX_MANUAL_DATA; i++){
+        manualData11[i] = 0;
+    }
+
     lastCounterReset = millis();
 }
 
@@ -101,6 +105,7 @@ void ESC::send(){
         for (uint8_t i = 0; i < manualDataAmount; i++){
             manualData11[i] = manualData11[i+1];
         }
+        
     } else {
         if (armed){
             sendThrottle(currentThrottle);
@@ -119,6 +124,7 @@ void ESC::sendThrottle(uint16_t throttleValue){
 
 
 void ESC::sendRaw11(uint16_t rawValueWithoutChecksum){
+    Serial.println(rawValueWithoutChecksum, HEX);
     sendFullRaw(appendChecksum(rawValueWithoutChecksum << 1 | true));
 }
 

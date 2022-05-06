@@ -26,13 +26,15 @@ void startRace(){
     setArmed(true);
     setNewTargetValue();
     setStatusLED(LED_RACE_ARMED_ACTIVE);
-    for (int i = 0; i < 2; i++){
-      ESCs[i]->manualData11[0] = CMD_LED0_ON;
-      ESCs[i]->manualData11[1] = CMD_LED1_ON;
-      ESCs[i]->manualData11[2] = CMD_LED2_ON;
-      ESCs[i]->manualData11[3] = CMD_LED3_ON;
-      ESCs[i]->manualDataAmount = 4;
-    }
+    // for (int i = 0; i < 2; i++){
+    //   // ESCs[i]->manualData11[0] = CMD_LED0_ON;
+    //   // ESCs[i]->manualData11[1] = CMD_LED1_ON;
+    //   // ESCs[i]->manualData11[2] = CMD_LED2_ON;
+    //   // ESCs[i]->manualData11[3] = CMD_LED3_ON;
+    //   // ESCs[i]->manualDataAmount = 20;
+    //   processMessage("RAWDATA:016 017 018 019", 255);
+    //   Serial.println("Turning on ESC LEDs");
+    // }
   } else if (!raceMode) {
     broadcastWSMessage("SET RACEMODETOGGLE OFF");
   }
@@ -66,11 +68,13 @@ void enableRaceMode(bool en){
     raceStopAt = 0;
     if (statusLED >= LED_RACE_MODE && statusLED <= LED_RACE_ARMED_ACTIVE) resetStatusLED();
     for (int i = 0; i < 2; i++){
-      ESCs[i]->manualData11[0] = CMD_LED0_OFF;
-      ESCs[i]->manualData11[1] = CMD_LED1_OFF;
-      ESCs[i]->manualData11[2] = CMD_LED2_OFF;
-      ESCs[i]->manualData11[3] = CMD_LED3_OFF;
-      ESCs[i]->manualDataAmount = 4;
+      // // ESCs[i]->manualData11[15] = CMD_LED0_OFF;
+      // // ESCs[i]->manualData11[16] = CMD_LED1_OFF;
+      // // ESCs[i]->manualData11[17] = CMD_LED2_OFF;
+      // // ESCs[i]->manualData11[18] = CMD_LED3_OFF;
+      // // ESCs[i]->manualDataAmount = 19;
+      // processMessage("RAWDATA:01A 01B 01C 01D", 255);
+      // Serial.println("Turning off ESC LEDs");
     }
   }
   raceMode = en;
