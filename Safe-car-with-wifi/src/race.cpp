@@ -19,7 +19,7 @@ void setRaceThrottle(){
 		} else if (timePassed < 3000){
 			reqValue = timePassed * 2 / 5 + 600;
 		} else {
-			reqValue = 1800;
+			reqValue = 0;
 		}
 		setNewTargetValue();
 	}

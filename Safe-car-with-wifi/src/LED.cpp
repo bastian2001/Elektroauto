@@ -44,7 +44,7 @@ void ledRoutine(){
     if (lastLEDState) ledsOnOff(lastLEDState = LOW);
     break;
   case LED_RACE_ARMED_ACTIVE:
-    if (lastLEDState) ledsOnOff(lastLEDState = HIGH);
+    if (!lastLEDState) ledsOnOff(lastLEDState = HIGH);
     break;
   case LED_HALF_RESET:
     newState = millis() % 333 < 167;
