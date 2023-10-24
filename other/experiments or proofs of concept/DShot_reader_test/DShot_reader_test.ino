@@ -2,7 +2,7 @@
 
 //13 - data
 //5 - transmission indicator
-
+#define DATAPIN 23
 
 #define NO_OF_MEASUREMENTS 500
 #define EMPTY_SPACE 500
@@ -17,7 +17,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin (115200);
   Serial.println("almost ready");
-  pinMode(13, INPUT_PULLUP);
+  pinMode(DATAPIN, INPUT_PULLUP);
   pinMode(5, INPUT_PULLUP);
   Serial.println("ready");
 }
@@ -28,10 +28,10 @@ void loop() {
     Serial.read();
     mic = micros();
     for (int i = 0; i < NO_OF_MEASUREMENTS; i++){
-      result[i] = digitalRead(13);
-      for (int i = 0; i < SLOWNESS; i++){
-        digitalRead(13);
-      }
+      result[i] = digitalRead(DATAPIN);
+      /*for (int i = 0; i < SLOWNESS; i++){
+        digitalRead(DATAPIN);
+      }*/
     }
     mic = micros() - mic;
     /*for (int i = 0; i < EMPTY_SPACE; i++){
@@ -41,6 +41,6 @@ void loop() {
       Serial.println(result[i]);
     }
     //Serial.println(mic);
-    while(digitalRead(5)){yield();}
+    //while(digitalRead(5)){yield();}
   }
 }
