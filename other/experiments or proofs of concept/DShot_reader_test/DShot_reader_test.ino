@@ -1,57 +1,46 @@
 //receiver
 
-//13 - data - D7
-//5 - transmission indicator - D1
-
+//13 - data
+//5 - transmission indicator
+#define DATAPIN 23
 
 #define NO_OF_MEASUREMENTS 500
-#define LED_BUILTIN 22
-#define SLOWNESS 3  //Dshot: 1 or so, PWM 320
+#define EMPTY_SPACE 500
+#define SLOWNESS 3
 
 bool result[NO_OF_MEASUREMENTS];
 unsigned long mic = 0, lastMics = 0;
+uint8_t numbers[] = {0,0,0,0,0,0,0,0,0,0};
 uint8_t counter = 0;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin (230400);
+  Serial.begin (115200);
   Serial.println("almost ready");
-  pinMode(13, INPUT);
+  pinMode(DATAPIN, INPUT_PULLUP);
   pinMode(5, INPUT_PULLUP);
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(200);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(200);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(200);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(200);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(200);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(200);
   Serial.println("ready");
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //if(!digitalRead(5)){
-    //mic = micros();
+  if(Serial.available()){
+    Serial.read();
+    mic = micros();
     for (int i = 0; i < NO_OF_MEASUREMENTS; i++){
-      result[i] = digitalRead(13);
-      #if SLOWNESS > 0
-        for (int i = 0; i < SLOWNESS; i++){
-          digitalRead(1);
-        }
-      #endif
+      result[i] = digitalRead(DATAPIN);
+      /*for (int i = 0; i < SLOWNESS; i++){
+        digitalRead(DATAPIN);
+      }*/
     }
-    //mic = micros() - mic;
+    mic = micros() - mic;
+    /*for (int i = 0; i < EMPTY_SPACE; i++){
+      Serial.println(1);
+    }*/
     for (int i = 0; i < NO_OF_MEASUREMENTS; i++){
       Serial.println(result[i]);
     }
     //Serial.println(mic);
-    //while (!digitalRead(5));
-  delay(2000);
-  //}
+    //while(digitalRead(5)){yield();}
+  }
 }
