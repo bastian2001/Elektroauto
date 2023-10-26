@@ -27,8 +27,8 @@ typedef struct {
 
 interpolation_frame frames[4][10] = {
     {},
-    {},
-    {{0, 2000}, {600, 2000}, {600, 1600}, {1200, 2000}, {-1, 0}},
+    {{0, 1500}, {300, 1500}, {400, 1200}, {1300, 2000}, {-1, 0}},
+    {{0, 1500}, {300, 1500}, {400, 1200}, {1300, 2000}, {-1, 0}},
     {}};
 
 bool pinged = false;
@@ -214,6 +214,8 @@ void updateChannels() {
                 } else {
                     float t        = (float)(sinceLaunch - frames[i][j - 1].millis) / (float)(frames[i][j].millis - frames[i][j - 1].millis);
                     outChannels[i] = frames[i][j - 1].value + (frames[i][j].value - frames[i][j - 1].value) * t;
+                    outChannels[i] = map(outChannels[i], 1000, 2000, 172, 1882);
+					Serial.println(outChannels[i]);
                 }
                 break;
             }
@@ -229,7 +231,6 @@ void loop() {
         uint8_t data[2] = {0x00, CRSF_ADDRESS_RADIO_TRANSMITTER};
         sendCRSFCommand(CRSF_ADDRESS_CRSF_TRANSMITTER, 2, CRSF_FRAMETYPE_DEVICE_PING, data);
         sinceLastPing = 0;
-        Serial.println("Ping");
     }
     while (Serial2.available()) {
         rxBuffer.push_back(Serial2.read());
@@ -242,6 +243,9 @@ void loop() {
             launched    = true;
             sinceLaunch = 0;
         }
+    }
+    if (sinceLaunch > 2000) {
+        launched = false;
     }
     if (sinceLastRC > 3) {
         if (launched) {
